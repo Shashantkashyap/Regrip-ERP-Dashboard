@@ -1,0 +1,15 @@
+/* Custom scrollbar styles */
+.scrollbar-thin::-webkit-scrollbar {
+    width: 5px; /* Width of the scrollbar */
+    height:5px
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #6b7788; /* Color of the scrollbar thumb */
+    border-radius: 9999px; /* Rounded corners for the scrollbar thumb */
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background-color: #dee0e3; /* Background color of the scrollbar track */
+  }
+  

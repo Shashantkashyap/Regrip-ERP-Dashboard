@@ -8,7 +8,7 @@ function PopupComponent({ close }) {
 
   const apiKey = useSelector((state)=> state.user.user.data.api_key)
 
-  const url = "https://staging.regripindia.com/api";
+  const url = "https://api.regripindia.com/api";
   const [tyreData, setTyreData] = useState([]);
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { IoFilter } from 'react-icons/io5';
 import { PiExportBold } from 'react-icons/pi';
 import { MdCancel, MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';

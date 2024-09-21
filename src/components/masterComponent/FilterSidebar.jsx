@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setFormData } from '../../redux/Slices/masterFilterSlice';
-import "./FilterSidebar.css";
 
 const FilterSidebar = ({ isVisible, onClose, onSubmit }) => {
   const dispatch = useDispatch();

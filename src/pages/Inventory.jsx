@@ -12,7 +12,7 @@ function Inventory() {
 
   const apiKey = useSelector((state)=> state.user.user.data.api_key)
 
-  const url = "https://staging.regripindia.com/api";
+  const url = "https://api.regripindia.com/api";
   const [isOnwheelTyres, setIsOnwheelTyres] = useState(true);
   const [tyreSummary, SetTyreSummary] = useState({
     data: [],

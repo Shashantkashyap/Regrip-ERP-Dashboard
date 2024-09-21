@@ -83,7 +83,7 @@ const filterTab = useSelector((state) => state.dashboardTableFilter.tableFilter)
     try {
       const summaryData = await axios.post(
         // `${url}/vehicle-stats`,
-        `https://staging.regripindia.com/api/tyre-summary`,
+        `https://api.regripindia.com/api/tyre-summary`,
         {},
         {
           headers: {

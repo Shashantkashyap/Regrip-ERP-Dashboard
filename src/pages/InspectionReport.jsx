@@ -16,6 +16,7 @@ const InspectionReport = () => {
 
   const apiKey = useSelector((state)=> state.user.user.data.api_key)
 
+  
 
 
   const itemsPerPage = 10;
@@ -173,21 +174,22 @@ const InspectionReport = () => {
           </div>
         ) : (
           <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300">
-            <table className="min-w-[100%] w-[130%] font-outfit">
+            <table className="min-w-[100%] w-[120%] font-outfit">
               <thead>
                 <tr className="bg-[#F5F5F5] text-[#727272] font-normal text-[15px] leading-[21.42px]">
                   <td className="text-left p-3">#</td>
-                  <td className="text-left p-3">Vehicle No.</td>
-                  <td className="text-left p-2">Trailer No.</td>
-                  <td className="text-left p-3">Inspection Date</td>
-                  <td className="text-left p-3">Branch</td>
-                  <td className="text-left p-3">Service Engineer</td>
+                  <td className="text-left p-2">Vehicle No.</td>
+                  {/* <td className="text-left p-2">Trailer No.</td> */}
+                  <td className="text-left p-1">Inspection Date</td>
+                  <td className="text-left p-1">Branch</td>
+                  
                   <td className="text-left p-3">Prev km</td>
                   <td className="text-left p-3">Curr. km</td>
                   <td className="text-left p-3">Total Insp.</td>
                   <td className="text-left p-3">Tyre Insp.</td>
                   <td className="text-left p-3">Driver</td>
                   <td className="text-left p-3">Mobile No.</td>
+                  <td className="text-left p-3">Inspected By</td>
                   <td className="text-left p-3">Vehicle Status</td>
                 </tr>
               </thead>
@@ -208,16 +210,17 @@ const InspectionReport = () => {
 >
   {noData(vehicle.vehicle_no)}
 </td>
-                      <td className="p-3">{noData(vehicle.trailer_no)}</td>
+                      {/* <td className="p-3">{noData(vehicle.trailer_no)}</td> */}
                       <td className="p-3">{noData(vehicle.last_inspection)}</td>
                       <td className="p-3">{noData(vehicle.city)}</td>
-                      <td className="p-3">{noData(vehicle.service_er)}</td>
+                      
                       <td className="p-3">{noData(vehicle.prev_km)}</td>
                       <td className="p-3">{noData(vehicle.curr_km)}</td>
                       <td className="p-3">{noData(vehicle.inspection_count)}</td>
                       <td className="p-3">{noData(vehicle.inspection_tyre_count)}</td>
                       <td className="p-3">{noData(vehicle.driver_name)}</td>
                       <td className="p-3">{noData(vehicle.driver_contact)}</td>
+                      <td className="p-3">{noData(vehicle.service_er)}</td>
                       <td className="p-3">{vehicle.is_active === 1 ? "Live" : "Not Live"}</td>
                     </tr>
                   ))

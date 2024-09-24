@@ -27,6 +27,10 @@ import { setActiveDropdownItem, setActiveMenuItem } from "../redux/Slices/menuSl
 import { setTableFilter } from "../redux/Slices/DasboardPopup.js";
 
 function Sidebar() {
+
+  const userName = useSelector((state)=> state.user.user.data.name)
+
+
   const dispatch = useDispatch();
   const activeMenuItem = useSelector((state) => state.menu.activeMenuItem);
   const activeDropdownItem = useSelector((state) => state.menu.activeDropdownItem);
@@ -77,7 +81,7 @@ function Sidebar() {
       icon: Reports,
       iconActive: ReportsG,
 
-      dropdown: ["Inspection", "Pending Insp.", "Low NSD", "Hub-Mismatch", "Mechanical Defect", "Tyre Wear", "Purchase"],
+      dropdown: ["Inspection", "Pending Insp.", "Low NSD", "Mechanical Defect", "Tyre Wear", "Purchase"],
 
     },
     { id: 6, name: "Analytics", icon: Analytics, iconActive: AnalyticsG },
@@ -87,15 +91,15 @@ function Sidebar() {
   return (
     <div className="w-full h-full bg-white p-2 font-inter">
       {/* USER */}
-      <div className="flex flex-row max-lg:flex-col gap-2 items-center mb-6">
+      <div className="flex flex-col max-lg:flex-col gap-2 items-center mb-6">
         <img
           src="https://png.pngtree.com/thumb_back/fh260/background/20230612/pngtree-man-wearing-glasses-is-wearing-colorful-background-image_2905240.jpg"
           alt="User Profile"
           className="w-16 h-16 rounded-full"
         />
         <div className="flex flex-col gap-1">
-          <p className="font-semibold text-lg text-[#313131]">Shashant</p>
-          <p className="font-normal text-xs text-[#0E56AB] underline cursor-pointer">View profile</p>
+          <p className="font-semibold text-lg text-[#313131]">{userName}</p>
+          {/* <p className="font-normal text-xs text-[#0E56AB] underline cursor-pointer">View profile</p> */}
         </div>
       </div>
 

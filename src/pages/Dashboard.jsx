@@ -9,7 +9,7 @@ import MasterScreen from "./MasterScreen";
 import InspectionReport from "./InspectionReport";
 import MechanicalDefectsReport from "./MechanicalDefectsReport";
 import PendingInspectionReport from "./PendingInspectionReport";
-import HubMismatch from "./HubMismatch";
+import LowNsdReport from "./LowNsdReport"
 import Inventory from "./Inventory";
 import { useNavigate } from "react-router-dom";
 
@@ -53,7 +53,7 @@ function Dashboard() {
             You need to login first to continue.
           </p>
           <button
-            onClick={() => navigate("/signin")}
+            onClick={() => navigate("/")}
             className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg transition duration-300 ease-in-out"
           >
             Login
@@ -68,7 +68,7 @@ function Dashboard() {
     <div className="flex gap-1 overflow-auto">
       {/* Sidebar or SidebarIcons based on state */}
       {fullScreen === 1 ? (
-        <div className={`w-[13%] p-1 py-9 ${fullScreen === 0 ? "hidden" : ""}`}>
+        <div className={`w-[11%] p-1 py-9 ${fullScreen === 0 ? "hidden" : ""}`}>
           <Sidebar />
         </div>
       ) : (
@@ -139,9 +139,9 @@ function Dashboard() {
           ) : ("")
         }
         {
-        activeMenuItem == 5 && activeDropdownItem == "Hub-Mismatch" ? (
+        activeMenuItem == 5 && activeDropdownItem == "Low NSD" ? (
           <div>
-            <HubMismatch/>
+            <LowNsdReport/>
 
           </div>
           ) : ("")

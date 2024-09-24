@@ -4,7 +4,7 @@ import { MdCancel } from "react-icons/md";
 import { PiExportBold } from "react-icons/pi";
 import { useSelector } from "react-redux";
 
-function TyreJourney({ tyreId, close }) {
+function TyreJourney({ tyreId, close, tyreNo }) {
 
   const apiKey = useSelector((state)=> state.user.user.data.api_key)
 
@@ -31,6 +31,7 @@ function TyreJourney({ tyreId, close }) {
         }
       );
 
+      console.log(details)
       
       setTyreHistory(details.data.tyreHistory);
     } catch (error) {
@@ -55,14 +56,14 @@ function TyreJourney({ tyreId, close }) {
 }
 
   return (
-    <div className="relative  bg-white  rounded-[28px] p-8">
+    <div className="relative  bg-white  rounded-[28px] p-8 mt-">
       <MdCancel
         fontSize={24}
         onClick={close}
         className="cursor-pointer text-gray-500 hover:text-gray-700 absolute top-4 right-4"
       />
       <div className="mb-4 text-2xl font-semibold leading-[38.73px] text-[#65A143] text-center">
-        Tyre History : {tyreId}
+        Tyre History : {tyreNo}
       </div>
 
       <div className="flex justify-end mb-2">
@@ -79,7 +80,7 @@ function TyreJourney({ tyreId, close }) {
         }}
       >
         <table
-          className="min-w-full bg-white border border-gray-200"
+          className="min-w-full w-[130%] max-h-[500px] bg-white border border-gray-200"
           style={{
             boxShadow: "0px 14px 33.8px rgba(0, 0, 0, 0.33)",
           }}
@@ -88,20 +89,21 @@ function TyreJourney({ tyreId, close }) {
             <tr className="bg-gray-100 border-b">
                 <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">#</td>
               <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Date</td>
-              <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Type</td>
+              <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Activity</td>
               <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Vehicle No.</td>
               <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Position</td>
               <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Odometer</td>
               <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Running Km</td>
               <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Std Depth</td>
-              <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Nsd 1</td>
-              <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Nsd 2</td>
-              <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Nsd 3</td>
-              <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Nsd 4</td>
               <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Avg nsd</td>
              
               <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Status</td>
               <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Fresh/Retread</td>
+              
+              <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Nsd 1</td>
+              <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Nsd 2</td>
+              <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Nsd 3</td>
+              <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Nsd 4</td>
             </tr>
           </thead>
           <tbody>
@@ -120,14 +122,15 @@ function TyreJourney({ tyreId, close }) {
                 <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">{entry.tyre_km}</td>
                 <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">{entry.km_reading}</td>
                 <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">{entry.stdDepth || ""}  20 </td>
-                <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">{entry.nsd1}</td>
-                <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">{entry.nsd2}</td>
-                <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">{entry.nsd3}</td>
-                <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">{entry.nsd4}</td>
                 <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">{(entry.nsd1 + entry.nsd2 + entry.nsd3 + entry.nsd4) / 4}</td>
                
                 <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">{entry.tyre_status}</td>
                 <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">{entry.freshRetread}  Fresh</td>
+                
+                <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">{entry.nsd1}</td>
+                <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">{entry.nsd2}</td>
+                <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">{entry.nsd3}</td>
+                <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">{entry.nsd4}</td>
               </tr>
             )
           

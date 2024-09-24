@@ -139,7 +139,7 @@ const filterTab = useSelector((state) => state.dashboardTableFilter.tableFilter)
   }, [selectedTable]);
 
   const alertItems = [
-    { label: "Unidentified Tyre", value: alert?.[0]?.value ?? 0, color: "bg-[#DA4040]" },
+    { label: "Unidentified Tyre", value: alert?.[0]?.value ?? 0, color: "bg-[#DA4040]" , },
     { label: "Missing Tyre", value: alert?.[1]?.value ?? 0, color: "bg-[#DA4040]" },
     { label: "Low NSD", value: alert?.[2]?.value ?? 0, color: "bg-[#DA4040]" },
     { label: "Pending Inspection", value: alert?.[3]?.value ?? 0, color: "bg-[#DA4040]" },

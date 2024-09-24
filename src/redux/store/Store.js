@@ -6,6 +6,7 @@ import inspectionFilterReducer from "../Slices/inspectionFilterSlice.js"
 import mechanicaDefFilterReducer from "../Slices/mechanicalFilterSlice.js"
 import pendingInspectionReducer from "../Slices/pendingFilterSlice.js" 
 import dashboardTableFilter from "../Slices/DasboardPopup.js"
+import lowNsdFilter from "../Slices/lowNsdFilterSlice.js"
 
 
 export const store = configureStore({
@@ -16,6 +17,7 @@ export const store = configureStore({
     inspectionFilter: inspectionFilterReducer,
     mechanicalFilter : mechanicaDefFilterReducer,
     pendingInspectionFilter : pendingInspectionReducer,
-    dashboardTableFilter: dashboardTableFilter
+    dashboardTableFilter: dashboardTableFilter,
+    lowNsdFilter : lowNsdFilter
     }
 });

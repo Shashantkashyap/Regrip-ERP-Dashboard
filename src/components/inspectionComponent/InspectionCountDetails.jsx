@@ -91,10 +91,10 @@ function InspectionCountDetails({close , vehicleId}) {
             Inspection Count Details 
           </p>
           <div className="flex justify-end mb-2">
-            <button className="bg-[#333333] text-white text-[14px] py-2 px-4 rounded-md flex items-center gap-2 hover:bg-green-600 transition">
+            {/* <button className="bg-[#333333] text-white text-[14px] py-2 px-4 rounded-md flex items-center gap-2 hover:bg-green-600 transition">
               <PiExportBold size={20} />
               <span>Export</span>
-            </button>
+            </button> */}
           </div>
           <div className="rounded-[10px] shadow-[2px_2px_15px_0px_rgba(0,0,0,0.25)]">
             <table className="min-w-full bg-white border border-gray-200 rounded-[10px]">
@@ -107,6 +107,8 @@ function InspectionCountDetails({close , vehicleId}) {
                   <td className="py-2 px-4 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Curr. km</td>
                   <td className="py-2 px-0 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Km Running </td>
                   <td className="py-2 px-2 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Tyres</td>
+                  <td className="py-2 px-2 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Download</td>
+                
                 </tr>
               </thead>
               <tbody>

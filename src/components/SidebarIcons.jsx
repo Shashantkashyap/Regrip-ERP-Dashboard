@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AnalyticsG from "../assets/icons/Analytics (1).png";
 import DashboardG from "../assets/icons/dashboard.png";
@@ -19,72 +19,132 @@ import Retreaders from "../assets/icons/retreaders.png";
 import Tools from "../assets/icons/Tools.png";
 import Truck from "../assets/icons/truck.png";
 import diamond from "../assets/icons/diamond (1).png";
-import diamondG from "../assets/icons/diamond.png"
+import diamondG from "../assets/icons/diamond.png";
 import logo from "../assets/logo (2) 1.png";
 
-import { setActiveMenuItem } from "../redux/Slices/menuSlice.js.js";
+import { setActiveDropdownItem, setActiveMenuItem } from "../redux/Slices/menuSlice.js.js";
+import { setTableFilter } from "../redux/Slices/DasboardPopup.js";
 
 function SidebarIcons() {
-    const dispatch = useDispatch();
-    const activeMenuItem = useSelector((state) => state.menu.activeMenuItem);
+  const dispatch = useDispatch();
 
-    const handleItemClick = (id) => {
-        dispatch(setActiveMenuItem(id));
+  const activeDropdownItem = useSelector((state) => state.menu.activeDropdownItem); // Changed from showDropdown to activeDropdownItem
+  const activeMenuItem = useSelector((state) => state.menu.activeMenuItem);
+
+  const [isReportsDropdownOpen, setIsReportsDropdownOpen] = useState(false);
+  const [dropdownItem, setDropdownItem] = useState(activeDropdownItem); // Default to Redux state
+  const reportsDropdownRef = useRef(null); // To detect outside clicks
+
+  const handleItemClick = (id) => {
+    dispatch(setTableFilter({ key: "", value: "item.value2" }));
+    dispatch(setActiveMenuItem(id));
+
+    // Toggle reports dropdown only for "Reports" icon
+    if (id === 5) {
+      setIsReportsDropdownOpen((prev) => !prev);
+    } else {
+      setIsReportsDropdownOpen(false); // Close the reports dropdown if another menu is clicked
+    }
+  };
+
+  const handleClickOutside = (event) => {
+    if (reportsDropdownRef.current && !reportsDropdownRef.current.contains(event.target)) {
+      setIsReportsDropdownOpen(false); // Close dropdown if clicked outside
+    }
+  };
+
+  useEffect(() => {
+    // Add event listener to detect clicks outside
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      // Clean up the event listener when the component unmounts
+      document.removeEventListener("mousedown", handleClickOutside);
     };
+  }, []);
 
-    const menuItems = [
-        { id: 1, photo: Dashboard, greenPhoto: DashboardG },
-        { id: 2, photo: diamond, greenPhoto: diamondG },
-        { id: 3, photo: Inventory, greenPhoto: InventoryG },
-        { id: 4, photo: Retreaders, greenPhoto: RetreadersG },
-        { id: 5, photo: Tools, greenPhoto: ToolsG },
-        { id: 6, photo: Truck, greenPhoto: TruckG },
-        { id: 7, photo: Collection, greenPhoto: CollectionG },
-        { id: 8, photo: Dispatch, greenPhoto: DispatchG },
-        { id: 9, photo: Reports, greenPhoto: ReportsG },
-        { id: 10, photo: Analytics, greenPhoto: AnalyticsG },
-    ];
+  const setReportIcon = (item) => {
+    setDropdownItem(item);
+    dispatch(setActiveDropdownItem(item)); // Save active dropdown item to Redux
+  };
 
-    return (
-        <div className="w-full h-full bg-white font-inter">
-            {/* USER */}
-            <div className="flex flex-row gap-2 items-center mb-6">
-                <img
-                    src="https://png.pngtree.com/thumb_back/fh260/background/20230612/pngtree-man-wearing-glasses-is-wearing-colorful-background-image_2905240.jpg"
-                    alt="User Profile"
-                    className="w-[34px] h-[34px] rounded-full"
-                />
-            </div>
+  const menuItems = [
+    { id: 1, photo: Dashboard, greenPhoto: DashboardG },
+    { id: 2, photo: diamond, greenPhoto: diamondG },
+    { id: 3, photo: Retreaders, greenPhoto: RetreadersG },
+    { id: 4, photo: Retreaders, greenPhoto: RetreadersG },
+    { id: 5, photo: Reports, greenPhoto: ReportsG }, // Reports item
+    { id: 10, photo: Analytics, greenPhoto: AnalyticsG },
+  ];
 
-            <div>
-                <p className="font-normal text-xs text-[#0E56AB] underline cursor-pointer">Profile</p>
-            </div>
+  const reportsDropdownItems = [
+    "Inspection",
+    "Pending Insp.",
+    "Low NSD",
+    "Hub-Mismatch",
+    "Mechanical Defect",
+    "Tyre Wear",
+    "Purchase",
+  ];
 
-            {/* MENU LIST */}
-            <div className="flex flex-col gap-[12px] mt-8">
-                {menuItems.map((item) => (
-                    <div
-                        key={item.id}
-                        className={`flex items-center p-1 cursor-pointer transition-all duration-300 rounded-md mr-1 ${
-                            activeMenuItem === item.id ? "bg-[#e6f4ea]" : "hover:bg-gray-100"
-                        }`}
-                        onClick={() => handleItemClick(item.id)}
-                    >
-                        <img
-                            src={activeMenuItem === item.id ? item.greenPhoto : item.photo}
-                            alt={`Menu Icon ${item.id}`}
-                            className="w-6 h-6"
-                        />
-                    </div>
+  return (
+    <div className="w-full h-full bg-white font-inter relative">
+      {/* USER */}
+      <div className="flex flex-row gap-2 items-center mb-6">
+        <img
+          src="https://png.pngtree.com/thumb_back/fh260/background/20230612/pngtree-man-wearing-glasses-is-wearing-colorful-background-image_2905240.jpg"
+          alt="User Profile"
+          className="w-[34px] h-[34px] rounded-full"
+        />
+      </div>
+
+      {/* MENU LIST */}
+      <div className="flex flex-col gap-[12px] mt-8">
+        {menuItems.map((item) => (
+          <div
+            key={item.id}
+            className={`relative flex items-center p-1 cursor-pointer transition-all duration-300 rounded-md mr-1 ${
+              activeMenuItem === item.id ? "bg-[#e6f4ea]" : "hover:bg-gray-100"
+            }`}
+            onClick={() => handleItemClick(item.id)}
+          >
+            <img
+              src={activeMenuItem === item.id ? item.greenPhoto : item.photo}
+              alt={`Menu Icon ${item.id}`}
+              className="w-6 h-6"
+            />
+            {/* DROPDOWN FOR REPORTS */}
+            {item.id === 5 && (
+              <div
+                ref={reportsDropdownRef}
+                className={`absolute top-0 left-12 w-[150px] bg-white shadow-lg rounded-[20px] p-3 flex flex-col gap-2 z-10 transition-all duration-300 ease-in-out ${
+                  isReportsDropdownOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0 overflow-hidden"
+                }`}
+                style={{ boxShadow: "-5px 0px 16.6px 0px #00000021" }}
+              >
+                {reportsDropdownItems.map((dropdown, index) => (
+                  <p
+                    key={index}
+                    className={`text-[13px] text-[#555555] hover:bg-gray-100 p-1 rounded-md cursor-pointer transition-colors duration-300 ${
+                      dropdownItem === dropdown ? "bg-[#e6f4ea] text-[#65A143]" : ""
+                    }`}
+                    onClick={() => setReportIcon(dropdown)} // Set active dropdown item on click
+                  >
+                    {dropdown}
+                  </p>
                 ))}
-            </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
 
-            {/* LOGO SECTION */}
-            <div className="flex flex-col gap-2 justify-center mt-16">
-                <img src={logo} alt="Logo" className="w-[60px] h-[75px]" />
-            </div>
-        </div>
-    );
+      {/* LOGO SECTION */}
+      <div className="flex flex-col gap-2 justify-center mt-16">
+        <img src={logo} alt="Logo" className="w-[60px] h-[75px]" />
+      </div>
+    </div>
+  );
 }
 
 export default SidebarIcons;

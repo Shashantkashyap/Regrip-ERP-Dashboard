@@ -119,7 +119,7 @@ function MasterScreen() {
     <div className="p-6 bg-[#F7F7F7] rounded-[50px] overflow-x-auto relative">
       <div className="flex justify-between mb-6">
         <p className="font-inter font-semibold text-[30px] leading-[36.31px] text-[#65A143]">
-          Vehicle Master
+          Vehicle Master ({totalRecords})
         </p>
         <div className="flex items-center gap-[34px]">
           <div className="flex bg-[#EBEBEB] rounded-[37px] p-[9px_24px] items-center gap-[7px]">
@@ -209,7 +209,7 @@ function MasterScreen() {
   <>
     <div className="fixed inset-0 bg-[rgba(0,0,0,0.8)] z-30"></div>
     <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-40 min-w-[600px] overflow-x-auto">
-      <div className="bg-white w-[80%] max-w-[1145px] h-auto rounded-[28px] shadow-lg min-w-[700px] overflow-x-auto">
+      <div className="bg-white w-[80%] max-w-[1145px] max-h-[700px] rounded-[28px] shadow-lg min-w-[700px] overflow-x-auto">
         <TyreFitment close={closeTyreComponent} vehicle={vehicleId} />
       </div>
     </div>
@@ -223,19 +223,20 @@ function MasterScreen() {
           </div>
         ) : (
           <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300">
-            <table className="min-w-full font-outfit">
+            <table className=" min-w-full font-outfit">
               <thead>
                 <tr className="bg-[#F5F5F5] text-[#727272] font-normal text-[15px] leading-[21.42px]">
                   <td className="text-left p-3">#</td>
                   <td className="text-left p-3">Vehicle No.</td>
-                  <td className="text-left p-3">Trailer No.</td>
+                  <td className="text-left p-3">Tyre</td>
+                  {/* <td className="text-left p-3">Trailer No.</td> */}
                   <td className="text-left p-3">Make</td>
                   <td className="text-left p-3">Model</td>
                   <td className="text-left p-3">Make Year</td>
-                  <td className="text-left p-3">Tyre</td>
+                 
                   <td className="text-left p-3">Created Date</td>
                   <td className="text-left p-3">Branch</td>
-                  <td className="text-left p-3">Actions</td>
+                  {/* <td className="text-left p-3">Actions</td> */}
                 </tr>
               </thead>
               <tbody>
@@ -254,16 +255,17 @@ function MasterScreen() {
                       >
                         {vehicle.vehicle_no}
                       </td>
-                      <td className="p-3 text-[#65A948] underline">
+                      <td className="p-3">{vehicle.wheels_count}</td>
+                      {/* <td className="p-3 text-[#65A948] underline">
                         {vehicle.trailer_no}
-                      </td>
+                      </td> */}
                       <td className="p-3">{vehicle.manufacturer_name}</td>
                       <td className="p-3">{vehicle.model_name}</td>
                       <td className="p-3">{vehicle.manufacturer_year}</td>
-                      <td className="p-3">{vehicle.wheels_count}</td>
+                     
                       <td className="p-3">{vehicle.date}</td>
                       <td className="p-3">{vehicle.city}</td>
-                      <td className="p-3">
+                      {/* <td className="p-3">
                         <div className="flex gap-2">
                           <button className="text-blue-500 hover:text-blue-700">
                             ✏️
@@ -272,7 +274,7 @@ function MasterScreen() {
                             🗑️
                           </button>
                         </div>
-                      </td>
+                      </td> */}
                     </tr>
                   ))
                 )}

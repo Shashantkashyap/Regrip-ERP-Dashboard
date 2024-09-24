@@ -14,6 +14,7 @@ function Inventory() {
 
   const url = "https://api.regripindia.com/api";
   const [isOnwheelTyres, setIsOnwheelTyres] = useState(true);
+  const [extraBody, setExtraBody] = useState(null)
   const [tyreSummary, SetTyreSummary] = useState({
     data: [],
     tyre_depth_data: [],
@@ -47,6 +48,13 @@ function Inventory() {
 
   const fetchTyreData = async () => {
     try {
+
+      const formData = new FormData();
+
+      tyreBody.tyre_depth && (
+        form
+      )
+
       const response = await axios.post(`${url}/tyre-list`, tyreBody, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -57,6 +65,7 @@ function Inventory() {
       const totalItems = response.data.total_tyres;
       const totalPages = Math.ceil(totalItems / itemsPerPage);
 
+      console.log(response)
       setTyreData(response.data.data);
       setTotalPages(totalPages);
     } catch (error) {
@@ -64,23 +73,24 @@ function Inventory() {
     }
   };
 
-  console.log(tyreBody)
+  console.log(tyreSummary)
 
   useEffect(() => {
     fetchTyreSummary();
     fetchTyreData();
-  }, []);
+  }, [tyreBody]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  console.log(tyreSummary);
+  console.log(tyreBody)
+  console.log(tyreData)
 
-  const displayedData = tyreData.slice(
+  const displayedData = tyreData !== undefined ? tyreData.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
-  );
+  ) : []  ;
 
   const stockData = {
     totalStock: tyreSummary.data[0]?.total || 0,
@@ -98,8 +108,8 @@ function Inventory() {
       },
       {
         count: tyreSummary.data[6]?.total || 0,
-        label: "Re-treaded",
-        current_status: "Ready-Retread",
+        label: "Retreaded",
+        current_status: "Retreaded",
       },
       {
         count: tyreSummary.data[8]?.total || 0,
@@ -117,7 +127,7 @@ function Inventory() {
       {
         count: tyreSummary.data[4]?.total || 0,
         label: "Scrap",
-        current_status: "Scrap",
+        tyre_condition: "Scrap",
       },
       {
         count: tyreSummary.data[7]?.total || 0,
@@ -133,26 +143,51 @@ function Inventory() {
         count: tyreSummary.tyre_depth_data[0]?.total || 0,
         range: "0-4 mm",
         tyre_depth: "0-4",
+        current_status: "On-Wheel"
       },
       {
         count: tyreSummary.tyre_depth_data[1]?.total || 0,
         range: "4-8 mm",
         tyre_depth: "4-8",
+        current_status: "On-Wheel"
       },
       {
         count: tyreSummary.tyre_depth_data[2]?.total || 0,
         range: "8-12 mm",
         tyre_depth: "8-12",
+        current_status: "On-Wheel"
       },
       // { count: tyreSummary.tyre_depth_data[3]?.total || 0, range: "12-16 mm" },
       // { count: tyreSummary.tyre_depth_data[4]?.total || 0, range: "16-20 mm" },
       // { count: tyreSummary.tyre_depth_data[5]?.total || 0, range: "20-24 mm" },
     ],
-    otherTyres: [{ count: 14, label: "Other Tyres" }],
+    otherTyres: [
+      {
+        count:    tyreSummary.depth_summary_data_others &&   tyreSummary.depth_summary_data_others[0]?.total || 0,
+        range: "0-4 mm",
+        tyre_depth: "0-4",
+        current_status: "other"
+      },
+      {
+        count: tyreSummary.depth_summary_data_others &&  tyreSummary.depth_summary_data_others[1]?.total || 0,
+        range: "4-8 mm",
+        tyre_depth: "4-8",
+        current_status: "other"
+      },
+      {
+        count: tyreSummary.depth_summary_data_others &&  tyreSummary.depth_summary_data_others[2]?.total || 0,
+        range: "8-12 mm",
+        tyre_depth: "8-12",
+        current_status: "other"
+      },
+      // { count: tyreSummary.depth_summary_data_others &&   tyreSummary.depth_summary_data_others[3]?.total || 0, range: "12-16 mm" },
+      // { count: tyreSummary.depth_summary_data_others &&  tyreSummary.depth_summary_data_others[4]?.total || 0, range: "16-20 mm" },
+      // { count: tyreSummary.depth_summary_data_others &&  tyreSummary.depth_summary_data_others[5]?.total || 0, range: "20-24 mm" },
+    ],
   };
 
   const currentStatusData = [
-    { count: 50 || 0, label: "Scrap Sold" },
+    { count: 0 || 0, label: "Scrap Sold" },
     {
       count: tyreSummary.data[10]?.total || 0,
       label: "Sent to Retread",
@@ -174,17 +209,19 @@ function Inventory() {
     {
       count: tyreSummary.onwheel_tyres_data[2]?.total || 0,
       label: "New Tyres",
-      current_Status: "New",
+      current_Status: "On-Wheel",
+      product_category: "fresh"
     },
     {
       count: tyreSummary.onwheel_tyres_data[1]?.total || 0,
       label: "Retreaded Tyres",
-      current_status: "Reusable",
+      current_status: "On-Wheel",
+      product_category: "rtd"
     },
   ];
 
-  console.log(tyreBody);
-  console.log(tyreData);
+  console.log(tyreBody)
+  
 
   return (
     <div className="p-6 bg-[#F7F7F7] rounded-[50px] overflow-x-auto relative">
@@ -380,20 +417,19 @@ function Inventory() {
                           </p>
                         </div>
                       ))
-                    : tyreDepthData?.otherTyres?.map((item, index) => (
-                        <div
-                          key={index}
-                          className="bg-[#F8F8F8] p-[11px_25px_11px_12px] rounded-md text-center cursor-pointer"
-                          
-                        >
-                          <p className="text-[#66A847] font-bold text-[20px]">
-                            {item.count}
-                          </p>
-                          <p className="text-[#404040] font-normal text-[13px]">
-                            {item.label}
-                          </p>
-                        </div>
-                      ))}
+                     : tyreDepthData?.otherTyres?.map((item, index) => (
+                     
+                      <div
+                        key={index}
+                        className="bg-[#F8F8F8] p-[11px_25px_11px_12px] rounded-md text-center cursor-pointer"
+                        onClick={() =>
+                          setTyreBody({ tyre_depth: item.tyre_depth})
+                        }
+                      >
+                        <p className="text-[#66A847] font-bold text-[20px]">{item.count}</p>
+                        <p className="text-[#404040] font-normal text-[13px]">{item.range}</p> {/* Corrected */}
+                      </div>
+                    ))}
                 </div>
               </div>
 
@@ -446,12 +482,12 @@ function Inventory() {
                   </div>
 
                   <div className="flex gap-4 items-center mr-5">
-                    <div className="flex items-center gap-1">
+                    {/* <div className="flex items-center gap-1">
                       <span className="mr-2">
                         <IoFilter fontSize={23} className="cursor-pointer" />
                       </span>
                       <p className="text-[15px] font-medium">Filter</p>
-                    </div>
+                    </div> */}
                     <button className="p-[5px_15px_10px_15px] text-center rounded-[10px] text-[16px] flex gap-1 items-center border-[1px]">
                       <span>
                         <PiExportBold />
@@ -493,7 +529,7 @@ function Inventory() {
                         <td className="p-3">{item.model_name}</td>
                         <td className="p-3">{item.product_category}</td>
                         <td className="p-3">{item.current_status}</td>
-                        <td className="p-3">{item.ongoing_status}</td>
+                        <td className="p-3">{item.ongoing_status !== "" ? item.ongoing_status : (<img src="https://media.istockphoto.com/id/1133442802/vector/green-checkmark-vector-illustration.jpg?s=612x612&w=0&k=20&c=NqyVOdwANKlbJNqbXjTvEp2wIZWUKbfUbRxm9ROPk6M=" width={25}></img>)}</td>
                       </tr>
                     ))}
                   </tbody>

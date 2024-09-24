@@ -104,9 +104,9 @@ function Signin() {
               <input type="checkbox" id="rememberMe" />
               <label htmlFor="rememberMe" className="font-normal text-xs sm:text-sm">Remember me</label>
             </div>
-            <div className="font-normal text-xs sm:text-sm text-blue-600 cursor-pointer">
+            {/* <div className="font-normal text-xs sm:text-sm text-blue-600 cursor-pointer">
               Forgot Password?
-            </div>
+            </div> */}
           </div>
           <div className="flex justify-center">
             <button type="submit" className="bg-[#65A143] text-white py-2 px-6 rounded-[9px] w-full sm:w-auto h-[48px] md:h-[55px]">

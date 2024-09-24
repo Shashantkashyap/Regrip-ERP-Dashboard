@@ -223,63 +223,42 @@ function MasterScreen() {
           </div>
         ) : (
           <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300">
-            <table className=" min-w-full font-outfit">
-              <thead>
-                <tr className="bg-[#F5F5F5] text-[#727272] font-normal text-[15px] leading-[21.42px]">
-                  <td className="text-left p-3">#</td>
-                  <td className="text-left p-3">Vehicle No.</td>
-                  <td className="text-left p-3">Tyre</td>
-                  {/* <td className="text-left p-3">Trailer No.</td> */}
-                  <td className="text-left p-3">Make</td>
-                  <td className="text-left p-3">Model</td>
-                  <td className="text-left p-3">Make Year</td>
-                 
-                  <td className="text-left p-3">Created Date</td>
-                  <td className="text-left p-3">Branch</td>
-                  {/* <td className="text-left p-3">Actions</td> */}
-                </tr>
-              </thead>
-              <tbody>
-                {vehicles.length === 0 ? (
-                  <div> Data not found </div>
-                ) : (
-                  vehicles.map((vehicle, index) => (
-                    <tr
-                      key={index}
-                      className="border-b border-[1px] font-normal text-[14px] leading-[21.42px] text-[#333333] border-gray-200"
-                    >
-                      <td className="p-3">{vehicle.sr_no}</td>
-                      <td
-                        className="p-3 text-[#65A948] underline cursor-pointer"
-                        onClick={ () => setVehicle(vehicle.vehicle_id)}
-                      >
-                        {vehicle.vehicle_no}
-                      </td>
-                      <td className="p-3">{vehicle.wheels_count}</td>
-                      {/* <td className="p-3 text-[#65A948] underline">
-                        {vehicle.trailer_no}
-                      </td> */}
-                      <td className="p-3">{vehicle.manufacturer_name}</td>
-                      <td className="p-3">{vehicle.model_name}</td>
-                      <td className="p-3">{vehicle.manufacturer_year}</td>
-                     
-                      <td className="p-3">{vehicle.date}</td>
-                      <td className="p-3">{vehicle.city}</td>
-                      {/* <td className="p-3">
-                        <div className="flex gap-2">
-                          <button className="text-blue-500 hover:text-blue-700">
-                            ✏️
-                          </button>
-                          <button className="text-red-500 hover:text-red-700">
-                            🗑️
-                          </button>
-                        </div>
-                      </td> */}
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+            <table className="min-w-full table-fixed font-outfit">
+    <thead>
+      <tr className="bg-[#F5F5F5] text-[#727272] font-normal text-[15px] leading-[21.42px]">
+        <td className="w-1/12 text-left p-3">#</td>
+        <td className="w-2/12 text-left p-3">Vehicle No.</td>
+        <td className="w-1/12 text-left p-3">Tyre</td>
+        <td className="w-2/12 text-left p-3">Make</td>
+        <td className="w-2/12 text-left p-3">Model</td>
+        <td className="w-1/12 text-left p-3">Make Year</td>
+        <td className="w-2/12 text-left p-3">Created Date</td>
+        <td className="w-1/12 text-left p-3">Branch</td>
+      </tr>
+    </thead>
+    <tbody>
+      {vehicles.length === 0 ? (
+        <tr>
+          <td colSpan="8" className="text-center p-3">Data not found</td>
+        </tr>
+      ) : (
+        vehicles.map((vehicle, index) => (
+          <tr key={index} className="border-b border-[1px] font-normal text-[14px] leading-[21.42px] text-[#333333] border-gray-200">
+            <td className="p-3">{vehicle.sr_no}</td>
+            <td className="p-3 text-[#65A948] underline cursor-pointer" onClick={() => setVehicle(vehicle.vehicle_id)}>
+              {vehicle.vehicle_no}
+            </td>
+            <td className="p-3">{vehicle.wheels_count}</td>
+            <td className="p-3">{vehicle.manufacturer_name}</td>
+            <td className="p-3">{vehicle.model_name}</td>
+            <td className="p-3">{vehicle.manufacturer_year}</td>
+            <td className="p-3">{vehicle.date}</td>
+            <td className="p-3">{vehicle.city}</td>
+          </tr>
+        ))
+      )}
+    </tbody>
+  </table>
           </div>
         )}
 

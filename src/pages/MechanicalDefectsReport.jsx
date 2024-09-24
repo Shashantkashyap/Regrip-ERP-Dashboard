@@ -5,7 +5,7 @@ import axios from "axios";
 import Loader from "../components/common/Loader";
 import "../components/scrollBar.css";
 import InspectionCountDetails from "../components/inspectionComponent/InspectionCountDetails";
-import MechanicalDefectFilter from '../components/mechanicalDefectComponent/MechanicalDefectFilter'
+import MechanicalDefectFilter from "../components/mechanicalDefectComponent/MechanicalDefectFilter";
 import {
   DeleteOutlined,
   Add,
@@ -15,13 +15,9 @@ import {
   ChevronRight,
   ChevronLeft,
 } from "@mui/icons-material";
-import { useSelector } from "react-redux";
+import ImageModal from "../components/mechanicalDefectComponent/ImageModal";
 
 const MechanicalDefectsReport = () => {
-
-  const apiKey = useSelector((state)=> state.user.user.data.api_key)
-
-
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -31,13 +27,15 @@ const MechanicalDefectsReport = () => {
   const [vehicleNumberId, setVehicleNumberId] = useState(null);
   const [showMechanicalFilter, setShowMechanicalFilter] = useState(false);
   const [filterData, setFilterData] = useState({});
+  const [selectedImage, setSelectedImage] = useState(null); // State to store selected image URL
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal open/close state
 
   const noData = (value) => value || "--";
 
   const formatCustomDate = (dateString) => {
     const date = new Date(dateString);
     const day = date.getDate();
-    const month = date.toLocaleString('en-US', { month: 'short' });
+    const month = date.toLocaleString("en-US", { month: "short" });
     const year = date.getFullYear().toString().slice(-2);
     return `${day} ${month} ${year}`;
   };
@@ -46,7 +44,7 @@ const MechanicalDefectsReport = () => {
     setShowMechanicalFilter(!showMechanicalFilter);
   };
 
-  const fetchInspectionReportData = useCallback(
+  const fetchMechanicalReportData = useCallback(
     async (filterData = {}) => {
       setLoading(true);
       setError(null);
@@ -67,7 +65,7 @@ const MechanicalDefectsReport = () => {
           {
             headers: {
               "Content-Type": "multipart/form-data",
-              Authorization: apiKey, // Assuming you have a valid auth token
+              Authorization: "google", // Assuming you have a valid auth token
             },
           }
         );
@@ -99,8 +97,8 @@ const MechanicalDefectsReport = () => {
   };
 
   useEffect(() => {
-    fetchInspectionReportData();
-  }, [fetchInspectionReportData, currentPage]);
+    fetchMechanicalReportData();
+  }, [fetchMechanicalReportData, currentPage]);
 
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
@@ -115,7 +113,7 @@ const MechanicalDefectsReport = () => {
   const handleSubmit = (data) => {
     setFilterData(data);
     handleFilterToggle();
-    fetchInspectionReportData(data);
+    fetchMechanicalReportData(data);
   };
 
   const setVehicle = (id) => {
@@ -123,8 +121,19 @@ const MechanicalDefectsReport = () => {
     console.log("Vehicle ID set:", id);
   };
 
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setIsModalOpen(true);
+  };
+
   return (
     <div className="p-6 bg-[#F7F7F7] rounded-[50px] overflow-x-auto relative">
+       {isModalOpen && (
+        <ImageModal
+          imageUrl={selectedImage} // Pass the selected image URL to the modal
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
       <div className="flex justify-between mb-6">
         <p className="font-inter font-semibold text-[30px] leading-[36.31px] text-[#65A143]">
           Mechanical Defects Report
@@ -206,7 +215,6 @@ const MechanicalDefectsReport = () => {
             <table className="min-w-full divide-y divide-[#ffffff]">
               <thead>
                 <tr className="bg-[#F5F5F5] text-[#727272] font-normal text-[14px] leading-[21.42px]">
-                  
                   <td className="text-left whitespace-nowrap px-4 p-3">#</td>
                   <td className="text-left whitespace-nowrap px-4 p-3">
                     Vehicle No.
@@ -274,7 +282,9 @@ const MechanicalDefectsReport = () => {
                       <td className="p-3 px-4 whitespace-nowrap">
                         {noData(vehicle.defect_name)}
                       </td>
-                      <td className="p-3 px-4 whitespace-nowrap">{noData(vehicle.position)}</td>
+                      <td className="p-3 px-4 whitespace-nowrap">
+                        {noData(vehicle.position)}
+                      </td>
                       <td className="p-3 px-4 whitespace-nowrap">
                         {noData(vehicle.mechanic_name)}
                       </td>
@@ -283,11 +293,15 @@ const MechanicalDefectsReport = () => {
                           ? formatCustomDate(vehicle.mechanic_assigned_date)
                           : "No Date"}
                       </td>
-                      <td className="p-3 px-4 whitespace-nowrap">{noData(vehicle.status)}</td>
+                      <td className="p-3 px-4 whitespace-nowrap">
+                        {noData(vehicle.status)}
+                      </td>
                       <td className="p-3 px-4 whitespace-nowrap">
                         {noData(vehicle.action_days)}
                       </td>
-                      <td className="p-3 px-4 whitespace-nowrap">{noData(vehicle.delay_days)}</td>
+                      <td className="p-3 px-4 whitespace-nowrap">
+                        {noData(vehicle.delay_days)}
+                      </td>
                       <td className="p-3 px-4 whitespace-nowrap">
                         {noData(vehicle.pending_aging_days)}
                       </td>
@@ -299,7 +313,10 @@ const MechanicalDefectsReport = () => {
                         {noData(vehicle.priority)}
                       </td>
 
-                      <td className="p-3 px-4 cursor-pointer whitespace-nowrap">
+                      <td
+                        onClick={() => handleImageClick(vehicle.image_url)} // Pass image URL to handleImageClick
+                        className="p-3 px-4 cursor-pointer whitespace-nowrap"
+                      >
                         <img
                           className="rounded-full w-8 h-8"
                           src={vehicle.image_url}
@@ -338,7 +355,7 @@ const MechanicalDefectsReport = () => {
               </select>
               <h1 className="text-[#4E4F54] text-sm">of {totalPages} pages</h1>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1">
               <button
                 className={`mr-2 p-1 border rounded-full ${
                   currentPage === 1

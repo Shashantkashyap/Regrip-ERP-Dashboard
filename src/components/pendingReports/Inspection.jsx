@@ -6,10 +6,15 @@ import Loader from "../../components/common/Loader";
 import { IoFilter } from "react-icons/io5";
 import { PiExportBold } from "react-icons/pi";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
-//import InspectionFilter from "../";
 import PendingInspectionFilterSidebar from "../../components/pendingInspection/PendingInspectionFilter";
+import { useSelector } from "react-redux";
 
 const Inspection = () => {
+ // const apiKey = useSelector((state) => state.user.user.data.api_key);
+
+ const knowUser = JSON.parse(localStorage.getItem("userData"));
+  const apiKey = knowUser.data.api_key
+
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -20,7 +25,7 @@ const Inspection = () => {
   const [filterData, setFilterData] = useState({});
   const [error, setError] = useState(null);
 
-  const noData = (value) => value || "--";
+  const noData = (value) => value != "Not"? value : "--";
   const url = "https://newstaging.regripindia.com/api";
 
   const handleFilterToggle = () => {
@@ -39,28 +44,29 @@ const Inspection = () => {
         formData.append("limit", itemsPerPage);
 
         const response = await axios.post(
-          `${url}/pending-inspection-report`, // Adjust the API endpoint as necessary
+          `${url}/pending-inspection-report`,
           formData,
           {
             headers: {
               "Content-Type": "multipart/form-data",
-              Authorization: "google",
+              Authorization: apiKey,
             },
           }
         );
+        console.log(response)
 
         const responseData = response.data;
 
         setData(responseData.data || []);
-        setTotalPages(responseData.pagination.total || 0);
-        setTotalItems(responseData.pagination.total);
+        setTotalPages(responseData.pagination.total || 0); // Update this line
+        setTotalItems(responseData.pagination.totalItems || 0); // Update this line
       } catch (error) {
         setError("Failed to fetch data. Please try again later.");
       } finally {
         setLoading(false);
       }
     },
-    [currentPage]
+    [currentPage, apiKey]
   );
 
   useEffect(() => {
@@ -79,10 +85,11 @@ const Inspection = () => {
     fetchInspectionData(data);
   };
 
+  // Create an array of page numbers for the dropdown
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+
   return (
     <div className="p-6 bg-[#F7F7F7] rounded-[50px] overflow-x-auto relative">
-      
-
       {showPendingFilter && (
         <PendingInspectionFilterSidebar
           isVisible={showPendingFilter}
@@ -141,7 +148,7 @@ const Inspection = () => {
                       <td className="p-3">{vehicle.last_inspection}</td>
                       <td className="p-3">{vehicle.total_inspection_count}</td>
                       <td className="p-3">{vehicle.total_tyres}</td>
-                      <td className="p-3">{vehicle.last_inspection_days}</td>
+                      <td className="p-3">{noData(vehicle.last_inspection_days.split(" ")[0])}</td>
                     </tr>
                   ))
                 )}
@@ -150,23 +157,41 @@ const Inspection = () => {
           </div>
         )}
 
-        <div className="flex justify-between p-[11px_18px] border-t-[1px] border-gray-200">
-          <p className="font-outfit text-[15px] text-[#333333]">
-            Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} entries
+        <div className="flex justify-between items-center mt-4 px-4 py-2 bg-[#F7F7F7] rounded-b-lg">
+          <p className="text-[14px] font-outfit font-normal leading-[22.4px] text-[#4E4F54]">
+            Showing {(currentPage - 1) * itemsPerPage + 1}-
+            {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} items
           </p>
-          <div className="flex gap-3">
-            <button
-              className="flex items-center justify-center bg-[#E6E6E6] border-2 border-[#E6E6E6] rounded-full p-2"
-              onClick={() => handlePageChange(currentPage - 1)}
-            >
-              <MdKeyboardArrowLeft />
-            </button>
-            <button
-              className="flex items-center justify-center bg-[#E6E6E6] border-2 border-[#E6E6E6] rounded-full p-2"
-              onClick={() => handlePageChange(currentPage + 1)}
-            >
-              <MdKeyboardArrowRight />
-            </button>
+          <div className="flex items-center gap-4">
+            <div>
+              <select
+                value={currentPage}
+                onChange={(e) => handlePageChange(Number(e.target.value))}
+                className="px-1 py-1 rounded-md border-[1px] border-gray-300"
+              >
+                {pageNumbers.map((page) => (
+                  <option key={page} value={page}>
+                    Page {page}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex items-center gap-3 ">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="bg-gray-300 p-2 rounded-md text-white hover:bg-green-600 cursor-pointer"
+              >
+                <MdKeyboardArrowLeft />
+              </button>
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="bg-gray-300 p-2 rounded-md text-white hover:bg-green-600 cursor-pointer"
+              >
+                <MdKeyboardArrowRight />
+              </button>
+            </div>
           </div>
         </div>
       </div>

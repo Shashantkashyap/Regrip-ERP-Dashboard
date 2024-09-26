@@ -1,11 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Alignment from "../components/pendingReports/Alignment";
 import Inspection from '../components/pendingReports/Inspection';
 import Rotation from '../components/pendingReports/Rotation';
 import notification from '../assets/icons/notifications_unread (1).png';  // Assuming the path for the notification icon
+import { useDispatch, useSelector } from 'react-redux';
 
 function PendingInspectionReport() {
   const [activeTable, setActiveTable] = useState('inspection');
+
+  const tab = useSelector((state)=> state.dashboardTableFilter.tableFilter)
+
+  useEffect(() => {
+    if (tab.hasOwnProperty("PendingI")) {
+      setActiveTable("inspection");
+    } else if (tab.hasOwnProperty("PendingA")) {
+      setActiveTable("alignment");
+    } else if (tab.hasOwnProperty("PendingR")) {
+      setActiveTable("rotation");
+    }
+  }, [tab]); // The effect will run whenever `tab` changes
 
   const renderActiveReport = () => {
     switch (activeTable) {

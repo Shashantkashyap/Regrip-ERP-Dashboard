@@ -5,12 +5,17 @@ import TyreJourney from "./TyreJourney";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import Loader from "../common/Loader"; // Assuming you have a Loader component
+import "../scrollBar.css"
+import { set } from "lodash";
 
 function TyreFitment({ close, vehicle }) {
-  const apiKey = useSelector((state) => state.user.user.data.api_key);
+ // const apiKey = useSelector((state) => state.user.user.data.api_key);
+ const knowUser = JSON.parse(localStorage.getItem("userData"));
+  const apiKey = knowUser.data.api_key
 
   const [tyreId, setTyreId] = useState(null);
   const [tyreFitments, setTyreFitment] = useState([]);
+  
   const [tyreNo, setTyreNo] = useState();
   const [loading, setLoading] = useState(true); // State to handle loader
   const [isFetchComplete, setIsFetchComplete] = useState(false); // Tracks if the fetch has been completed
@@ -34,6 +39,7 @@ function TyreFitment({ close, vehicle }) {
         }
       );
 
+      
       setTyreFitment(details.data.vehicle_tyres);
     } catch (error) {
       console.error("Error fetching tyre fitment data:", error);
@@ -56,11 +62,29 @@ function TyreFitment({ close, vehicle }) {
     setTyreId(null);
   };
 
+  const setTyreColor = (num) => {
+    const colors = {
+        1: '#FF0000', // Red
+        2: '#0000FF', // Blue
+        3: '#008000', // Green
+        4: '#A52A2A', // Yellow
+        5: '#FFA500', // Orange
+        6: '#800080', // Purple
+        7: '#00FFFF', // Cyan
+        8: '#FFC0CB', // Pink
+        9: '#A52A2A', // Brown
+        10: '#808080'  // Gray
+    };
+    return colors[num] || '#00000'; // Return white if num not found
+};
+  
+  
+
   return (
     <div className="font-inter relative p-5 w-[90%] bg-white mx-auto rounded-[28px] min-w-[700px] overflow-x-auto">
       {/* Background Overlay */}
       {tyreId !== null && (
-        <div className="fixed inset-0 bg-[rgba(0,0,0,0.2)] z-30"></div>
+        <div className="fixed inset-0 bg-[rgba(0,0,0,0.8)] z-30"></div>
       )}
 
       {/* AddVehicle Component */}
@@ -103,38 +127,43 @@ function TyreFitment({ close, vehicle }) {
 
           {/* Tyre Fitment Table */}
           {tyreFitments.length > 0 ? (
-            <div className="rounded-[10px] shadow-[2px_2px_15px_0px_rgba(0,0,0,0.25)]">
-              <table className="min-w-full bg-white border border-gray-200 rounded-[10px]">
-                <thead className="bg-gray-100 text-gray-600">
-                  <tr>
-                    <td className="py-2 px-4 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">#</td>
-                    <td className="py-2 px-4 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Position</td>
-                    <td className="py-2 px-8 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Tyre No.</td>
-                    <td className="py-2 px-4 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Make</td>
-                    <td className="py-2 px-8 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Model</td>
-                    <td className="py-2 px-8 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Radial/Nylon</td>
-                    <td className="py-2 px-8 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Size</td>
-                    <td className="py-2 px-0 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Retread / Fresh</td>
+            <div className="rounded-[10px] shadow-[2px_2px_15px_0px_rgba(0,0,0,0.25)] scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300">
+            <table className="min-w-full bg-white border border-gray-200 rounded-[10px]">
+              <thead className="bg-gray-100 text-gray-600">
+                <tr>
+                  <td className="py-2 px-4 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">#</td>
+                  <td className="py-2 px-4 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Position</td>
+                  <td className="py-2 px-4 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Tyre No.</td>
+                  <td className="py-2 px-4 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Make</td>
+                  <td className="py-2 px-4 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Model</td>
+                  <td className="py-2 px-4 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Radial/Nylon</td>
+                  <td className="py-2 px-4 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Size</td>
+                  <td className="py-2 px-4 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Retread / Fresh</td>
+                </tr>
+              </thead>
+              <tbody>
+                {tyreFitments.map((tyre, index) => (
+                  <tr key={index} className="border-b">
+                    <td className="py-2 px-4 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">{index + 1}</td>
+                    <td 
+                className="py-2 text-center px-4 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px] rounded-[10px]"
+                style={{ color: setTyreColor(parseInt(tyre.position.split("")[0], 10)) }}
+            >
+                {tyre.position}
+            </td>
+            <td className="py-2 px-4 text-green-600 font-outfit font-normal text-[14px] leading-[21.42px] cursor-pointer" onClick={() => showTyreJourney(tyre.id, tyre.serial_no)}>
+                      {tyre.serial_no}
+                    </td>
+                    <td className="py-2 px-4 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">{tyre.brand_name}</td>
+                    <td className="py-2 px-4 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">{tyre.model_name}</td>
+                    <td className="py-2 px-4 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">{tyre.construction_type}</td>
+                    <td className="py-2 px-4 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">{tyre.tyre_size}</td>
+                    <td className="py-2 px-4">{tyre.product_category}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {tyreFitments.map((tyre, index) => (
-                    <tr key={index} className="border-b">
-                      <td className="py-2 px-4 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">{index + 1}</td>
-                      <td className="py-2 px-4 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">{tyre.position}</td>
-                      <td className="py-2 px-4 text-green-600 font-outfit font-normal text-[14px] leading-[21.42px] cursor-pointer" onClick={() => showTyreJourney(tyre.id, tyre.serial_no)}>
-                        {tyre.serial_no}
-                      </td>
-                      <td className="py-2 px-4 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">{tyre.brand_name}</td>
-                      <td className="py-2 px-8 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">{tyre.model_name}</td>
-                      <td className="py-2 px-8 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">{tyre.construction_type}</td>
-                      <td className="py-2 px-8 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">{tyre.tyre_size}</td>
-                      <td className="py-2 px-4">{tyre.product_category}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
+          </div>
           ) : (
             isFetchComplete && (
               <p className="text-center text-red-500 mt-4">No tyre fitment data found.</p>

@@ -4,10 +4,15 @@ import { MdCancel } from "react-icons/md";
 import { PiExportBold } from "react-icons/pi";
 import { useSelector } from "react-redux";
 import Loader from "../common/Loader"; // Assuming you have a Loader component
+import "../scrollBar.css"
+
 
 function TyreJourney({ tyreId, close, tyreNo }) {
-  const apiKey = useSelector((state) => state.user.user.data.api_key);
-
+ 
+ // const apiKey = useSelector((state) => state.user.user.data.api_key);
+ const knowUser = JSON.parse(localStorage.getItem("userData"));
+ const apiKey = knowUser.data.api_key
+ 
   const [tyreHistory, setTyreHistory] = useState();
   const [tyreImgDetails, setTyreImgDetails] = useState()
   const [loading, setLoading] = useState(true); // State to handle loading
@@ -52,6 +57,7 @@ function TyreJourney({ tyreId, close, tyreNo }) {
 
     return `${day}-${month}-${year}`;
   }
+  console.log(tyreHistory)
 
   return (
     <div className="relative bg-white rounded-[28px] p-8">
@@ -64,11 +70,11 @@ function TyreJourney({ tyreId, close, tyreNo }) {
 <div className="mb-4 text-2xl font-semibold leading-[38.73px] text-[#65A143] text-center flex items-center justify-center gap-5">
   <p>Tyre History: {tyreNo}</p>
   
-  {tyreImgDetails && tyreImgDetails.length > 0 && (
+  {tyreImgDetails && tyreImgDetails.length > 0 && tyreImgDetails[0].image_url.trim() !== "" && (
     <div className="w-[305px] h-[100px]">
       <img 
-        src={tyreImgDetails[0].image_url} 
-        alt="Tyre Image" 
+        src={tyreImgDetails[0].image_url || ""} 
+         
         className="w-full h-full object-contain"
       />
     </div>
@@ -90,7 +96,7 @@ function TyreJourney({ tyreId, close, tyreNo }) {
           </div>
 
           <div
-            className="overflow-x-auto "
+            className="overflow-x-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300"
             style={{
               boxShadow: "0px 14px 33.8px rgba(0, 0, 0, 0.33)",
             }}
@@ -112,12 +118,13 @@ function TyreJourney({ tyreId, close, tyreNo }) {
                   <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Running Km</td>
                   <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Std Depth</td>
                   <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Avg nsd</td>
+                  <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Remaining</td>
+                  <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">PSI</td>
                   <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Status</td>
                   <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Fresh/Retread</td>
-                  <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Nsd 1</td>
-                  <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Nsd 2</td>
+                    {/* <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Nsd 2</td>
                   <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Nsd 3</td>
-                  <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Nsd 4</td>
+                  <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Nsd 4</td> */}
                 </tr>
               </thead>
               <tbody>
@@ -150,10 +157,16 @@ function TyreJourney({ tyreId, close, tyreNo }) {
                         {entry.km_reading}
                       </td>
                       <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">
-                        {entry.stdDepth || "20"}
+                        {entry.standard_nsd}
                       </td>
                       <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">
-                        {(entry.nsd1 + entry.nsd2 + entry.nsd3 + entry.nsd4) / 4}
+                        {entry.avg_nsd}
+                      </td>
+                      <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">
+                        {Math.floor(100 - ((entry.standard_nsd - entry.avg_nsd)/entry.standard_nsd)*100)}%
+                      </td>
+                      <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">
+                        {entry.psi}
                       </td>
                       <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">
                         {entry.tyre_status}
@@ -161,10 +174,8 @@ function TyreJourney({ tyreId, close, tyreNo }) {
                       <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">
                         {entry.freshRetread || "Fresh"}
                       </td>
-                      <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">
-                        {entry.nsd1}
-                      </td>
-                      <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">
+                       
+                     {/* <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">
                         {entry.nsd2}
                       </td>
                       <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">
@@ -172,7 +183,7 @@ function TyreJourney({ tyreId, close, tyreNo }) {
                       </td>
                       <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">
                         {entry.nsd4}
-                      </td>
+                      </td> */}
                     </tr>
                   ))
                 )}

@@ -7,7 +7,10 @@ import { useSelector } from "react-redux";
 
 function InspectionTyreFitmentDetails({ inspectionId, close, vehicleNo }) {
 
-  const apiKey = useSelector((state)=> state.user.user.data.api_key)
+ // const apiKey = useSelector((state)=> state.user.user.data.api_key)
+
+ const knowUser = JSON.parse(localStorage.getItem("userData"));
+  const apiKey = knowUser.data.api_key
 
   const [tyreFitments, setTyreFitment] = useState([]);
   const [loading, setLoading] = useState(false); // Add loading state

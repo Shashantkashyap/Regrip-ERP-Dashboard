@@ -13,11 +13,9 @@ import "../components/scrollBar.css";
 import { useSelector } from "react-redux";
 
 const InspectionReport = () => {
-
-  const apiKey = useSelector((state)=> state.user.user.data.api_key)
-
-  
-
+ // const apiKey = useSelector((state) => state.user.user.data.api_key);
+ const knowUser = JSON.parse(localStorage.getItem("userData"));
+  const apiKey = knowUser.data.api_key
 
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
@@ -28,6 +26,8 @@ const InspectionReport = () => {
   const [vehicleNumberId, setVehicleNumberId] = useState(null);
   const [showInspectionFilter, setShowInspectionFilter] = useState(false);
   const [filterData, setFilterData] = useState({});
+  const [globalText, setGlobalText] = useState("");
+  const [totalRecords, setTotalRecords] = useState(0);
 
   const noData = (value) => value || "--";
 
@@ -41,29 +41,33 @@ const InspectionReport = () => {
       setError(null);
       try {
         const formData = new FormData();
-        
+        formData.append("text", globalText);
+
         // Append filter data to formData
         Object.keys(filterData).forEach((key) => {
           formData.append(key, filterData[key]);
         });
-  
+
         // Append page to formData
         formData.append("page", currentPage);
-  
+
         const response = await axios.post(
           "https://newstaging.regripindia.com/api/inspection-report-data",
-          formData,  // Send formData, not an object
+          formData,
           {
             headers: {
               "Content-Type": "multipart/form-data",
-              Authorization: apiKey,  // Assuming you have a valid auth token
+              Authorization: apiKey,
             },
           }
         );
-        
+
+        console.log(response)
+
         const responseData = response.data;
-        
+
         setTotalPages(responseData.totalPages);
+        setTotalRecords(responseData.totalRecords)
         setData(responseData.data || []);
       } catch (error) {
         setError("Failed to fetch data. Please try again later.");
@@ -71,12 +75,13 @@ const InspectionReport = () => {
         setLoading(false);
       }
     },
-    [currentPage]  // Make sure this updates when currentPage changes
+    [currentPage, globalText, apiKey]
   );
 
+  // Fetch data when globalText or currentPage changes
   useEffect(() => {
     fetchInspectionReportData();
-  }, [fetchInspectionReportData, currentPage]);
+  }, [fetchInspectionReportData, currentPage, globalText]);
 
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
@@ -88,25 +93,21 @@ const InspectionReport = () => {
     setVehicleNumberId();
   };
 
-  
-
   const handleSubmit = (data) => {
-    
     setFilterData(data);
     handleFilterToggle();
     fetchInspectionReportData(data);
   };
 
-  
-
   const setVehicle = (id) => {
     setVehicleNumberId(id);
-    console.log("Vehicle ID set:", id);
   };
 
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
 
-  
+  console.log(data)
+
   return (
     <div className="p-6 bg-[#F7F7F7] rounded-[50px] overflow-x-auto relative">
       <div className="flex justify-between mb-6">
@@ -120,6 +121,7 @@ const InspectionReport = () => {
               type="text"
               placeholder="Search Vehicle"
               className="outline-none text-sm bg-[#EBEBEB] text-[#949494] font-outfit font-normal text-[19px] leading-[23.94px]"
+              onChange={(e) => setGlobalText(e.target.value)} // Directly update globalText
             />
           </div>
           <span className="p-[3px_4px]">
@@ -156,16 +158,16 @@ const InspectionReport = () => {
           </div>
         )}
 
-{vehicleNumberId && (
-  <>
-    <div className="fixed inset-0 bg-[rgba(0,0,0,0.8)] z-30"></div>
-    <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-40 min-w-[600px] overflow-x-auto">
-      <div className="bg-white w-[80%] max-w-[1145px] h-auto rounded-[28px] shadow-lg min-w-[700px] overflow-x-auto">
-        <InspectionCountDetails close={closeInspection} vehicleId={vehicleNumberId} />
-      </div>
-    </div>
-  </>
-)}
+        {vehicleNumberId && (
+          <>
+            <div className="fixed inset-0 bg-[rgba(0,0,0,0.8)] z-30"></div>
+            <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-40 min-w-[600px] overflow-x-auto">
+              <div className="bg-white w-[80%] max-w-[1145px] h-auto rounded-[28px] shadow-lg min-w-[700px] overflow-x-auto">
+                <InspectionCountDetails close={closeInspection} vehicleId={vehicleNumberId} />
+              </div>
+            </div>
+          </>
+        )}
 
         {/* Loader */}
         {loading ? (
@@ -174,23 +176,21 @@ const InspectionReport = () => {
           </div>
         ) : (
           <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300">
-            <table className="min-w-[100%] w-[120%] font-outfit">
+            <table className="min-w-[100%] w-[100%] font-outfit">
               <thead>
                 <tr className="bg-[#F5F5F5] text-[#727272] font-normal text-[15px] leading-[21.42px]">
                   <td className="text-left p-3">#</td>
                   <td className="text-left p-2">Vehicle No.</td>
-                  {/* <td className="text-left p-2">Trailer No.</td> */}
                   <td className="text-left p-1">Inspection Date</td>
                   <td className="text-left p-1">Branch</td>
-                  
                   <td className="text-left p-3">Prev km</td>
                   <td className="text-left p-3">Curr. km</td>
                   <td className="text-left p-3">Total Insp.</td>
-                  <td className="text-left p-3">Tyre Insp.</td>
-                  <td className="text-left p-3">Driver</td>
-                  <td className="text-left p-3">Mobile No.</td>
+                  {/* <td className="text-left p-3">Tyre Insp.</td> */}
                   <td className="text-left p-3">Inspected By</td>
                   <td className="text-left p-3">Vehicle Status</td>
+                  <td className="text-left p-3">Driver</td>
+                  <td className="text-left p-3">Mobile No.</td>
                 </tr>
               </thead>
               <tbody>
@@ -205,19 +205,19 @@ const InspectionReport = () => {
                     <tr key={index} className="border-b border-[1px] font-normal text-[14px] leading-[21.42px] text-[#333333] border-gray-200">
                       <td className="p-3">{(currentPage - 1) * itemsPerPage + index + 1}</td>
                       <td 
-  className="p-3 text-[#65A948] underline cursor-pointer" 
-  onClick={() => setVehicle(vehicle.id)}
->
-  {noData(vehicle.vehicle_no)}
-</td>
-                      {/* <td className="p-3">{noData(vehicle.trailer_no)}</td> */}
-                      <td className="p-3">{noData(vehicle.last_inspection)}</td>
+                        className="p-3 text-[#65A948] underline cursor-pointer" 
+                        onClick={() => setVehicle(vehicle.id)}
+                      >
+                        {noData(vehicle.vehicle_no)}
+                      </td>
+                     {/* <td className="p-3">{noData(vehicle.trailer_no)}</td> */}
+                     <td className="p-3">{noData(vehicle.last_inspection)}</td>
                       <td className="p-3">{noData(vehicle.city)}</td>
                       
                       <td className="p-3">{noData(vehicle.prev_km)}</td>
                       <td className="p-3">{noData(vehicle.curr_km)}</td>
-                      <td className="p-3">{noData(vehicle.inspection_count)}</td>
-                      <td className="p-3">{noData(vehicle.inspection_tyre_count)}</td>
+                      <td className="p-3 px-8">{noData(vehicle.inspection_count)}</td>
+                      {/* <td className="p-3">{noData(vehicle.inspection_tyre_count)}</td> */}
                       <td className="p-3">{noData(vehicle.driver_name)}</td>
                       <td className="p-3">{noData(vehicle.driver_contact)}</td>
                       <td className="p-3">{noData(vehicle.service_er)}</td>
@@ -230,11 +230,11 @@ const InspectionReport = () => {
           </div>
         )}
 
-        {/* Pagination controls */}
+        {/* Pagination */}
         <div className="flex justify-between items-center mt-4 px-4 py-2 bg-[#F7F7F7] rounded-b-lg">
           <p className="text-[14px] font-outfit font-normal leading-[22.4px] text-[#4E4F54]">
-            Showing {(currentPage - 1) * itemsPerPage + 1}-
-            {Math.min(currentPage * itemsPerPage, data.length)} of {totalPages * itemsPerPage} items
+            Showing {(currentPage - 1) * 10 + 1}-
+            {Math.min(currentPage * 10, totalRecords)} of {totalRecords} items
           </p>
           <div className="flex items-center gap-4">
             <div>
@@ -243,14 +243,14 @@ const InspectionReport = () => {
                 onChange={(e) => handlePageChange(Number(e.target.value))}
                 className="px-1 py-1 rounded-md border-[1px] border-gray-300"
               >
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                {pageNumbers.map((page) => (
                   <option key={page} value={page}>
                     Page {page}
                   </option>
                 ))}
               </select>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 ">
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}

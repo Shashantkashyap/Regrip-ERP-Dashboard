@@ -9,12 +9,13 @@ import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { useSelector } from "react-redux";
 
 function Inventory() {
-
-  const apiKey = useSelector((state)=> state.user.user.data.api_key)
+  // const apiKey = useSelector((state)=> state.user.user.data.api_key)
+  const knowUser = JSON.parse(localStorage.getItem("userData"));
+  const apiKey = knowUser.data.api_key;
 
   const url = "https://api.regripindia.com/api";
   const [isOnwheelTyres, setIsOnwheelTyres] = useState(true);
-  const [extraBody, setExtraBody] = useState(null)
+  const [extraBody, setExtraBody] = useState(null);
   const [tyreSummary, SetTyreSummary] = useState({
     data: [],
     tyre_depth_data: [],
@@ -48,12 +49,7 @@ function Inventory() {
 
   const fetchTyreData = async () => {
     try {
-
       const formData = new FormData();
-
-      tyreBody.tyre_depth && (
-        form
-      )
 
       const response = await axios.post(`${url}/tyre-list`, tyreBody, {
         headers: {
@@ -65,15 +61,15 @@ function Inventory() {
       const totalItems = response.data.total_tyres;
       const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-      console.log(response)
-      setTyreData(response.data.data);
+      console.log(response);
+      setTyreData(response.data.data || []);
       setTotalPages(totalPages);
     } catch (error) {
       console.error("Error fetching tyre Data:", error);
     }
   };
 
-  console.log(tyreSummary)
+  console.log(tyreSummary);
 
   useEffect(() => {
     fetchTyreSummary();
@@ -84,13 +80,16 @@ function Inventory() {
     setCurrentPage(page);
   };
 
-  console.log(tyreBody)
-  console.log(tyreData)
+  console.log(tyreBody);
+  console.log(tyreData);
 
-  const displayedData = tyreData !== undefined ? tyreData.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  ) : []  ;
+  const displayedData =
+    tyreData !== undefined
+      ? tyreData.slice(
+          (currentPage - 1) * itemsPerPage,
+          currentPage * itemsPerPage
+        )
+      : [];
 
   const stockData = {
     totalStock: tyreSummary.data[0]?.total || 0,
@@ -143,19 +142,19 @@ function Inventory() {
         count: tyreSummary.tyre_depth_data[0]?.total || 0,
         range: "0-4 mm",
         tyre_depth: "0-4",
-        current_status: "On-Wheel"
+        current_status: "On-Wheel",
       },
       {
         count: tyreSummary.tyre_depth_data[1]?.total || 0,
         range: "4-8 mm",
         tyre_depth: "4-8",
-        current_status: "On-Wheel"
+        current_status: "On-Wheel",
       },
       {
         count: tyreSummary.tyre_depth_data[2]?.total || 0,
         range: "8-12 mm",
         tyre_depth: "8-12",
-        current_status: "On-Wheel"
+        current_status: "On-Wheel",
       },
       // { count: tyreSummary.tyre_depth_data[3]?.total || 0, range: "12-16 mm" },
       // { count: tyreSummary.tyre_depth_data[4]?.total || 0, range: "16-20 mm" },
@@ -163,22 +162,31 @@ function Inventory() {
     ],
     otherTyres: [
       {
-        count:    tyreSummary.depth_summary_data_others &&   tyreSummary.depth_summary_data_others[0]?.total || 0,
+        count:
+          (tyreSummary.depth_summary_data_others &&
+            tyreSummary.depth_summary_data_others[0]?.total) ||
+          0,
         range: "0-4 mm",
         tyre_depth: "0-4",
-        current_status: "other"
+        current_status: "other",
       },
       {
-        count: tyreSummary.depth_summary_data_others &&  tyreSummary.depth_summary_data_others[1]?.total || 0,
+        count:
+          (tyreSummary.depth_summary_data_others &&
+            tyreSummary.depth_summary_data_others[1]?.total) ||
+          0,
         range: "4-8 mm",
         tyre_depth: "4-8",
-        current_status: "other"
+        current_status: "other",
       },
       {
-        count: tyreSummary.depth_summary_data_others &&  tyreSummary.depth_summary_data_others[2]?.total || 0,
+        count:
+          (tyreSummary.depth_summary_data_others &&
+            tyreSummary.depth_summary_data_others[2]?.total) ||
+          0,
         range: "8-12 mm",
         tyre_depth: "8-12",
-        current_status: "other"
+        current_status: "other",
       },
       // { count: tyreSummary.depth_summary_data_others &&   tyreSummary.depth_summary_data_others[3]?.total || 0, range: "12-16 mm" },
       // { count: tyreSummary.depth_summary_data_others &&  tyreSummary.depth_summary_data_others[4]?.total || 0, range: "16-20 mm" },
@@ -201,27 +209,26 @@ function Inventory() {
     {
       count: tyreSummary.data[12]?.total || 0,
       label: "Missing",
-      ongoing_status: "Missing"
+      ongoing_status: "Missing",
     },
   ];
 
   const onWheelData = [
     {
-      count: tyreSummary.onwheel_tyres_data[2]?.total || 0,
+      count: tyreSummary.onwheel_tyres_data[0]?.total || 0,
       label: "New Tyres",
-      current_Status: "On-Wheel",
-      product_category: "fresh"
+      current_status: "On-Wheel",
+      product_category: "fresh",
     },
     {
       count: tyreSummary.onwheel_tyres_data[1]?.total || 0,
       label: "Retreaded Tyres",
       current_status: "On-Wheel",
-      product_category: "rtd"
+      product_category: "rtd",
     },
   ];
 
-  console.log(tyreBody)
-  
+  console.log(tyreBody);
 
   return (
     <div className="p-6 bg-[#F7F7F7] rounded-[50px] overflow-x-auto relative">
@@ -238,7 +245,7 @@ function Inventory() {
             />
             <input
               type="text"
-              placeholder="Search Vehicle"
+              placeholder="Search Vehicle/Tyre"
               className="outline-none text-sm bg-[#EBEBEB] text-[#949494] font-outfit font-normal text-[19px] leading-[23.94px]"
             />
           </div>
@@ -258,13 +265,13 @@ function Inventory() {
             <Loading />
           </div>
         ) : (
-          <div className="flex gap-5">
+          <div className="flex gap-5 max-md:flex-col">
             {/* Left Side */}
-            <div className="flex flex-col gap-5 w-[30%] font-outfit">
+            <div className="flex flex-col gap-2 w-[30%] min-w-[30%] max-lg:w-[50%] max-md:w-[110%] font-outfit max-md:grid max-md:grid-cols-3 max-md:flex-wrap">
               {/* Total Stock */}
               <div
-                className="flex justify-between items-center px-2 cursor-pointer"
-                onClick={() => setTyreBody({stock_status : "total"})}
+                className="flex justify-between max-md:justify-evenly items-center px-2 cursor-pointer"
+                onClick={() => setTyreBody({ stock_status: "total" })}
               >
                 <p className="font-semibold text-[28px] leading-[36px] text-[#232323]">
                   Total Stock
@@ -288,7 +295,7 @@ function Inventory() {
                   {stockData?.availableDetails?.map((item, index) => (
                     <div
                       key={index}
-                      className="flex flex-col gap-0 bg-[#F8F8F8] p-[11px_25px_11px_12px] rounded-[10px] w-[49%] cursor-pointer"
+                      className="flex flex-col gap-0 bg-[#F8F8F8] p-[11px_25px_11px_12px] rounded-[10px] w-[49%] max-md:w-[48%] cursor-pointer"
                       onClick={() =>
                         setTyreBody({ current_status: item.current_status })
                       }
@@ -305,20 +312,20 @@ function Inventory() {
               </div>
 
               {/* Utilized Stock */}
-              <div className="border-[1px] p-3 bg-white rounded-[17px] flex flex-col gap-3 w-full">
+              <div className="border-[1px] p-3 bg-white rounded-[17px] flex flex-col gap-3 w-[100%]">
                 <div className="flex items-center justify-between">
                   <p className="font-medium text-[22px] leading-[27.72px] text-[#232323]">
                     Utilized Stock
                   </p>
                   <p className="font-semibold text-[22px] leading-[27.72px] text-[#66A847]">
-                    {stockData?.utilizedStock || 0}
+                    {/* {stockData?.utilizedStock || 0} */}
                   </p>
                 </div>
-                <div className="flex w-full justify-between gap-1">
+                <div className="flex flex-wrap w-full justify-between gap-1">
                   {stockData?.utilizedDetails?.map((item, index) => (
                     <div
                       key={index}
-                      className="flex flex-col bg-[#F8F8F8] p-[11px_25px_11px_12px] rounded-[10px] w-[32%] cursor-pointer"
+                      className="flex flex-col bg-[#F8F8F8] p-[11px_25px_11px_12px] rounded-[10px] w-[32%] max-md:w-full cursor-pointer"
                       onClick={() => {
                         if (item.current_status) {
                           setTyreBody({ current_status: item.current_status });
@@ -385,7 +392,7 @@ function Inventory() {
                     }`}
                     onClick={() => setIsOnwheelTyres(true)}
                   >
-                    Onwheel Tyres
+                    On-Wheel 
                   </button>
                   <button
                     className={`text-[13px] font-semibold pb-2 ${
@@ -395,18 +402,21 @@ function Inventory() {
                     }`}
                     onClick={() => setIsOnwheelTyres(false)}
                   >
-                    Other Tyres
+                    Others
                   </button>
                 </div>
 
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-3 gap-1">
                   {isOnwheelTyres
                     ? tyreDepthData?.onwheelTyres?.map((item, index) => (
                         <div
                           key={index}
-                          className="bg-[#F8F8F8] p-[11px_25px_11px_12px] rounded-md text-center cursor-pointer"
+                          className="bg-[#F8F8F8] p-[11px_15px_11px_12px] rounded-md text-center cursor-pointer"
                           onClick={() =>
-                            setTyreBody({ tyre_depth: item.tyre_depth })
+                            setTyreBody({
+                              tyre_depth: item.tyre_depth,
+                              current_status: item.current_status,
+                            })
                           }
                         >
                           <p className="text-[#66A847] font-bold text-[20px]">
@@ -417,19 +427,25 @@ function Inventory() {
                           </p>
                         </div>
                       ))
-                     : tyreDepthData?.otherTyres?.map((item, index) => (
-                     
-                      <div
-                        key={index}
-                        className="bg-[#F8F8F8] p-[11px_25px_11px_12px] rounded-md text-center cursor-pointer"
-                        onClick={() =>
-                          setTyreBody({ tyre_depth: item.tyre_depth})
-                        }
-                      >
-                        <p className="text-[#66A847] font-bold text-[20px]">{item.count}</p>
-                        <p className="text-[#404040] font-normal text-[13px]">{item.range}</p> {/* Corrected */}
-                      </div>
-                    ))}
+                    : tyreDepthData?.otherTyres?.map((item, index) => (
+                        <div
+                          key={index}
+                          className="bg-[#F8F8F8] p-[11px_15px_11px_12px] rounded-md text-center cursor-pointer"
+                          onClick={() =>
+                            setTyreBody({
+                              tyre_depth: item.tyre_depth,
+                              current_status: item.current_status,
+                            })
+                          }
+                        >
+                          <p className="text-[#66A847] font-bold text-[20px]">
+                            {item.count}
+                          </p>
+                          <p className="text-[#404040] font-normal text-[13px]">
+                            {item.range}
+                          </p>
+                        </div>
+                      ))}
                 </div>
               </div>
 
@@ -444,7 +460,10 @@ function Inventory() {
                       key={index}
                       className="bg-[#F8F8F8] p-[11px_25px_11px_12px] rounded-md text-center cursor-pointer"
                       onClick={() =>
-                        setTyreBody({ current_status: item.current_status })
+                        setTyreBody({
+                          current_status: item.current_status,
+                          product_category: item.product_category,
+                        })
                       }
                     >
                       <p className="text-[#66A847] font-bold text-[20px]">
@@ -461,38 +480,43 @@ function Inventory() {
 
             {/* Right Side */}
             <div
-              className="bg-white min-w-[69%] overflow-x-auto h-[700px] flex flex-col rounded-[20px] pt-5 relative"
+              className="bg-white min-w-[110%] overflow-x-auto h-[700px] flex flex-col rounded-[20px] pt-5 relative"
               style={{ boxShadow: "2px 2px 15px 0px rgba(0, 0, 0, 0.09)" }}
             >
               <div>
                 <div className="flex justify-between mb-2">
                   <div className="font-semibold text-[23px] text-[#232323] ml-6">
-                  {tyreBody && (
-    <>
-      {tyreBody.current_status
-        ? `${tyreBody.current_status} Tyres`
-        : tyreBody.tyre_condition
-        ? `${tyreBody.tyre_condition} Tyres`
-        : tyreBody.tyre_depth
-        ? `Tyres with ${tyreBody.tyre_depth} mm Depth`
-        : 'Total Tyres'}
-    </>
-  )}
-                    
+                    {/* Check for tyreBody and render conditionally */}
+                    {tyreBody
+                      ? // Start of conditional block
+                        tyreBody.current_status
+                        ? `${tyreBody.current_status} Tyres`
+                        : tyreBody.tyre_condition
+                        ? `${tyreBody.tyre_condition} Tyres`
+                        :  tyreBody.tyre_depth
+                        ? `Tyres with ${tyreBody.tyre_depth} mm Depth`
+                        : tyreBody.ongoing_status && !tyreBody.tyre_depth
+                        ? `${tyreBody.ongoing_status} Tyres`
+                        : "Total Tyres"
+                      : "Total Tyres" // If tyreBody is null or undefined
+                    }
                   </div>
 
                   <div className="flex gap-4 items-center mr-5">
-                    {/* <div className="flex items-center gap-1">
-                      <span className="mr-2">
-                        <IoFilter fontSize={23} className="cursor-pointer" />
-                      </span>
-                      <p className="text-[15px] font-medium">Filter</p>
-                    </div> */}
+                    {/* Filter and Download buttons */}
+                    {/* 
+      <div className="flex items-center gap-1">
+        <span className="mr-2">
+          <IoFilter fontSize={23} className="cursor-pointer" />
+        </span>
+        <p className="text-[15px] font-medium">Filter</p>
+      </div>
+      */}
                     <button className="p-[5px_15px_10px_15px] text-center rounded-[10px] text-[16px] flex gap-1 items-center border-[1px]">
                       <span>
                         <PiExportBold />
                       </span>
-                      <p>Export</p>
+                      <p>Download</p>
                     </button>
                   </div>
                 </div>
@@ -529,7 +553,16 @@ function Inventory() {
                         <td className="p-3">{item.model_name}</td>
                         <td className="p-3">{item.product_category}</td>
                         <td className="p-3">{item.current_status}</td>
-                        <td className="p-3">{item.ongoing_status !== "" ? item.ongoing_status : (<img src="https://media.istockphoto.com/id/1133442802/vector/green-checkmark-vector-illustration.jpg?s=612x612&w=0&k=20&c=NqyVOdwANKlbJNqbXjTvEp2wIZWUKbfUbRxm9ROPk6M=" width={25}></img>)}</td>
+                        <td className="p-3">
+                          {item.ongoing_status !== "" ? (
+                            item.ongoing_status
+                          ) : (
+                            <img
+                              src="https://media.istockphoto.com/id/1133442802/vector/green-checkmark-vector-illustration.jpg?s=612x612&w=0&k=20&c=NqyVOdwANKlbJNqbXjTvEp2wIZWUKbfUbRxm9ROPk6M="
+                              width={25}
+                            ></img>
+                          )}
+                        </td>
                       </tr>
                     ))}
                   </tbody>

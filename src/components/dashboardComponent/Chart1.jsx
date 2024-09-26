@@ -13,7 +13,10 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 const Chart1 = () => {
 
-  const apiKey = useSelector((state)=> state.user.user.data.api_key)
+  //const apiKey = useSelector((state)=> state.user.user.data.api_key)
+
+  const knowUser = JSON.parse(localStorage.getItem("userData"));
+  const apiKey = knowUser.data.api_key
 
   const [dateRange, setDateRange] = useState({ startDate: addMonths(new Date(), -3), endDate: new Date() });
   const [customDateRange, setCustomDateRange] = useState({ startDate: null, endDate: null });
@@ -248,6 +251,9 @@ const Chart1 = () => {
               className="animated-calendar"
             />
           </div>
+
+
+           
         )}
       </div>
     </div>

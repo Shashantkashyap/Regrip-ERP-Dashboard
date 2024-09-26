@@ -18,6 +18,10 @@ import {
 import ImageModal from "../components/mechanicalDefectComponent/ImageModal";
 
 const MechanicalDefectsReport = () => {
+
+  const knowUser = JSON.parse(localStorage.getItem("userData"));
+  const apiKey = knowUser.data.api_key
+
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -29,6 +33,7 @@ const MechanicalDefectsReport = () => {
   const [filterData, setFilterData] = useState({});
   const [selectedImage, setSelectedImage] = useState(null); // State to store selected image URL
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal open/close state
+  const [searchText, setSearchText] = useState(""); // State to store search input
 
   const noData = (value) => value || "--";
 
@@ -50,6 +55,9 @@ const MechanicalDefectsReport = () => {
       setError(null);
       try {
         const formData = new FormData();
+        if (searchText.trim()) {
+          formData.append("text", searchText);
+        }
 
         // Append filter data to formData
         Object.keys(filterData).forEach((key) => {
@@ -65,7 +73,7 @@ const MechanicalDefectsReport = () => {
           {
             headers: {
               "Content-Type": "multipart/form-data",
-              Authorization: "google", // Assuming you have a valid auth token
+              Authorization: apiKey, // Assuming you have a valid auth token
             },
           }
         );
@@ -82,7 +90,7 @@ const MechanicalDefectsReport = () => {
         setLoading(false);
       }
     },
-    [currentPage] // Make sure this updates when currentPage changes
+    [currentPage, searchText] // Make sure this updates when currentPage changes
   );
 
   const getPriorityClasses = (priority) => {
@@ -126,6 +134,10 @@ const MechanicalDefectsReport = () => {
     setIsModalOpen(true);
   };
 
+  const handleSearchChange = (e) => {
+    setSearchText(e.target.value);
+  };
+
   return (
     <div className="p-6 bg-[#F7F7F7] rounded-[50px] overflow-x-auto relative">
        {isModalOpen && (
@@ -149,6 +161,7 @@ const MechanicalDefectsReport = () => {
               type="text"
               placeholder="Search Vehicle"
               className="outline-none text-sm bg-[#EBEBEB] text-[#949494] font-outfit font-normal text-[19px] leading-[23.94px]"
+              onChange={handleSearchChange}
             />
           </div>
           <span className="p-[3px_4px]">
@@ -227,10 +240,19 @@ const MechanicalDefectsReport = () => {
                     Position
                   </td>
                   <td className="text-left whitespace-nowrap px-4 p-3">
+                    Priority
+                  </td>
+                  <td className="text-left whitespace-nowrap px-4 p-3">
+                    Image
+                  </td>
+                  <td className="text-left whitespace-nowrap px-4 p-3">
                     Mechanic Name
                   </td>
                   <td className="text-left whitespace-nowrap px-4 p-3">
                     Mechanic Assigned Date
+                  </td>
+                  <td className="text-left whitespace-nowrap px-4 p-3">
+                    Pending Ageing(Days)
                   </td>
                   <td className="text-left whitespace-nowrap px-4 p-3">
                     Status
@@ -241,15 +263,9 @@ const MechanicalDefectsReport = () => {
                   <td className="text-left whitespace-nowrap px-4 p-3">
                     Delay Days.
                   </td>
-                  <td className="text-left whitespace-nowrap px-4 p-3">
-                    Pending Ageing(Days)
-                  </td>
-                  <td className="text-left whitespace-nowrap px-4 p-3">
-                    Priority
-                  </td>
-                  <td className="text-left whitespace-nowrap px-4 p-3">
-                    Image
-                  </td>
+                  
+                  
+                  
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-[#f4f4f4]">
@@ -282,28 +298,9 @@ const MechanicalDefectsReport = () => {
                       <td className="p-3 px-4 whitespace-nowrap">
                         {noData(vehicle.defect_name)}
                       </td>
+
                       <td className="p-3 px-4 whitespace-nowrap">
                         {noData(vehicle.position)}
-                      </td>
-                      <td className="p-3 px-4 whitespace-nowrap">
-                        {noData(vehicle.mechanic_name)}
-                      </td>
-                      <td className="p-3 px-4 whitespace-nowrap">
-                        {vehicle.mechanic_assigned_date
-                          ? formatCustomDate(vehicle.mechanic_assigned_date)
-                          : "No Date"}
-                      </td>
-                      <td className="p-3 px-4 whitespace-nowrap">
-                        {noData(vehicle.status)}
-                      </td>
-                      <td className="p-3 px-4 whitespace-nowrap">
-                        {noData(vehicle.action_days)}
-                      </td>
-                      <td className="p-3 px-4 whitespace-nowrap">
-                        {noData(vehicle.delay_days)}
-                      </td>
-                      <td className="p-3 px-4 whitespace-nowrap">
-                        {noData(vehicle.pending_aging_days)}
                       </td>
                       <td
                         className={`text-left whitespace-nowrap p-2 px-3 flex items-center justify-center rounded-md ${getPriorityClasses(
@@ -312,7 +309,6 @@ const MechanicalDefectsReport = () => {
                       >
                         {noData(vehicle.priority)}
                       </td>
-
                       <td
                         onClick={() => handleImageClick(vehicle.image_url)} // Pass image URL to handleImageClick
                         className="p-3 px-4 cursor-pointer whitespace-nowrap"
@@ -323,6 +319,30 @@ const MechanicalDefectsReport = () => {
                           alt="Vehicle"
                         />
                       </td>
+                      <td className="p-3 px-4 whitespace-nowrap">
+                        {noData(vehicle.mechanic_name)}
+                      </td>
+                      <td className="p-3 px-4 whitespace-nowrap">
+                        {vehicle.mechanic_assigned_date
+                          ? formatCustomDate(vehicle.mechanic_assigned_date)
+                          : "No Date"}
+                      </td>
+                      <td className="p-3 px-4 whitespace-nowrap">
+                        {noData(vehicle.pending_aging_days)}
+                      </td>
+                      <td className="p-3 px-4 whitespace-nowrap">
+                        {noData(vehicle.status)}
+                      </td>
+                      <td className="p-3 px-4 whitespace-nowrap">
+                        {noData(vehicle.action_days)}
+                      </td>
+                      <td className="p-3 px-4 whitespace-nowrap">
+                        {noData(vehicle.delay_days)}
+                      </td>
+                     
+                      
+
+                      
                     </tr>
                   ))
                 )}

@@ -12,12 +12,15 @@ import axios from "axios";
 import Loader from "./common/Loader";
 import DasboardPopup, { clearTableFilter, selectIsFilterEmpty, setTableFilter } from "../redux/Slices/DasboardPopup";
 import PopupComponent from "./dashboardComponent/PopupComponent";
-import { setActiveMenuItem } from "../redux/Slices/menuSlice.js";
+import { setActiveDropdownItem, setActiveMenuItem } from "../redux/Slices/menuSlice.js";
 
 
 function DashboardMain() {
 
-  const apiKey = useSelector((state)=> state.user.user.data.api_key)
+  //const apiKey = useSelector((state)=> state.user.user.data.api_key)
+
+  const knowUser = JSON.parse(localStorage.getItem("userData"));
+  const apiKey = knowUser.data.api_key
 
  
 
@@ -46,7 +49,24 @@ const filterTab = useSelector((state) => state.dashboardTableFilter.tableFilter)
       } else if (filterTab.hasOwnProperty("totalT")) {
         
         dispatch(setActiveMenuItem(3));
-      } else if (filterTab.hasOwnProperty("current_status") || filterTab.hasOwnProperty("ongoing_status") || filterTab.hasOwnProperty("stock_status")){
+      }else if (filterTab.hasOwnProperty("LowNsd")) {
+        
+        dispatch(setActiveMenuItem(5));
+        dispatch(setActiveDropdownItem("Low NSD"))
+      }else if (filterTab.hasOwnProperty("PendingI")) {
+        
+        dispatch(setActiveMenuItem(5));
+        dispatch(setActiveDropdownItem("Pending Reports"))
+      }else if (filterTab.hasOwnProperty("PendingA")) {
+        
+        dispatch(setActiveMenuItem(5));
+        dispatch(setActiveDropdownItem("Pending Reports"))
+      }else if (filterTab.hasOwnProperty("PendingR")) {
+        
+        dispatch(setActiveMenuItem(5));
+        dispatch(setActiveDropdownItem("Pending Reports"))
+      }
+       else if (filterTab.hasOwnProperty("current_status") || filterTab.hasOwnProperty("ongoing_status") || filterTab.hasOwnProperty("stock_status")){
         setShowPopup(true)
       }
     } else {
@@ -139,12 +159,12 @@ const filterTab = useSelector((state) => state.dashboardTableFilter.tableFilter)
   }, [selectedTable]);
 
   const alertItems = [
-    { label: "Unidentified Tyre", value: alert?.[0]?.value ?? 0, color: "bg-[#DA4040]" , },
-    { label: "Missing Tyre", value: alert?.[1]?.value ?? 0, color: "bg-[#DA4040]" },
-    { label: "Low NSD", value: alert?.[2]?.value ?? 0, color: "bg-[#DA4040]" },
-    { label: "Pending Inspection", value: alert?.[3]?.value ?? 0, color: "bg-[#DA4040]" },
-    { label: "Pending Alignment", value: alert?.[4]?.value ?? 0, color: "bg-[#DA4040]" },
-    { label: "Pending Rotations", value: alert?.[5]?.value ?? 0, color: "bg-[#DA4040]" },
+    { label: "Unidentified Tyre", value: alert?.[0]?.value ?? 0, color: "bg-[#DA4040]" , key : "ongoing_status", value2: "Unidentified"},
+    { label: "Missing Tyre", value: alert?.[1]?.value ?? 0, color: "bg-[#DA4040]" ,key : "ongoing_status", value2: "Missing"},
+    { label: "Low NSD", value: alert?.[2]?.value ?? 0, color: "bg-[#DA4040]" , key :"LowNsd", value2: "" },
+    { label: "Pending Inspection", value: alert?.[3]?.value ?? 0, color: "bg-[#DA4040]" , key :"PendingI", value2: "" },
+    { label: "Pending Alignment", value: alert?.[4]?.value ?? 0, color: "bg-[#DA4040]" , key :"PendingA", value2: "" },
+    { label: "Pending Rotations", value: alert?.[5]?.value ?? 0, color: "bg-[#DA4040]" , key :"PendingR", value2: "" },
     { label: "Tyre Defects", value: alert?.[6]?.value ?? 0, color: "bg-[#DA4040]" },
   ];
 

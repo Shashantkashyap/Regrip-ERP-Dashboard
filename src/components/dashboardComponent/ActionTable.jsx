@@ -7,7 +7,9 @@ import { toast } from 'react-hot-toast';
 
 const ActionTable = () => {
 
-  const apiKey = useSelector((state)=> state.user.user.data.api_key)
+  //const apiKey = useSelector((state)=> state.user.user.data.api_key)
+  const knowUser = JSON.parse(localStorage.getItem("userData"));
+  const apiKey = knowUser.data.api_key
 
 
   const url = "https://newstaging.regripindia.com/api";

@@ -14,34 +14,32 @@ import { useDispatch, useSelector } from "react-redux";
 import { resetFormData } from "../redux/Slices/masterFilterSlice";
 import "../components/scrollBar.css";
 
-
 function MasterScreen() {
   const formData = useSelector((state) => state.filter.formData);
-  const apiKey = useSelector((state)=> state.user.user.data.api_key)
+ // const apiKey = useSelector((state) => state.user.user.data.api_key);
+ const knowUser = JSON.parse(localStorage.getItem("userData"));
+  const apiKey = knowUser.data.api_key
 
   const url = "https://newstaging.regripindia.com/api";
 
   const [vehicles, setVehicles] = useState([]);
-  let [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
-  const [ isFilterVisible, setIsFilterVisible] = useState(false);
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [vehicleTyre, setVehicleTyre] = useState();
   const [addVehicle, setAddVehicle] = useState(false);
-  const [filterData, setFilterData] = useState({}); // Store filter data here
+  const [filterData, setFilterData] = useState({});
   const [vehicleId, setVehicleId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchText, setSearchText] = useState(""); // State to store search input
 
   const dispatch = useDispatch();
 
   const handleSubmit = (data) => {
-    
-    setFilterData(data); // Set filter data
-    handleFilterToggle(); // Hide the filter sidebar
-
-    fetchVehicleMasterData(data); // Fetch data with new filters
-    console.log();
-    // Reset form data after submission
+    setFilterData(data);
+    handleFilterToggle();
+    fetchVehicleMasterData(data);
     setFilterData({});
     dispatch(resetFormData());
   };
@@ -50,9 +48,10 @@ function MasterScreen() {
     setSidebarVisible(false);
   };
 
-  const handlePageChange = (page) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
+  const handlePageChange = (newPage) => {
+    console.log(newPage)
+    if (newPage > 0 && newPage <= totalPages) {
+      setCurrentPage(newPage);
     }
   };
 
@@ -68,17 +67,24 @@ function MasterScreen() {
     setVehicleId(null);
   };
 
-  const fetchVehicleMasterData = async (filterData) => {
-    setIsLoading(true); // Start loading
+  // Fetch data with pagination, filters, and search
+  const fetchVehicleMasterData = async (filterData = {}) => {
+    setIsLoading(true);
     try {
       const formData = new FormData();
 
-      filterData !== undefined &&
-        Object.keys(filterData).forEach((key) => {
-          formData.append(key, filterData[key]);
-        });
+      // Add search text to formData if it exists
+      if (searchText.trim()) {
+        formData.append("text", searchText);
+      }
 
-        formData.append("page", currentPage)
+      // Append other filter data if available
+      Object.keys(filterData).forEach((key) => {
+        formData.append(key, filterData[key]);
+      });
+
+      // Append pagination data
+      formData.append("page", currentPage);
 
       const vehicleData = await axios.post(
         `${url}/vehicle-master-details`,
@@ -99,21 +105,26 @@ function MasterScreen() {
     } catch (error) {
       console.error("Error fetching vehicle data:", error);
     } finally {
-      setIsLoading(false); // Stop loading
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
     fetchVehicleMasterData();
-  }, [currentPage]);
+  }, [currentPage, searchText]); // Trigger fetch on page or search text change
 
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
-  console.log(vehicles)
+  const setVehicle = (id) => {
+    setVehicleId(id);
+  };
 
-  const setVehicle = (id)=>{
-    setVehicleId(id)
-  }
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    setSearchText(e.target.value);
+  };
+
+  console.log(currentPage)
 
   return (
     <div className="p-6 bg-[#F7F7F7] rounded-[50px] overflow-x-auto relative">
@@ -132,6 +143,8 @@ function MasterScreen() {
               type="text"
               placeholder="Search Vehicle"
               className="outline-none text-sm bg-[#EBEBEB] text-[#949494] font-outfit font-normal text-[19px] leading-[23.94px]"
+              value={searchText} // Bind search input
+              onChange={handleSearchChange} // Trigger search on change
             />
           </div>
           <span className="p-[3px_4px]">
@@ -149,20 +162,6 @@ function MasterScreen() {
         style={{ boxShadow: "2px 2px 15px 0px rgba(0, 0, 0, 0.09)" }}
       >
         <div className="flex justify-end">
-          {/* <div className="flex w-[392px] max-lg:w-[30%] mx-[30px] mb-4 bg-[#F6F6F6] rounded-[37px] p-[9px_24px] items-center gap-[7px]">
-            <img
-              src={search}
-              alt="search icon"
-              className="w-6 h-6 bg-[#F6F6F6] text-[#949494]"
-            />
-            <input
-              type="text"
-              placeholder="Search"
-              className="outline-none text-sm bg-[#F6F6F6] w-full text-[#949494] font-outfit font-normal text-[19px] leading-[23.94px]"
-              onChange={(e)=> setVehicleNo(e.target.value)}
-            />
-          </div> */}
-
           <div className="flex gap-4 items-center mr-5 ">
             <span className="mr-2">
               <IoFilter
@@ -189,35 +188,31 @@ function MasterScreen() {
           </div>
         </div>
 
-        {/* Background Overlay */}
-        {addVehicle && (
-          <div className="fixed inset-0 bg-[rgba(0,0,0,0.8)] z-30"></div>
-        )}
-
         {/* AddVehicle Component */}
         {addVehicle && (
-          <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-40 min-w-[600px] overflow-x-auto">
-            <div className="bg-white w-[80%] max-w-[1145px] h-auto rounded-[28px] shadow-lg min-w-[700px] overflow-x-auto">
-              <AddVehicle close={closeAddComponent} />
+          <>
+            <div className="fixed inset-0 bg-[rgba(0,0,0,0.8)] z-30"></div>
+            <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-40 min-w-[600px] overflow-x-auto">
+              <div className="bg-white w-[80%] max-w-[1145px] h-auto rounded-[28px] shadow-lg min-w-[700px] overflow-x-auto">
+                <AddVehicle close={closeAddComponent} />
+              </div>
             </div>
-          </div>
+          </>
         )}
 
-      
+        {/* TyreFitment Component */}
+        {vehicleId !== null && (
+          <>
+            <div className="fixed inset-0 bg-[rgba(0,0,0,0.9)] z-30"></div>
+            <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-40 min-w-[600px] overflow-x-auto">
+              <div className="bg-white w-[80%] max-w-[1145px] max-h-[700px] rounded-[28px] shadow-lg min-w-[700px] overflow-x-auto">
+                <TyreFitment close={closeTyreComponent} vehicle={vehicleId} />
+              </div>
+            </div>
+          </>
+        )}
 
-{vehicleId !== null && (
-  <>
-    <div className="fixed inset-0 bg-[rgba(0,0,0,0.8)] z-30"></div>
-    <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-40 min-w-[600px] overflow-x-auto">
-      <div className="bg-white w-[80%] max-w-[1145px] max-h-[700px] rounded-[28px] shadow-lg min-w-[700px] overflow-x-auto">
-        <TyreFitment close={closeTyreComponent} vehicle={vehicleId} />
-      </div>
-    </div>
-  </>
-)}
-
-        {/* Loader */}
-        {isLoading ? (
+{isLoading ? (
           <div className="absolute inset-0 flex items-center justify-center">
             <Loader />
           </div>
@@ -291,7 +286,7 @@ function MasterScreen() {
                 <MdKeyboardArrowLeft />
               </button>
               <button
-                onClick={() => handlePageChange(++currentPage)}
+                onClick={() => handlePageChange(Number(currentPage) + 1)}
                 disabled={currentPage === totalPages}
                 className="bg-gray-300 p-2 rounded-md text-white hover:bg-green-600 cursor-pointer"
               >

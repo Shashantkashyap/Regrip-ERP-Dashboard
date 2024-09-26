@@ -79,7 +79,7 @@ function SidebarIcons() {
 
   const reportsDropdownItems = [
     "Inspection",
-    "Pending Insp.",
+    "Pending Reports",
     "Low NSD",
     "Hub-Mismatch",
     "Mechanical Defect",

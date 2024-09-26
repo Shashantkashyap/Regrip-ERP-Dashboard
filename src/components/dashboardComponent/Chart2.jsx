@@ -18,7 +18,10 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 const Chart2 = () => {
 
-  const apiKey = useSelector((state)=> state.user.user.data.api_key)
+ // const apiKey = useSelector((state)=> state.user.user.data.api_key)
+
+ const knowUser = JSON.parse(localStorage.getItem("userData"));
+  const apiKey = knowUser.data.api_key
 
   const [dateRange, setDateRange] = useState({
     startDate: addMonths(new Date(), -2),

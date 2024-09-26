@@ -6,7 +6,9 @@ import { useDispatch, useSelector } from 'react-redux';
 
 function PopupComponent({ close }) {
 
-  const apiKey = useSelector((state)=> state.user.user.data.api_key)
+ // const apiKey = useSelector((state)=> state.user.user.data.api_key)
+ const knowUser = JSON.parse(localStorage.getItem("userData"));
+  const apiKey = knowUser.data.api_key
 
   const url = "https://api.regripindia.com/api";
   const [tyreData, setTyreData] = useState([]);
@@ -56,7 +58,7 @@ useEffect(() => {
   
       const totalItems = response.data.total_tyres;
       const totalPages = Math.ceil(totalItems / itemsPerPage);
-      setTyreData(response.data.data);
+      setTyreData(response.data.data || []);
       setTotalPages(totalPages);
     } catch (error) {
       console.error("Error fetching tyre Data:", error);
@@ -134,8 +136,8 @@ useEffect(() => {
               <td className="text-left p-3">Brand</td>
               <td className="text-left p-3">Model</td>
               <td className="text-left p-3">Category</td>
-              <td className="text-left p-3">Status</td>
-              <td className="text-left p-3">Now In</td>
+              {/* <td className="text-left p-3">Status</td> */}
+              {/* <td className="text-left p-3">Now In</td> */}
             </tr>
           </thead>
 
@@ -147,9 +149,9 @@ useEffect(() => {
                 <td className="p-2">{item.tyre_size}</td>
                 <td className="p-3">{item.brand_name}</td>
                 <td className="p-3">{item.model_name}</td>
-                <td className="p-3">{item.product_category}</td>
-                <td className="p-3">{item.current_status}</td>
-                <td className="p-3">{item.ongoing_status}</td>
+                <td className="p-3">{item.construction_type}</td>
+                {/* <td className="p-3">{item.current_status}</td> */}
+                {/* <td className="p-3">{item.ongoing_status}</td> */}
               </tr>
             ))}
           </tbody>

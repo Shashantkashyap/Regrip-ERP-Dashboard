@@ -17,20 +17,46 @@ function Signin() {
     mobile: '',
     password: ''
   });
+  const [errors, setErrors] = useState({
+    mobile: ''
+  });
 
   const isSmallScreen = useMediaQuery({ query: '(max-width: 1000px)' });
 
+  // Validate mobile input to allow only numbers and check for 10 digits
+  const validateMobileInput = (value) => {
+    const phoneRegex = /^[0-9]*$/;
+    return phoneRegex.test(value) && value.length <= 10; // Limit to 10 digits
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
+
+    if (name === 'mobile') {
+      if (validateMobileInput(value)) {
+        // If valid, clear error
+        setErrors({ ...errors, mobile: '' });
+        setFormData({ ...formData, [name]: value });
+      } else {
+        // If invalid (contains non-numeric or more than 10 digits), show error
+        setErrors({ ...errors, mobile: 'Please enter a valid 10-digit mobile number.' });
+      }
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
+    if (formData.mobile.length !== 10) {
+      setErrors({ ...errors, mobile: 'Mobile number must be 10 digits long.' });
+      return;
+    }
+
     const formDataToSend = new FormData();
     formDataToSend.append('contact', formData.mobile);
     formDataToSend.append('password', formData.password);
@@ -44,9 +70,10 @@ function Signin() {
 
       // Dispatch user data to Redux store
       dispatch(setUser(response.data));
-      localStorage.setItem("isLoggedIn",true)
+      localStorage.setItem("userData", JSON.stringify(response.data)); // Store the user details
+      localStorage.setItem("isLoggedIn", true);
       // Navigate to dashboard
-      navigate("/dashboard");
+      navigate("/");
     } catch (error) {
       console.error('Error:', error.response?.data || error.message);
     }
@@ -82,9 +109,13 @@ function Signin() {
                 name="mobile"
                 value={formData.mobile}
                 onChange={handleInputChange}
+                maxLength="10" // Limit input to 10 characters
                 className="border border-gray-300 p-3 rounded-[12px] focus:outline-none focus:ring-2 focus:ring-blue-500 font-normal text-sm sm:text-base"
-                placeholder="Enter your mobile number"
+                placeholder="Enter your 10-digit mobile number"
               />
+              {errors.mobile && (
+                <span className="text-red-500 text-sm">{errors.mobile}</span>
+              )}
             </div>
             <div className="flex flex-col gap-2">
               <label className="text-sm font-medium" htmlFor="password">Password</label>
@@ -104,12 +135,13 @@ function Signin() {
               <input type="checkbox" id="rememberMe" />
               <label htmlFor="rememberMe" className="font-normal text-xs sm:text-sm">Remember me</label>
             </div>
-            {/* <div className="font-normal text-xs sm:text-sm text-blue-600 cursor-pointer">
-              Forgot Password?
-            </div> */}
           </div>
           <div className="flex justify-center">
-            <button type="submit" className="bg-[#65A143] text-white py-2 px-6 rounded-[9px] w-full sm:w-auto h-[48px] md:h-[55px]">
+            <button
+              type="submit"
+              className="bg-[#65A143] text-white py-2 px-6 rounded-[9px] w-full sm:w-auto h-[48px] md:h-[55px]"
+              disabled={errors.mobile || formData.mobile.length !== 10} // Disable if mobile is invalid
+            >
               Sign In
             </button>
           </div>

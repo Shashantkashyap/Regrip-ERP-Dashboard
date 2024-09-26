@@ -15,7 +15,11 @@ import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
 
-  const knowUser = useSelector((state)=> state.user.user);
+  // const knowUser = useSelector((state)=> state.user.user);
+
+  const knowUser = JSON.parse(localStorage.getItem("userData"));
+
+  console.log(knowUser)
 
   if (knowUser == null) {
     localStorage.removeItem("isLoggedIn");
@@ -53,7 +57,7 @@ function Dashboard() {
             You need to login first to continue.
           </p>
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/signin")}
             className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg transition duration-300 ease-in-out"
           >
             Login
@@ -132,7 +136,7 @@ function Dashboard() {
         }
         {
 
-        activeMenuItem == 5 && activeDropdownItem == "Pending Insp." ? (
+        activeMenuItem == 5 && activeDropdownItem == "Pending Reports" ? (
           <div>
             <PendingInspectionReport/>
           </div>

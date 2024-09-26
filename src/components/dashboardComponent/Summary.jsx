@@ -4,10 +4,9 @@ import { useDispatch } from 'react-redux';
 
 function Summary({ summaryItems , handleClick }) {
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch()  
 
-  console.log(summaryItems)
-
+  
   return (
     <div className="w-[495px] min-w-[300px] bg-white p-[15px_15px_30px_15px] rounded-[15px] border-[1px] font-outfit cursor-pointer">
       <p className="font-semibold text-[22px] max-lg:text-[18px] text-gray-800 mb-4">Summary</p>

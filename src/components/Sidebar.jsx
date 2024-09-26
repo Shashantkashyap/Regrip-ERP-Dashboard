@@ -25,11 +25,18 @@ import logo from "../assets/logo.png";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveDropdownItem, setActiveMenuItem } from "../redux/Slices/menuSlice.js.js";
 import { setTableFilter } from "../redux/Slices/DasboardPopup.js";
+import { GrLogout } from "react-icons/gr";
+import { useNavigate } from "react-router-dom";
 
 function Sidebar() {
 
-  const userName = useSelector((state)=> state.user.user.data.name)
+  //const userName = useSelector((state)=> state.user.user.data.name)
 
+  const knowUser = JSON.parse(localStorage.getItem("userData"));
+  
+  const userName = knowUser.data.name
+
+  const navigate = useNavigate()
 
   const dispatch = useDispatch();
   const activeMenuItem = useSelector((state) => state.menu.activeMenuItem);
@@ -63,12 +70,25 @@ function Sidebar() {
     }
   };
 
+  const handleLogout = () => {
+    // Clear localStorage
+    localStorage.removeItem("userData");
+    localStorage.removeItem("isLoggedIn");
+    dispatch(setActiveMenuItem(1))
+
+    // Clear Redux store (reset user data)
+    //dispatch(setUser(null)); // or you might have a `logout()` action
+
+    // Navigate back to login
+    navigate("/signin");
+  };
+
   const menuItems = [
     { id: 1, name: "Dashboard", icon: Dashboard, iconActive: DashboardG },
     { id: 2, name: "Vehicle Master", icon: diamond, iconActive: diamondG },
     {
       id: 3,
-      name: "Inventory(Tyre)",
+      name: "Inventory (Tyre)",
       icon: Inventory,
       iconActive: InventoryG,
       
@@ -81,7 +101,7 @@ function Sidebar() {
       icon: Reports,
       iconActive: ReportsG,
 
-      dropdown: ["Inspection", "Pending Insp.", "Low NSD", "Mechanical Defect", "Tyre Wear", "Purchase"],
+      dropdown: ["Inspection", "Pending Reports", "Low NSD", "Mechanical Defect", "Tyre Wear", "Purchase", "Tyre Status"],
 
     },
     { id: 6, name: "Analytics", icon: Analytics, iconActive: AnalyticsG },
@@ -109,7 +129,7 @@ function Sidebar() {
           <div key={item.id}>
             <div
               onClick={() => handleClick(item.id, item.dropdown)}
-              className={`flex justify-between rounded-[8px] items-center gap-2 max-lg:gap-1 py-2 px-2 max-lg:px-0 cursor-pointer transition-all duration-300 ${
+              className={`flex  justify-between rounded-[8px] items-center gap-2 max-lg:gap-1 py-2 px-2 max-lg:px-0 cursor-pointer transition-all duration-300 ${
                 activeMenuItem === item.id ? "bg-[#e6f4ea]" : "hover:bg-gray-100"
               }`}
             >
@@ -162,6 +182,20 @@ function Sidebar() {
           </div>
         ))}
       </div>
+
+      <div 
+  className="flex gap-2 bg-red-50 max-lg:ml-1 max-lg:gap-1 cursor-pointer mt-4 justify-center items-center p-2 rounded-[20px] relative group overflow-hidden shadow-lg transition-shadow duration-300 hover:shadow-xl"
+  onClick={handleLogout}
+>
+  {/* Sliding background effect */}
+  <div className="absolute inset-0 bg-red-400 transition-transform duration-500 ease-in-out transform -translate-x-full group-hover:translate-x-0"></div>
+
+  {/* Logout Icon and Text */}
+  <div className="relative z-10">
+    <GrLogout fontSize={20} />
+  </div>
+  <p className="relative z-10 font-normal">Logout</p>
+</div>
 
       {/* LOGO SECTION */}
       <div className="flex flex-col gap-2 justify-center mt-6 ml-2">

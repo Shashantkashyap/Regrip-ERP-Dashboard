@@ -10,9 +10,9 @@ function App() {
   return (
     <div>
       <Routes>
-      <Route path='' element={<Auth/>}/>
-        <Route path='/' element={<Auth/>}/>
-        <Route path='/dashboard' element={<Dashboard/>}/>
+      
+        <Route path='/signin' element={<Auth/>}/>
+        <Route path='/' element={<Dashboard/>}/>
         
       </Routes>
     </div>

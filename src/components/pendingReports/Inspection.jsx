@@ -58,8 +58,8 @@ const Inspection = () => {
         const responseData = response.data;
 
         setData(responseData.data || []);
-        setTotalPages(responseData.pagination.total || 0); // Update this line
-        setTotalItems(responseData.pagination.totalItems || 0); // Update this line
+        setTotalPages(responseData.pagination.total % 10 == 0 ? (responseData.pagination.total /10) : (responseData.pagination.total /10) +1); // Update this line
+        setTotalItems(responseData.pagination.total || 0); // Update this line
       } catch (error) {
         setError("Failed to fetch data. Please try again later.");
       } finally {
@@ -130,7 +130,7 @@ const Inspection = () => {
                   <td className="text-left p-2">Last insp. date</td>
                   <td className="text-left p-3">Total insp. count</td>
                   <td className="text-left p-3">Total tyres</td>
-                  <td className="text-left p-3">Aging(Days)</td>
+                  <td className="text-left p-3">Ageing(Days)</td>
                 </tr>
               </thead>
               <tbody>

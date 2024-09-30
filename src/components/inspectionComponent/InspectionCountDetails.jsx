@@ -35,6 +35,8 @@ function InspectionCountDetails({ close, vehicleId }) {
         },
       });
 
+      console.log(details)
+
       setInspectionData(details.data.data);
     } catch (error) {
       console.error('Error fetching vehicle Inspection data:', error);
@@ -88,6 +90,24 @@ function InspectionCountDetails({ close, vehicleId }) {
     }
 };
 
+function formatDate(dateString) {
+  const date = new Date(dateString);
+
+  // Get month short name (e.g. "Aug")
+  const monthShort = date.toLocaleString('default', { month: 'short' });
+
+  // Get day (e.g. 8)
+  const day = date.getDate();
+
+  // Get year in two digits (e.g. "24" for 2024)
+  const year = date.getFullYear().toString().slice(-2);
+
+  // Return formatted date
+  return `${monthShort} ${day}, ${year}`;
+}
+
+console.log(inspectionData)
+
   return (
     <div className="font-inter relative p-5 w-[90%] bg-white mx-auto rounded-[28px] min-w-[700px] overflow-x-auto">
       {/* Background Overlay */}
@@ -139,13 +159,13 @@ function InspectionCountDetails({ close, vehicleId }) {
               inspectionData.map((tyre, index) => (
                 <tr key={index} className="border-b">
                   <td className="py-2 px-4 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">{index + 1}</td>
-                  <td className="py-2 px-4 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">{tyre.inspection_date}</td>
-                  <td className="py-2 px-4 font-outfit font-normal text-[14px] leading-[21.42px] cursor-pointer">{tyre.vehicle_no}</td>
-                  <td className="py-2 px-4 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">0</td>
-                  <td className="py-2 px-8 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">{tyre.km_total_reading}</td>
-                  <td className="py-2 px-4">{tyre.km_total_reading}</td>
-                  <td className="py-2 text-green-600 px-4 cursor-pointer" onClick={() => showInspectionTyreFitmentDetails(tyre.id, tyre.vehicle_no)}>{tyre.tyreCount}</td>
-                  <td className="py-2 px-4 font-outfit font-normal text-[14px] leading-[21.42px] cursor-pointer" onClick={() => fetchDownloadReport(tyre.id,tyre.vehicle_no)}>
+                  <td className="py-2 px-4 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">{formatDate(tyre.details[0].datetime_created)}</td>
+                  <td className="py-2 px-4 font-outfit font-normal text-[14px] leading-[21.42px] cursor-pointer">{tyre.details[0].vehicle_no}</td>
+                  <td className="py-2 px-4 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">{tyre.details[0].km_total_reading}</td>
+                  <td className="py-2 px-8 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">{tyre.details[0].vehicle_km}</td>
+                  <td className="py-2 px-4">{tyre.details[0].vehicle_km - tyre.details[0].km_total_reading}</td>
+                  <td className="py-2 text-green-600 px-4 cursor-pointer" onClick={() => showInspectionTyreFitmentDetails(tyre.details[0].inspection_id, tyre.details[0].vehicle_no)}>{tyre.count}</td>
+                  <td className="py-2 px-4 font-outfit font-normal text-[14px] leading-[21.42px] cursor-pointer" onClick={() => fetchDownloadReport(tyre.details[0].inspection_id,tyre.details[0].vehicle_no)}>
                     <IoCloudDownloadOutline fontSize={20} />
                     {/* {downloading && <Loader />}  Loader while downloading */}
                   </td>

@@ -57,7 +57,24 @@ function TyreJourney({ tyreId, close, tyreNo }) {
 
     return `${day}-${month}-${year}`;
   }
-  console.log(tyreHistory)
+  //console.log(tyreHistory)
+
+  const finalHistory = (Array.isArray(tyreHistory) ? tyreHistory : []).reduce((acc, current) => {
+    if (current.action === "Fitment") {
+      const existingItem = acc.find(item => item.datetime_created === current.datetime_created);
+  
+      if (existingItem) {
+        // Merge objects if they have the same datetime_created (custom merge logic)
+        Object.assign(existingItem, current); // Define custom merging logic if needed
+      } else {
+        // Push the new item if no existing item with the same datetime_created
+        acc.push(current);
+      }
+    }
+    return acc;
+  }, []);
+  
+  console.log(finalHistory);
 
   return (
     <div className="relative bg-white rounded-[28px] p-8">
@@ -114,7 +131,6 @@ function TyreJourney({ tyreId, close, tyreNo }) {
                   <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Activity</td>
                   <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Vehicle No.</td>
                   <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Position</td>
-                  <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Odometer</td>
                   <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Running Km</td>
                   <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Std Depth</td>
                   <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Avg nsd</td>
@@ -145,7 +161,7 @@ function TyreJourney({ tyreId, close, tyreNo }) {
                         {entry.action}
                       </td>
                       <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">
-                        {entry.vehicle_number}
+                        {entry.vehicle_no}
                       </td>
                       <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">
                         {entry.position}
@@ -153,9 +169,7 @@ function TyreJourney({ tyreId, close, tyreNo }) {
                       <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">
                         {entry.tyre_km}
                       </td>
-                      <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">
-                        {entry.km_reading}
-                      </td>
+                      
                       <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">
                         {entry.standard_nsd}
                       </td>

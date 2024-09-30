@@ -83,13 +83,15 @@ function InspectionTyreFitmentDetails({ inspectionId, close, vehicleNo }) {
                 <td className="py-2 px-4 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Make</td>
                 <td className="py-2 px-4 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Model</td>
                 <td className="py-2 px-0 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Retread / Fresh</td>
+                <td className="py-2 px-0 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Std_nsd</td>
                 <td className="py-2 px-4 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Avg. Nsd</td>
+                <td className="py-2 px-4 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Remaining Life</td>
+                
                 <td className="py-2 px-4 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">PSI</td>
                 <td className="py-2 px-4 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Nsd1</td>
                 <td className="py-2 px-4 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Nsd2</td>
                 <td className="py-2 px-4 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Nsd3</td>
                 <td className="py-2 px-4 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Nsd4</td>
-                <td className="py-2 px-4 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Remaining Life</td>
                 
               </tr>
             </thead>
@@ -118,7 +120,15 @@ function InspectionTyreFitmentDetails({ inspectionId, close, vehicleNo }) {
                     </td>
                     <td className="py-2 px-4">{tyre.product_category}</td>
                     <td className="py-2 px-4 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">
+                      {tyre.standard}
+                    </td>
+                    <td className="py-2 px-4 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">
                       {tyre.avg_nsd}
+                    </td>
+                    <td className="py-2 px-4 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">
+                      {
+                       Math.floor( 100 - ((tyre.standard - tyre.avg_nsd)/tyre.standard)/100)
+                      } %
                     </td>
                     <td className="py-2 px-4 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">
                       {tyre.psi}
@@ -135,9 +145,7 @@ function InspectionTyreFitmentDetails({ inspectionId, close, vehicleNo }) {
                     <td className="py-2 px-4 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">
                       {tyre.nsd4}
                     </td>
-                    <td className="py-2 px-4 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">
-                      0
-                    </td>
+                    
                     
                   </tr>
                 ))

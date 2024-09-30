@@ -50,6 +50,8 @@ const Alignment = () => {
         });
         formData.append("page", currentPage);
         formData.append("limit", itemsPerPage);
+        formData.append("alignment_status", "pending")
+        
 
         const response = await axios.post(
           `${url}/pendingAlignmentReportData`,
@@ -62,11 +64,13 @@ const Alignment = () => {
           }
         );
 
+        console.log(response)
+
         const responseData = response.data;
 
         setData(responseData.data || []);
-        setTotalItems(responseData.pagination.totalItems || 0); // Fetch the total items
-        setTotalPages(responseData.pagination.totalPages); // Calculate total pages
+        setTotalItems(responseData.totalItems || 0); // Fetch the total items
+        setTotalPages(responseData.totalPages); // Calculate total pages
       } catch (error) {
         setError("Failed to fetch data. Please try again later.");
       } finally {
@@ -140,7 +144,7 @@ const Alignment = () => {
                   <td className="text-left p-2">Last Inspection date</td>
                   <td className="text-left p-3">Running since last allignment</td>
                   
-                  <td className="text-left p-3">Aging(Days)</td>
+                  
                 </tr>
               </thead>
               <tbody>
@@ -157,7 +161,7 @@ const Alignment = () => {
                       <td className="p-3 text-[#65A948] underline cursor-pointer">{noData(vehicle.vehicle_no)}</td>
                       <td className="p-3">{vehicle.last_alignment}</td> {/* Date formatted */}
                       <td className="p-3">{vehicle.total_alignment_count}</td>
-                      <td className="p-3">{vehicle.wheels_count}</td>
+                      <td className="p-3">{vehicle.last_alignment}</td>
                       <td className="p-3">{noData(vehicle.last_alignment_days.split(" ")[0])}</td>
                     </tr>
                   ))

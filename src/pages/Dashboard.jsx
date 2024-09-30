@@ -88,10 +88,10 @@ function Dashboard() {
       {/* Toggle button */}
       <div className="relative mt-[37px]  w-[3%] min-w-[20px]">
         <img
-          src={fullScreen === 1 ? arrow : fullArrow}
-          alt="Toggle Sidebar"
+          // src={fullScreen === 1 ? arrow : fullArrow}
+          // alt="Toggle Sidebar"
           onClick={() => setFullScreen((prev) => (prev === 1 ? 0 : 1))}
-          className="cursor-pointer w-[35px] h-[35px]"
+          // className="cursor-pointer w-[35px] h-[35px]"
         />
       </div>
 

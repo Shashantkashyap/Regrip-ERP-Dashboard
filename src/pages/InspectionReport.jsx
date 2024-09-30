@@ -43,6 +43,8 @@ const InspectionReport = () => {
         const formData = new FormData();
         formData.append("text", globalText);
 
+        console.log(globalText)
+
         // Append filter data to formData
         Object.keys(filterData).forEach((key) => {
           formData.append(key, filterData[key]);
@@ -66,8 +68,8 @@ const InspectionReport = () => {
 
         const responseData = response.data;
 
-        setTotalPages(responseData.totalPages);
-        setTotalRecords(responseData.totalRecords)
+        setTotalPages(responseData.pagination.totalPages);
+        setTotalRecords(responseData.pagination.totalRecords)
         setData(responseData.data || []);
       } catch (error) {
         setError("Failed to fetch data. Please try again later.");
@@ -176,21 +178,25 @@ const InspectionReport = () => {
           </div>
         ) : (
           <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300">
-            <table className="min-w-[100%] w-[100%] font-outfit">
+            <table className="min-w-[120%] w-[100%] font-outfit">
               <thead>
                 <tr className="bg-[#F5F5F5] text-[#727272] font-normal text-[15px] leading-[21.42px]">
                   <td className="text-left p-3">#</td>
                   <td className="text-left p-2">Vehicle No.</td>
                   <td className="text-left p-1">Inspection Date</td>
-                  <td className="text-left p-1">Branch</td>
+                  
                   <td className="text-left p-3">Prev km</td>
                   <td className="text-left p-3">Curr. km</td>
+                  
+              <td className="py-2 px-0 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Km Running </td>
                   <td className="text-left p-3">Total Insp.</td>
                   {/* <td className="text-left p-3">Tyre Insp.</td> */}
                   <td className="text-left p-3">Inspected By</td>
-                  <td className="text-left p-3">Vehicle Status</td>
+                 
                   <td className="text-left p-3">Driver</td>
+                  
                   <td className="text-left p-3">Mobile No.</td>
+                  <td className="text-left p-3">Vehicle Status</td>
                 </tr>
               </thead>
               <tbody>
@@ -212,15 +218,16 @@ const InspectionReport = () => {
                       </td>
                      {/* <td className="p-3">{noData(vehicle.trailer_no)}</td> */}
                      <td className="p-3">{noData(vehicle.last_inspection)}</td>
-                      <td className="p-3">{noData(vehicle.city)}</td>
                       
-                      <td className="p-3">{noData(vehicle.prev_km)}</td>
-                      <td className="p-3">{noData(vehicle.curr_km)}</td>
-                      <td className="p-3 px-8">{noData(vehicle.inspection_count)}</td>
+                      
+                      <td className="p-3">{(vehicle.prev_km)}</td>
+                      <td className="p-3">{noData(vehicle.vehicle_km)}</td>
+                      <td className="py-2 px-4">{vehicle.vehicle_km - vehicle.prev_km}</td>
+                      <td className="p-3 px-8">{noData(vehicle.inspectionCount)}</td>
                       {/* <td className="p-3">{noData(vehicle.inspection_tyre_count)}</td> */}
-                      <td className="p-3">{noData(vehicle.driver_name)}</td>
-                      <td className="p-3">{noData(vehicle.driver_contact)}</td>
                       <td className="p-3">{noData(vehicle.service_er)}</td>
+                      <td className="p-3">{noData(vehicle.driver_contact)}</td>
+                      <td className="p-3">{noData(vehicle.driver_name)}</td>
                       <td className="p-3">{vehicle.is_active === 1 ? "Live" : "Not Live"}</td>
                     </tr>
                   ))

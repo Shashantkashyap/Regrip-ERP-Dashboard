@@ -43,7 +43,7 @@ const Rotation = () => {
         
 
         const response = await axios.post(
-          `${url}/pendingRotationdata`, // Adjust the API endpoint as necessary
+          `${url}/pendingRotationdata`, 
           formData,
           {
             headers: {
@@ -56,8 +56,8 @@ const Rotation = () => {
         const responseData = response.data;
 
         setData(responseData.data || []);
-        setTotalItems(responseData.pagination.totalItems || 0); // Fetch the total items
-        setTotalPages(responseData.pagination.totalPages); // Calculate total pages
+        setTotalItems(responseData.totalItems || 0); // Fetch the total items
+        setTotalPages(responseData.totalPages); // Calculate total pages
       } catch (error) {
         setError("Failed to fetch data. Please try again later.");
       } finally {
@@ -139,11 +139,11 @@ const Rotation = () => {
                   <td className="text-left p-3">#</td>
                   <td className="text-left p-3">Vehicle No.</td>
                   <td className="text-left p-2">Last Rotation date</td>
-                  <td className="text-left p-2">Last alignment(km)</td>
+                  <td className="text-left p-2">Last Rotation(km)</td>
                   <td className="text-left p-2">Last Inspection date</td>
-                  <td className="text-left p-3">Running since last allignment</td>
+                  <td className="text-left p-3">Running since last rotation</td>
                   
-                  <td className="text-left p-3">Aging(Days)</td>
+                  
                 </tr>
               </thead>
               <tbody>

@@ -7,6 +7,7 @@ import axios from "axios";
 import Loading from "../components/common/Loader";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { useSelector } from "react-redux";
+import TyreJourney from "../components/masterComponent/TyreJourney";
 
 function Inventory() {
   // const apiKey = useSelector((state)=> state.user.user.data.api_key)
@@ -25,8 +26,10 @@ function Inventory() {
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-
+  const [searchText, setSearchText] = useState("");
   const [tyreBody, setTyreBody] = useState();
+  const [tyreId, setTyreId] = useState(null);
+  const [tyreFitments, setTyreFitment] = useState([]);
 
   const fetchTyreSummary = async () => {
     try {
@@ -51,7 +54,20 @@ function Inventory() {
     try {
       const formData = new FormData();
 
-      const response = await axios.post(`${url}/tyre-list`, tyreBody, {
+      formData.append("serial_no", searchText)
+
+      if (tyreBody) {
+        
+        for (const key in tyreBody) {
+          
+          if (tyreBody.hasOwnProperty(key)) {
+            
+            formData.append(key, tyreBody[key]);
+          }
+        }
+      }
+
+      const response = await axios.post(`${url}/tyre-list`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: apiKey,
@@ -74,14 +90,17 @@ function Inventory() {
   useEffect(() => {
     fetchTyreSummary();
     fetchTyreData();
-  }, [tyreBody]);
+
+    window.scrollTo(0, 0);
+  }, [tyreBody, searchText]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  console.log(tyreBody);
-  console.log(tyreData);
+  const handleSearchChange = (e) => {
+    setSearchText(e.target.value);
+  };
 
   const displayedData =
     tyreData !== undefined
@@ -229,6 +248,13 @@ function Inventory() {
   ];
 
   console.log(tyreBody);
+  const showTyreJourney = (id, serial_no) => {
+    setTyreId(id);
+    setTyreNo(serial_no);
+  };
+  const closeTyreJourney = () => {
+    setTyreId(null);
+  };
 
   return (
     <div className="p-6 bg-[#F7F7F7] rounded-[50px] overflow-x-auto relative">
@@ -245,8 +271,9 @@ function Inventory() {
             />
             <input
               type="text"
-              placeholder="Search Vehicle/Tyre"
+              placeholder="Search Tyre"
               className="outline-none text-sm bg-[#EBEBEB] text-[#949494] font-outfit font-normal text-[19px] leading-[23.94px]"
+              onChange={handleSearchChange}
             />
           </div>
           <span className="p-[3px_4px]">
@@ -259,6 +286,14 @@ function Inventory() {
         </div>
       </div>
 
+      {tyreId !== null && (
+        <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-40 min-w-[700px] overflow-x-auto">
+          <div className="bg-white w-[80%] max-w-[1145px] h-[600px] min-h-[500px] min-w-[700px] overflow-x-auto rounded-[28px] shadow-lg">
+            <TyreJourney close={closeTyreJourney} tyreId={tyreId} tyreNo={tyreNo} />
+          </div>
+        </div>
+      )}
+
       <div>
         {!tyreSummary ? (
           <div>
@@ -270,7 +305,7 @@ function Inventory() {
             <div className="flex flex-col gap-2 w-[30%] min-w-[30%] max-lg:w-[50%] max-md:w-[110%] font-outfit max-md:grid max-md:grid-cols-3 max-md:flex-wrap">
               {/* Total Stock */}
               <div
-                className="flex justify-between max-md:justify-evenly items-center px-2 cursor-pointer"
+                className="flex justify-between max-md:justify-evenly items-center px-2 mb-5 cursor-pointer"
                 onClick={() => setTyreBody({ stock_status: "total" })}
               >
                 <p className="font-semibold text-[28px] leading-[36px] text-[#232323]">
@@ -392,7 +427,7 @@ function Inventory() {
                     }`}
                     onClick={() => setIsOnwheelTyres(true)}
                   >
-                    On-Wheel 
+                    On-Wheel
                   </button>
                   <button
                     className={`text-[13px] font-semibold pb-2 ${
@@ -480,26 +515,25 @@ function Inventory() {
 
             {/* Right Side */}
             <div
-              className="bg-white min-w-[110%] overflow-x-auto h-[700px] flex flex-col rounded-[20px] pt-5 relative"
+              className="bg-white min-w-[70%] w-full overflow-x-auto h-[700px] flex flex-col rounded-[20px] pt-5 relative"
               style={{ boxShadow: "2px 2px 15px 0px rgba(0, 0, 0, 0.09)" }}
             >
               <div>
                 <div className="flex justify-between mb-2">
                   <div className="font-semibold text-[23px] text-[#232323] ml-6">
-                    {/* Check for tyreBody and render conditionally */}
                     {tyreBody
-                      ? // Start of conditional block
-                        tyreBody.current_status
-                        ? `${tyreBody.current_status} Tyres`
+                      ? tyreBody.current_status && !tyreBody.tyre_depth && !tyreBody.product_category
+                        ? `${tyreBody.current_status } Tyres`
                         : tyreBody.tyre_condition
                         ? `${tyreBody.tyre_condition} Tyres`
-                        :  tyreBody.tyre_depth
+                        : tyreBody.tyre_depth && tyreBody.current_status
                         ? `Tyres with ${tyreBody.tyre_depth} mm Depth`
-                        : tyreBody.ongoing_status && !tyreBody.tyre_depth
-                        ? `${tyreBody.ongoing_status} Tyres`
+                        :  tyreBody.product_category
+                        ? `On-Wheel (${tyreBody.product_category}) Tyres`
+                        :tyreBody.ongoing_status
+                        ? `${tyreBody.ongoing_status}Tyres`
                         : "Total Tyres"
-                      : "Total Tyres" // If tyreBody is null or undefined
-                    }
+                      : "Total Tyres"}
                   </div>
 
                   <div className="flex gap-4 items-center mr-5">
@@ -524,9 +558,9 @@ function Inventory() {
 
               {/* Add both horizontal and vertical scroll */}
               <div className="overflow-x-auto overflow-y-auto max-h-[500px] scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300">
-                <table className="min-w-[100%] font-outfit">
-                  <thead>
-                    <tr className="bg-[#F5F5F5] text-[#727272] font-normal text-[15px] leading-[21.42px] sticky">
+                <table className="w-full font-outfit relative">
+                  <thead className="sticky top-0 z-10">
+                    <tr className="bg-[#F5F5F5] text-[#727272] font-normal text-[15px] leading-[21.42px] ">
                       <td className="text-left p-3">#</td>
                       <td className="text-left p-3">Serial No.</td>
                       <td className="text-left p-2">Size</td>
@@ -547,7 +581,7 @@ function Inventory() {
                         <td className="p-3 ">
                           {(currentPage - 1) * itemsPerPage + index + 1}
                         </td>
-                        <td className="p-3">{item.serial_no}</td>
+                        <td className="p-3 text-[#65A948] cursor-pointer" onClick={() => showTyreJourney(item.id, item.serial_no)}>{item.serial_no}</td>
                         <td className="p-2">{item.tyre_size}</td>
                         <td className="p-3">{item.brand_name}</td>
                         <td className="p-3">{item.model_name}</td>

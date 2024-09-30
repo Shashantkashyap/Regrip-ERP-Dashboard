@@ -191,7 +191,6 @@ const Chart1 = () => {
             </div>
             <div>
               <select
-                
                 value={selectedOption}
                 onChange={handleOptionChange}
                 className="text-[12px] font-normal leading-[16.51px] text-[#666666] border rounded p-1 border-2px border-black"
@@ -212,53 +211,53 @@ const Chart1 = () => {
         </div>
       )}
 
-{showCalendar && (
-  <div className="calendar-wrapper mb-4">
-    <div className="calendar-inputs flex flex-row items-center gap-5">
-      <div className="calendar-input relative flex flex-col gap-1">
-        <label className="block mb-1 text-sm text-gray-700">Start Date:</label>
-        <input
-          type="text"
-          value={customDateRange.startDate ? customDateRange.startDate.toDateString() : 'Select Date'}
-          onClick={handleStartDateClick}
-          readOnly
-          className="py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-        {showStartCalendar && (
-          <div className="calendar-container absolute top-full left-0 mt-2 z-10">
-            <Calendar
-              onChange={handleStartDateChange}
-              value={customDateRange.startDate}
-              className="animated-calendar"
-            />
-          </div>
-        )}
-      </div>
-      <div className="calendar-input relative flex flex-col gap-1">
-        <label className="block mb-1 text-sm text-gray-700">End Date:</label>
-        <input
-          type="text"
-          value={customDateRange.endDate ? customDateRange.endDate.toDateString() : 'Select Date'}
-          onClick={handleEndDateClick}
-          readOnly
-          className="py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-        {showEndCalendar && (
-          <div className="calendar-container absolute top-full left-0 mt-2 z-10">
-            <Calendar
-              onChange={handleEndDateChange}
-              value={customDateRange.endDate}
-              className="animated-calendar"
-            />
-          </div>
+      {showCalendar && (
+        <div className="calendar-wrapper mb-4">
+          <div className="calendar-inputs flex flex-row items-center gap-5">
+            <div className="calendar-input relative flex flex-col gap-1">
+              <label className="block mb-1 text-sm text-gray-700">Start Date:</label>
+              <input
+                type="text"
+                value={customDateRange.startDate ? customDateRange.startDate.toDateString() : 'Select Date'}
+                onClick={handleStartDateClick}
+                readOnly
+                className="py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+              {showStartCalendar && (
+                <div className="calendar-container absolute top-full left-0 mt-2 z-10">
+                  <Calendar
+                    onChange={handleStartDateChange}
+                    value={customDateRange.startDate}
+                    className="animated-calendar"
+                  />
+                </div>
+              )}
+            </div>
+            <div className="calendar-input relative flex flex-col gap-1">
+              <label className="block mb-1 text-sm text-gray-700">End Date:</label>
+              <input
+                type="text"
+                value={customDateRange.endDate ? customDateRange.endDate.toDateString() : 'Select Date'}
+                onClick={handleEndDateClick}
+                readOnly
+                className="py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+              {showEndCalendar && (
+                <div className="calendar-container absolute top-full left-0 mt-2 z-10">
+                  <Calendar
+                    onChange={handleEndDateChange}
+                    value={customDateRange.endDate}
+                    className="animated-calendar"
+                  />
+                </div>
 
 
-           
-        )}
-      </div>
-    </div>
-  </div>
-)}
+                
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="h-[300px] p-1">
         <Bar data={chartData} options={options} />

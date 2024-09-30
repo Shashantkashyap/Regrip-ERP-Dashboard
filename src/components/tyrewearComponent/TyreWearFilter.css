@@ -1,0 +1,82 @@
+/* Custom CSS for sliding effect */
+.filter-sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 300px;
+    height: 100%;
+    background: white;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  }
+  
+  .filter-sidebar.hidden {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  
+  .filter-sidebar.visible {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  
+  /* Sidebar Animation */
+  .filter-enter {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  
+  .filter-enter-active {
+    transform: translateX(0);
+    opacity: 1;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  }
+  
+  .filter-exit {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  
+  .filter-exit-active {
+    transform: translateX(100%);
+    opacity: 0;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  }
+  
+  /* Field Animation */
+  .field-appear {
+    opacity: 0;
+    transform: translateX(10px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  }
+  
+  .field-appear-active {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  /* Delay classes */
+  .field-delay-0 {
+    transition-delay: 0ms;
+  }
+  
+  .field-delay-1 {
+    transition-delay: 100ms;
+  }
+  
+  .field-delay-2 {
+    transition-delay: 200ms;
+  }
+  
+  .field-delay-3 {
+    transition-delay: 300ms;
+  }
+  
+  .field-delay-4 {
+    transition-delay: 400ms;
+  }
+  
+  .field-delay-5 {
+    transition-delay: 500ms;
+  }
+  

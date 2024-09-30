@@ -105,6 +105,13 @@ function Sidebar() {
 
     },
     { id: 6, name: "Analytics", icon: Analytics, iconActive: AnalyticsG },
+    {
+      id: 10,
+      name: "Scrap Analysis",
+      icon: Reports,
+      iconActive: ReportsG,
+      
+    },
     
   ];
 

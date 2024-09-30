@@ -11,6 +11,9 @@ import mechanicaDefFilterReducer from "../Slices/mechanicalFilterSlice.js";
 import pendingInspectionReducer from "../Slices/pendingFilterSlice.js"; 
 import dashboardTableFilter from "../Slices/DasboardPopup.js";
 import lowNsdFilter from "../Slices/lowNsdFilterSlice.js";
+import tyreWearFilter from "../Slices/tyreWearFilterSlice.js";
+import tyrePurchaseFilter from '../Slices/tyrePurchaseFilterSlice.js';
+import scrapAnalysisFilter from "../Slices/scrapFilter.js";
 
 // Persist configuration
 const persistConfig = {
@@ -28,6 +31,9 @@ const rootReducer = combineReducers({
   pendingInspectionFilter: pendingInspectionReducer,
   dashboardTableFilter: dashboardTableFilter,
   lowNsdFilter: lowNsdFilter,
+  tyreWearFilter,
+  tyrePurchaseFilter,
+  scrapAnalysisFilter
 });
 
 // Create persisted reducer

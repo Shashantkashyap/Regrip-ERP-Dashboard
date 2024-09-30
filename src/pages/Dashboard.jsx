@@ -12,6 +12,9 @@ import PendingInspectionReport from "./PendingInspectionReport";
 import LowNsdReport from "./LowNsdReport"
 import Inventory from "./Inventory";
 import { useNavigate } from "react-router-dom";
+import TyreWearReport from "../pages/TyreWearReport";
+import TyrePurchaseReport from "../pages/TyrePurchaseReport";
+import ScrapAnalysisReport from "../pages/ScrapAnalysisReport";
 
 function Dashboard() {
 
@@ -148,6 +151,31 @@ function Dashboard() {
             <LowNsdReport/>
 
           </div>
+          ) : ("")
+        }
+
+        
+{
+          activeMenuItem === 5 && activeDropdownItem === "Tyre Wear" ? (
+            <div>
+              <TyreWearReport />
+            </div>
+          ) : ("")
+        }
+
+{
+          activeMenuItem === 5 && activeDropdownItem === "Purchase" ? (
+            <div>
+              <TyrePurchaseReport />
+            </div>
+          ) : ("")
+        }
+
+    {
+          activeMenuItem === 10 ? (
+            <div>
+              <ScrapAnalysisReport />
+            </div>
           ) : ("")
         }
       </div>

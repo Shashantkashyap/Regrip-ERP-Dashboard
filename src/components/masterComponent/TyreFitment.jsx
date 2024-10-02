@@ -6,7 +6,6 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import Loader from "../common/Loader"; // Assuming you have a Loader component
 import "../scrollBar.css"
-import { set } from "lodash";
 
 function TyreFitment({ close, vehicle }) {
  // const apiKey = useSelector((state) => state.user.user.data.api_key);
@@ -15,7 +14,6 @@ function TyreFitment({ close, vehicle }) {
 
   const [tyreId, setTyreId] = useState(null);
   const [tyreFitments, setTyreFitment] = useState([]);
-  
   const [tyreNo, setTyreNo] = useState();
   const [loading, setLoading] = useState(true); // State to handle loader
   const [isFetchComplete, setIsFetchComplete] = useState(false); // Tracks if the fetch has been completed

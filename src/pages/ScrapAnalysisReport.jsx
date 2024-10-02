@@ -27,6 +27,7 @@ import { Line, Bar, Doughnut } from "react-chartjs-2";
 import Calendar from "react-calendar";
 import { addMonths } from "date-fns/addMonths";
 import DateRange from "../components/DateRange";
+import axios from "axios";
 
 ChartJS.register(
   CategoryScale,
@@ -42,6 +43,14 @@ ChartJS.register(
 );
 
 function ScrapAnalysisReport() {
+
+  const knowUser = JSON.parse(localStorage.getItem("userData"));
+  const apiKey = knowUser.data.api_key
+
+  
+  const url = "https://newstaging.regripindia.com/api"
+
+  const [tyreAreaWiseDefectCount, setTyreAreaWiseDefectCount] = useState([])
   const [loading, setLoading] = useState(false);
   const [dateRange, setDateRange] = useState({ startDate: addMonths(new Date(), -3), endDate: new Date() });
   const [error, setError] = useState(null);
@@ -54,6 +63,30 @@ function ScrapAnalysisReport() {
     startDate: null,
     endDate: null,
   });
+
+
+  const fetchTyreAreaWiseDefectCount = async()=>{
+    
+    const response = await axios.post(
+      `${url}/get-defect-counts`,
+        {},
+        {
+          headers: {
+            Authorization: apiKey,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+    )
+
+    
+    setTyreAreaWiseDefectCount(response.data.defectCounts)
+    console.log(tyreAreaWiseDefectCount)
+  }
+
+  useEffect(()=>{
+    fetchTyreAreaWiseDefectCount()
+  },[]) 
+
 
   const handleStartDateChange = (date) => {
     if (isFuture(date)) {
@@ -408,7 +441,7 @@ function ScrapAnalysisReport() {
                   </div>
                   <Doughnut
                     data={{
-                      labels: ["Inner Crown", "Side Wall", "Tread", "Crown"],
+                      labels: ["Inner Crown", "Side Wall", "Bead", "Crown"],
                       datasets: [
                         {
                           label: "Tyre Area",
@@ -471,13 +504,7 @@ function ScrapAnalysisReport() {
                   tableData={Object.values(vehicleDataArray)}
                   className="w-full"
                 />
-                <ScrapCountCard
-                  title="Driver"
-                  count={580}
-                  tableHeaders={["Driver Name", "Count", "%"]}
-                  tableData={Object.values(driverDataarray)}
-                  className="w-full"
-                />
+                
               </div>
 
               {/* Sixth Row */}

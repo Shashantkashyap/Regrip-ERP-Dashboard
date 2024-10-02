@@ -12,6 +12,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { setTyreWearFormData } from "../redux/Slices/tyreWearFilterSlice";
 
 function TyreWearReport() {
+
+  const knowUser = JSON.parse(localStorage.getItem("userData"));
+  const apiKey = knowUser.data.api_key
+
+
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -42,25 +47,34 @@ function TyreWearReport() {
           formData.append(key, filterData[key]);
         });
 
+        console.log(formData)
         // Append page to formData
         formData.append("page", currentPage);
-        console.log("FormData: ", formData);
 
+        if(activeTable == "tyre"){
+          formData.append("report_type", "tyre-wise")
+        }else{
+          formData.append("report_type", "vehicle-wise")
+        }
+
+        
+        
         const response = await axios.post(
-          "http://newstaging.regripindia.com/api/tyre-wear-report",
+          "https://newstaging.regripindia.com/api/tyre-wear-report",
           formData, // Send formData, not an object
           {
             headers: {
               "Content-Type": "multipart/form-data",
-              Authorization: "google", // Assuming you have a valid auth token
+              Authorization: apiKey, // Assuming you have a valid auth token
             },
           }
         );
+        
 
         console.log("Response: ", response);
         const responseData = response.data;
         // console.log("Response Data: ", responseData);
-        setTotalPages(responseData.pagination.total);
+        setTotalPages(responseData.pagination.total || 1);
         setData(responseData.data || []);
       } catch (error) {
         console.log(error);
@@ -150,11 +164,13 @@ function TyreWearReport() {
                   />
                   {/* Custom styled div acting as a radio button */}
                   <div
-                    className={`w-4 h-4 border-2 rounded-full cursor-pointer relative flex justify-center items-center ${
+                    className={`w-4 h-4 border-2 rounded-full cursor-pointer relative flex justify-center items-center
+                       ${
                       activeTable === "tyre"
                         ? "border-[#65A948]"
                         : "border-gray-300"
-                    }`}
+                    }
+                    `}
                     onClick={() => {
                       setActiveTable("tyre"); // Manually set value for activeTable
                       handleInputChange({
@@ -328,7 +344,7 @@ function TyreWearReport() {
                 </tbody>
               </table>
             ) : (
-              <table className="min-w-[100%] w-[120%] font-outfit">
+              <table className="min-w-[100%] w-[100%] font-outfit">
                 <thead>
                   <tr className="bg-[#F5F5F5] text-[#727272] font-normal text-[15px] leading-[21.42px]">
                     <td className="text-left p-3">#</td>

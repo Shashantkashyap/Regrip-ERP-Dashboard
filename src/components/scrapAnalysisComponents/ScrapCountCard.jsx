@@ -10,13 +10,13 @@ const ScrapCountCard = ({ title, count, tableHeaders, tableData, className = '' 
       </div>
 
       {/* Table */}
-      <table className="w-full text-left font-semibold">
+      <table className="w-full text-left font-normal font-outfit">
         <thead className="bg-gray-100">
           <tr>
             {tableHeaders.map((header, index) => (
-              <th key={index} className="p-2 text-sm font-semibold text-gray-500 border-r-2 text-center">
+              <td key={index} className="p-2 text-sm font-semibold text-gray-500 border-r-2 text-center">
                 {header}
-              </th>
+              </td>
             ))}
           </tr>
         </thead>

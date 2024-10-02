@@ -29,7 +29,8 @@ function Inventory() {
   const [searchText, setSearchText] = useState("");
   const [tyreBody, setTyreBody] = useState();
   const [tyreId, setTyreId] = useState(null);
-  const [tyreFitments, setTyreFitment] = useState([]);
+  
+  const [tyreNo, setTyreNo] = useState();
 
   const fetchTyreSummary = async () => {
     try {
@@ -136,7 +137,7 @@ function Inventory() {
       },
     ],
 
-    utilizedDetails: [
+   utilizedDetails: [
       {
         count: tyreSummary.data[5]?.total || 0,
         label: "In Use",

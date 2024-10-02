@@ -61,7 +61,12 @@ const filterTab = useSelector((state) => state.dashboardTableFilter.tableFilter)
         
         dispatch(setActiveMenuItem(5));
         dispatch(setActiveDropdownItem("Pending Reports"))
-      }else if (filterTab.hasOwnProperty("PendingR")) {
+      }else if (filterTab.hasOwnProperty("TyreW")) {
+        
+        dispatch(setActiveMenuItem(5));
+        dispatch(setActiveDropdownItem("Tyre Wear"))
+      }
+      else if (filterTab.hasOwnProperty("PendingR")) {
         
         dispatch(setActiveMenuItem(5));
         dispatch(setActiveDropdownItem("Pending Reports"))
@@ -114,6 +119,7 @@ const filterTab = useSelector((state) => state.dashboardTableFilter.tableFilter)
       );
       //console.log(summaryData)
       setSummary(summaryData.data.data || {}); // Default to empty object if no data
+      console.log(summary)
     } catch (error) {
       toast.error('Error fetching summary data'); // Show error toast
       console.error('Error fetching summary data:', error);
@@ -165,7 +171,7 @@ const filterTab = useSelector((state) => state.dashboardTableFilter.tableFilter)
     { label: "Pending Inspection", value: alert?.[3]?.value ?? 0, color: "bg-[#DA4040]" , key :"PendingI", value2: "" },
     { label: "Pending Alignment", value: alert?.[4]?.value ?? 0, color: "bg-[#DA4040]" , key :"PendingA", value2: "" },
     { label: "Pending Rotations", value: alert?.[5]?.value ?? 0, color: "bg-[#DA4040]" , key :"PendingR", value2: "" },
-    { label: "Tyre Defects", value: alert?.[6]?.value ?? 0, color: "bg-[#DA4040]" },
+    { label: "Tyre Defects", value: alert?.[6]?.value ?? 0, color: "bg-[#DA4040]", key :"TyreW", value2: ""  },
   ];
 
   summary && Array.isArray(summary) && summary.length > 0 && (
@@ -178,7 +184,7 @@ const filterTab = useSelector((state) => state.dashboardTableFilter.tableFilter)
       { value: summary[12]?.total ?? 0, label: "Missing Tyres", key : "ongoing_status", value2: "Missing" },
       { value: summary[10]?.total ?? 0, label: "Sent to Retread", key : "ongoing_status", value2: "sent-to-retread" },
       { value: summary[2]?.total ?? 0, label: "New Tyres", key : "current_status", value2: "New" },
-      { value: 0, label: "Reusable Tyres" }, // Static value
+      { value: summary[8]?.total ??0, label: "Reusable Tyres", key :"current_status", value2: "Reusable" }, // Static value
     ]
   );
 
@@ -197,7 +203,7 @@ const filterTab = useSelector((state) => state.dashboardTableFilter.tableFilter)
               <p className="font-semibold text-[30px] leading-[36.31px] ml-1 text-[#65A143]">
                 Dashboard
               </p>
-              <div className="flex items-center gap-6 max-lg:gap-[10px] min-w-[100px] overflow-x-auto">
+              {/* <div className="flex items-center gap-6 max-lg:gap-[10px] min-w-[100px] overflow-x-auto">
                 <div className="bg-[#F1F1F1] flex items-center gap-3 px-4 py-2 rounded-[37px] shadow-sm w-[500px]">
                   <img src={Search} alt="Search Icon" className="w-6 h-6" />
                   <input
@@ -211,7 +217,7 @@ const filterTab = useSelector((state) => state.dashboardTableFilter.tableFilter)
                   alt="Notifications"
                   className="w-[31px] h-[31px] cursor-pointer hover:animate-bounce transition-opacity duration-500"
                 />
-              </div>
+              </div> */}
             </div>
 
             {showPopup === true && (

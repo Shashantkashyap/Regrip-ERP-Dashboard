@@ -72,19 +72,19 @@ function SidebarIcons() {
     { id: 1, photo: Dashboard, greenPhoto: DashboardG },
     { id: 2, photo: diamond, greenPhoto: diamondG },
     { id: 3, photo: Retreaders, greenPhoto: RetreadersG },
-    { id: 4, photo: Retreaders, greenPhoto: RetreadersG },
+    
     { id: 5, photo: Reports, greenPhoto: ReportsG }, // Reports item
-    { id: 10, photo: Analytics, greenPhoto: AnalyticsG },
+    {
+      id: 10,
+      
+      photo: Tools ,
+      greenPhoto: ToolsG,
+      
+    }
   ];
 
   const reportsDropdownItems = [
-    "Inspection",
-    "Pending Reports",
-    "Low NSD",
-    "Hub-Mismatch",
-    "Mechanical Defect",
-    "Tyre Wear",
-    "Purchase",
+    "Purchase", "Inspection","Mechanical Defect","Tyre Wear", "Low NSD",    "Tyre Status", "Pending Reports"
   ];
 
   return (

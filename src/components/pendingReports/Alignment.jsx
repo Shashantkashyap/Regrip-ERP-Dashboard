@@ -69,8 +69,8 @@ const Alignment = () => {
         const responseData = response.data;
 
         setData(responseData.data || []);
-        setTotalItems(responseData.totalItems || 0); // Fetch the total items
-        setTotalPages(responseData.totalPages); // Calculate total pages
+        setTotalItems(responseData.pagination.total_records || 0); // Fetch the total items
+        setTotalPages(responseData.pagination.total_pages || 1); // Calculate total pages
       } catch (error) {
         setError("Failed to fetch data. Please try again later.");
       } finally {
@@ -98,8 +98,7 @@ const Alignment = () => {
 
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1); // Create array of page numbers
 
-  console.log(data)
-
+  
   return (
     <div className="p-6 bg-[#F7F7F7] rounded-[50px] overflow-x-auto relative">
       {showAlignmentFilter && (
@@ -139,10 +138,11 @@ const Alignment = () => {
                 <tr className="bg-[#F5F5F5] text-[#727272] font-normal text-[15px] leading-[21.42px]">
                   <td className="text-left p-3">#</td>
                   <td className="text-left p-3">Vehicle No.</td>
-                  <td className="text-left p-2">Last alignment date</td>
-                  <td className="text-left p-2">Last alignment(km)</td>
+                  <td className="text-left p-2">Last Alignment date</td>
+                  <td className="text-left p-2">Last Alignment(km)</td>
                   <td className="text-left p-2">Last Inspection date</td>
-                  <td className="text-left p-3">Running since last allignment</td>
+                  <td className="text-left p-2">Last Inspection(km)</td>
+                  <td className="text-left p-3">Running since last Alignment</td>
                   
                   
                 </tr>
@@ -160,9 +160,10 @@ const Alignment = () => {
                       <td className="p-3">{(currentPage - 1) * itemsPerPage + index + 1}</td>
                       <td className="p-3 text-[#65A948] underline cursor-pointer">{noData(vehicle.vehicle_no)}</td>
                       <td className="p-3">{vehicle.last_alignment}</td> {/* Date formatted */}
-                      <td className="p-3">{vehicle.total_alignment_count}</td>
-                      <td className="p-3">{vehicle.last_alignment}</td>
-                      <td className="p-3">{noData(vehicle.last_alignment_days.split(" ")[0])}</td>
+                      <td className="p-3">{vehicle.last_alignment_km || 0}</td>
+                      <td className="p-3">{vehicle.last_inspection_date || "NA"}</td>
+                      <td className="p-3">{vehicle.last_inspection_km || 0}</td>
+                      <td className="p-3">{Math.abs((vehicle.last_inspection_km || 0) - (vehicle.last_alignment_km || 0))}</td>
                     </tr>
                   ))
                 )}

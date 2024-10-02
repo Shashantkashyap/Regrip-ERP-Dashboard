@@ -42,7 +42,7 @@ const barData = {
       data: [300, 116, 400, 350, 370],
       backgroundColor: [
         "#E08D3A",
-        "rgba(255, 140, 0, 0.5)",
+        "#E08D3A",
         "#E08D3A",
         "#E08D3A",
         "#E08D3A",

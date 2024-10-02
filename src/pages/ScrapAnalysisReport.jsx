@@ -27,6 +27,7 @@ import { Line, Bar, Doughnut } from "react-chartjs-2";
 import Calendar from "react-calendar";
 import { addMonths } from "date-fns/addMonths";
 import DateRange from "../components/DateRange";
+import useScrapData from "../custom-hooks/ScrapDataFetching";
 
 ChartJS.register(
   CategoryScale,
@@ -42,11 +43,10 @@ ChartJS.register(
 );
 
 function ScrapAnalysisReport() {
-  const [loading, setLoading] = useState(false);
   const [dateRange, setDateRange] = useState({ startDate: addMonths(new Date(), -3), endDate: new Date() });
-  const [error, setError] = useState(null);
   const [data, setData] = useState([]);
-  const [selectVal, setSelectVal] = useState("total");
+  const [selectVal, setSelectVal] = useState("total_count");
+  const [tyreListFilter, setTyreListFilter] = useState({brand_name: "", vehicle_no: "", reason: ""});
   const [showStartCalendar, setShowStartCalendar] = useState(false);
   const [showEndCalendar, setShowEndCalendar] = useState(false);
   const [popupMessage, setPopupMessage] = useState('');
@@ -54,6 +54,7 @@ function ScrapAnalysisReport() {
     startDate: null,
     endDate: null,
   });
+  const {countData, brandData, reasonData, vehicleData, doughnutData, nsdData, tyreList, loading, error} = useScrapData(selectVal, customDateRange, tyreListFilter);
 
   const handleStartDateChange = (date) => {
     if (isFuture(date)) {
@@ -90,32 +91,6 @@ function ScrapAnalysisReport() {
   const headersArray = ["Brand", "Scrap Count", "Tyre Count", "Scrap %"];
   const headersArray1 = ["Reason", "No. of Tyres", "%"];
 
-  const dataArray = [
-    ["JK", 51, 152, "10%"],
-    ["JK", 51, 152, "10%"],
-    ["JK", 51, 152, "10%"],
-    ["JK", 51, 152, "10%"],
-  ];
-
-  const dataArray1 = [
-    ["Pencil Buldge", 51, "10%"],
-    ["Pencil Buldge", 51, "10%"],
-    ["Pencil Buldge", 51, "10%"],
-    ["Pencil Buldge", 51, "10%"],
-    ["Pencil Buldge", 51, "10%"],
-    ["Pencil Buldge", 51, "10%"],
-    ["Pencil Buldge", 51, "10%"],
-    ["Pencil Buldge", 51, "10%"],
-    ["Pencil Buldge", 51, "10%"],
-  ];
-
-  const vehicleDataArray = [
-    ["RJ12SR2299", 152, "10%"],
-    ["RJ12SR2299", 152, "10%"],
-    ["RJ12SR2299", 152, "10%"],
-    ["RJ12SR2299", 152, "10%"],
-    ["RJ12SR2299", 152, "10%"],
-  ];
 
   const driverDataarray = [
     ["Name1", 152, "10%"],
@@ -125,6 +100,10 @@ function ScrapAnalysisReport() {
     ["Name1", 152, "10%"],
     ["Name1", 152, "10%"],
   ];
+
+  useEffect(() => {
+    console.log("TyreList Data in Report: ", (tyreList));
+  }, [selectVal, customDateRange, tyreList]);
 
   return (
     <div className="p-6 rounded-[50px] overflow-x-auto relative">
@@ -171,62 +150,77 @@ function ScrapAnalysisReport() {
                     Total Scrap Count
                   </h2>
                   <div className="flex items-center gap-2 mb-3 justify-center lg:justify-start">
-                    <span className="text-5xl font-semibold text-[#65A948]">
-                      310
+                    <span className="text-5xl font-semibold text-[#65A948] flex gap-2">
+                      {countData?.total_scrap_count ? countData?.total_scrap_count : countData?.current_scrap_count || countData?.total_scrap_count}
+                      {
+                        selectVal !== "total_count" && (
+                          <div className="ml-2 flex items-center bg-[#65A948] text-[#FFF] rounded-full px-3 py-1 mt-2 text-sm font-medium flex-row">
+                            <span className="flex gap-1">
+                              { 
+                                // Calculate the scrap count difference
+                                (countData?.current_scrap_count || (countData?.total_scrap_count - countData?.previous_scrap_count)) > 0
+                                ? `${(countData?.current_scrap_count || countData?.total_scrap_count) - countData?.previous_scrap_count}`
+                                : `${Math.abs((countData?.current_scrap_count || countData?.total_scrap_count) - countData?.previous_scrap_count)}`
+                              }
+                              
+                              { 
+                                // Display the double upward arrow if the count is positive
+                                (countData?.current_scrap_count || (countData?.total_scrap_count - countData?.previous_scrap_count)) > 0 ? (
+                                  <svg
+                                    className="w-4 h-4 mt-1 mr-1"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M19 15l-7-7-7 7 M19 9l-7-7-7 7"
+                                    />
+                                  </svg>
+                                ) : (
+                                  // Display the double downward arrow if the count is negative
+                                  <svg
+                                    className="w-4 h-4 mt-1 mr-1"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M5 9l7 7 7-7M5 4l7 7 7-7"
+                                    />
+                                  </svg>
+                                )
+                              }
+                            </span>
+                          </div>
+                        )
+                      }
                     </span>
-                    <div className="ml-2 flex items-center bg-[#65A948] text-[#FFF] rounded-full px-2 py-1 mt-2 text-sm font-medium">
-                      <svg
-                        className="w-4 h-4 mt-1 mr-1"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M5 9l7 7 7-7M5 4l7 7 7-7"
-                        />
-                      </svg>
-                      <span>10</span>
-                    </div>
                   </div>
                   <div className="flex items-center text-gray-500 text-sm mt-2 justify-center font-semibold lg:justify-start">
                     {
-                      selectVal === "total_count" && (
+                      selectVal !== "total_count" && (
                         <>
                           <span>
-                            vs prev. <span className="text-lg">320</span>
+                            vs prev. <span className="text-lg">{countData?.previous_scrap_count}</span>
                           </span>
                           <span className="mx-2 font-extralight">|</span>
                         </>
                       )
                     }
-                    {/* <div
-                      className="flex items-center cursor-pointer"
-                      onClick={showDate}
-                    >
-                      <span>Sep 24</span>
-                      <svg
-                        className="ml-1 w-4 h-4 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="3"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M19 9l-7 7-7-7"
-                        />
-                      </svg>
-                    </div> */}
+                    
                     <select
                       name="date-picker"
                       className="bg-transparent"
                       onChange={(e) => setSelectVal(e.target.value)}
+                      value={selectVal}
                     >
                       <option value="total_count">Total Count</option>
                       <option value="last_month">Last Month</option>
@@ -301,24 +295,24 @@ function ScrapAnalysisReport() {
                     title1="Controllable"
                     title2="Non-Controllable"
                     data1={[
-                      { value: 220, unit: "Count" },
-                      { value: 18, unit: "%" },
+                      { value: 0, unit: "Count" },
+                      { value: 0, unit: "%" },
                     ]}
                     data2={[
-                      { value: 220, unit: "Count" },
-                      { value: 18, unit: "%" },
+                      { value: 0, unit: "Count" },
+                      { value: 0, unit: "%" },
                     ]}
                   />
                   <BoxCard
                     title1="Repeatable"
                     title2="Non-Repeatable"
                     data1={[
-                      { value: 220, unit: "RC" },
-                      { value: 18, unit: "DC" },
+                      { value: 0, unit: "Count" },
+                      { value: 0, unit: "%" },
                     ]}
                     data2={[
-                      { value: 220, unit: "RC" },
-                      { value: 18, unit: "DC" },
+                      { value: 0, unit: "Count" },
+                      { value: 0, unit: "%" },
                     ]}
                   />
                 </div>
@@ -328,16 +322,18 @@ function ScrapAnalysisReport() {
               <div className="grid lg:grid-cols-2 gap-6">
                 {/* Second row: ScrapCountCard and ChartComponent */}
                 <ScrapCountCard
+                  tyreListFilter={tyreListFilter}
+                  setTyreListFilter={setTyreListFilter}
                   title="Brand Wise"
-                  count={580}
+                  count={countData?.current_scrap_count || countData?.total_scrap_count}
                   tableHeaders={headersArray}
-                  tableData={Object.values(dataArray)}
+                  tableData={brandData}
                   className="w-full"
                 />
                 <div className="pl-2 bg-white h-[350px] flex flex-col px-5 justify-center items-center gap-3 rounded-xl border border-gray-200 ">
                   <div className="flex justify-between items-center w-full px-1">
-                    <p className="font-semibold text-lg text-gray-800 translate-y-3">NSD Wise</p>
-                    <p className="text-green-600 text-xl font-semibold translate-y-3">{580}</p>
+                    <p className="font-semibold text-lg text-gray-800">NSD Wise</p>
+                    <p className="text-green-600 text-xl font-semibold">{countData?.current_scrap_count || countData?.total_scrap_count}</p>
                   </div>
                   <Bar
                     data={{
@@ -345,10 +341,10 @@ function ScrapAnalysisReport() {
                       datasets: [
                         {
                           label: "Count",
-                          data: [0, 100, 200, 300, 400, 500],
+                          data: nsdData,
                           backgroundColor: [
                             "#65A143", // solid green for first bar
-                            "rgba(101, 161, 67, 0.5)", // lighter green for second bar
+                            "#65A143", // lighter green for second bar
                             "#65A143", // solid green for third bar
                             "#65A143", // solid green for fourth bar
                           ],
@@ -375,22 +371,35 @@ function ScrapAnalysisReport() {
               </div>
 
               {/* Third Row */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* <ChartComponent className="w-full pr-2" /> */}
-                <div>
-                  <div className="flex justify-between translate-y-10 items-center w-full px-8 pt-1">
-                    <p className="font-semibold text-lg text-gray-800 -translate-x-3 translate-y-3">Month Wise</p>
-                    <DateRange className="text-green-600 text-xl font-semibold translate-y-3" isYearly={true} />
+              <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-6 w-full">
+                {/* First chart container */}
+                <div className="-translate-y-12">
+                  <div className="flex justify-between items-center w-full px-4 md:px-6 lg:px-8 pt-1 translate-y-6 md:translate-y-8 lg:translate-y-10">
+                    <p className="font-semibold text-base md:text-lg lg:text-xl text-gray-800 -translate-x-1 translate-y-3 md:translate-y-5 lg:translate-y-5">
+                      Month Wise
+                    </p>
+                    {/* DateRange component can be re-enabled if needed */}
+                    {/* <DateRange className="text-green-600 text-xl font-semibold translate-y-3" isYearly={true} /> */}
+                    <p className="text-green-600 text-base md:text-lg lg:text-xl font-semibold translate-y-3 md:translate-y-5 lg:translate-y-5">
+                      {countData?.total_scrap_count || countData?.current_scrap_count}
+                    </p>
                   </div>
                   <ChartComponent title="MonthWise" count={0}>
                     <LineChart />
                   </ChartComponent>
                 </div>
-                {/* <ChartComponent className="w-full pr-2" /> */}
-                <div>
-                  <div className="flex justify-between translate-y-10 items-center w-full px-8 pt-1">
-                    <p className="font-semibold text-lg text-gray-800 -translate-x-3 translate-y-3">Scrap Accountable</p>
-                    <DateRange className="text-green-600 text-xl font-semibold translate-y-3" isYearly={true} />
+
+                {/* Second chart container */}
+                <div className="-translate-y-12">
+                  <div className="flex justify-between items-center w-full px-4 md:px-6 lg:px-8 pt-1 translate-y-6 md:translate-y-8 lg:translate-y-10">
+                    <p className="font-semibold text-base md:text-lg lg:text-xl text-gray-800 -translate-x-1 translate-y-3 md:translate-y-5 lg:translate-y-5">
+                      Scrap Accountable
+                    </p>
+                    {/* DateRange component can be re-enabled if needed */}
+                    {/* <DateRange className="text-green-600 text-xl font-semibold translate-y-3" isYearly={true} /> */}
+                    <p className="text-green-600 text-base md:text-lg lg:text-xl font-semibold translate-y-3 md:translate-y-5 lg:translate-y-5">
+                      {countData?.total_scrap_count || countData?.current_scrap_count}
+                    </p>
                   </div>
                   <ChartComponent title="Scrap Accountable" count={0}>
                     <BarChart />
@@ -399,89 +408,84 @@ function ScrapAnalysisReport() {
               </div>
 
               {/* Fourth Row */}
-              <div className="grid lg:grid-cols-2 gap-6">
+              <div className="grid lg:grid-cols-2 gap-6 -translate-y-12">
                 {/* Chart with Doughnut */}
                 <div className="bg-white px-6 py-12 pt-8 flex-col rounded-lg border border-gray-200 h-[350px] flex justify-center items-start">
                   <div className="flex justify-between items-center w-full">
                     <p className="font-semibold text-lg text-gray-800">Tyre Area</p>
-                    <p className="text-green-600 text-xl font-semibold">{580}</p>
+                    <p className="text-green-600 text-xl font-semibold">{countData?.current_scrap_count || countData?.total_scrap_count}</p>
                   </div>
-                  <Doughnut
-                    data={{
-                      labels: ["Inner Crown", "Side Wall", "Tread", "Crown"],
-                      datasets: [
-                        {
-                          label: "Tyre Area",
-                          data: [84, 20, 32, 32], // Data matching the distribution
-                          backgroundColor: [
-                            "rgb(45, 47, 240)", // Inner Crown
-                            "rgb(255, 195, 0)", // Side Wall
-                            "rgb(181, 23, 158)", // Tread
-                            "rgb(46, 159, 239)", // Crown
-                          ],
-                          hoverOffset: 4,
-                          borderWidth: 0,
-                        },
-                      ],
-                    }}
-                    options={{
-                      maintainAspectRatio: false,
-                      plugins: {
-                        legend: {
-                          display: true,
-                          labels: {
-                            padding: 20,
-                            boxWidth: 20, // Adjust the legend box width
+                  {
+                    doughnutData ? 
+                      <Doughnut
+                      data={{
+                        labels: ["Crown", "Side Wall", "Bead", "Inner Crown"],
+                        datasets: [
+                          {
+                            label: "Tyre Area",
+                            data: doughnutData, // Data matching the distribution
+                            backgroundColor: [
+                              "rgb(46, 159, 239)", // Crown
+                              "rgb(255, 195, 0)", // Side Wall
+                              "rgb(181, 23, 158)", // Tread
+                              "rgb(45, 47, 240)", // Inner Crown
+                            ],
+                            hoverOffset: 4,
+                            borderWidth: 0,
+                          },
+                        ],
+                      }}
+                      options={{
+                        maintainAspectRatio: false,
+                        plugins: {
+                          legend: {
+                            display: true,
+                            labels: {
+                              padding: 20,
+                              boxWidth: 20, // Adjust the legend box width
+                            },
                           },
                         },
-                        // tooltip: {
-                        //   callbacks: {
-                        //     label: function (context) {
-                        //       let label = context.label || "";
-                        //       if (label) {
-                        //         label += ": ";
-                        //       }
-                        //       if (context.raw !== null) {
-                        //         label += ${context.raw} count;
-                        //       }
-                        //       return label;
-                        //     },
-                        //   },
-                        // },
-                      },
-                      cutout: "60%", // Keeps the doughnut hole size consistent
-                    }}
-                  />
+                        cutout: "60%", // Keeps the doughnut hole size consistent
+                      }}
+                    /> : <h1>No Data Available</h1>
+                  }
                 </div>
                 <ScrapCountCard
+                  setTyreListFilter={setTyreListFilter}
+                  tyreListFilter={tyreListFilter}
                   title="Reasons"
-                  count={580}
+                  count={countData?.current_scrap_count || countData?.total_scrap_count}
                   tableHeaders={headersArray1}
-                  tableData={dataArray1}
+                  tableData={reasonData}
                   className="w-full"
                 />
               </div>
               
               {/* fifth Row */}
-              <div className="grid lg:grid-cols-2 gap-6">
+              <div className="grid lg:grid-cols-2 gap-6 -translate-y-12">
                 <ScrapCountCard
+                  setTyreListFilter={setTyreListFilter}
+                  tyreListFilter={tyreListFilter}
                   title="Vehicle"
-                  count={580}
+                  count={countData?.current_scrap_count || countData?.total_scrap_count}
                   tableHeaders={["Vehicle", "Count", "%"]}
-                  tableData={Object.values(vehicleDataArray)}
+                  tableData={vehicleData}
                   className="w-full"
                 />
-                <ScrapCountCard
+                {/* <ScrapCountCard
+                  setTyreListFilter={setTyreListFilter}
+                  tyreListFilter={tyreListFilter}
                   title="Driver"
-                  count={580}
+                  count={countData?.current_scrap_count || countData?.total_scrap_count}
                   tableHeaders={["Driver Name", "Count", "%"]}
                   tableData={Object.values(driverDataarray)}
                   className="w-full"
-                />
+                /> */}
               </div>
 
               {/* Sixth Row */}
-              <TyreListComponent />
+              <TyreListComponent data={tyreList} selectVal={selectVal} tyreListFilter={tyreListFilter} />
             </div>
           </div>
         )}

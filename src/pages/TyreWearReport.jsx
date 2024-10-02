@@ -44,11 +44,10 @@ function TyreWearReport() {
 
         // Append page to formData
         formData.append("page", currentPage);
-        console.log("FormData: ", formData);
 
         const response = await axios.post(
-          "http://newstaging.regripindia.com/api/tyre-wear-report",
-          formData, // Send formData, not an object
+          "https://newstaging.regripindia.com/api/tyre-wear-report",
+          {...filterData, report_type: formData.report_type}, // Send formData, not an object
           {
             headers: {
               "Content-Type": "multipart/form-data",
@@ -57,7 +56,7 @@ function TyreWearReport() {
           }
         );
 
-        console.log("Response: ", response);
+        // console.log("Response: ", response);
         const responseData = response.data;
         // console.log("Response Data: ", responseData);
         setTotalPages(responseData.pagination.total);

@@ -8,7 +8,7 @@ const initialState = {
     status: "",
     delay_days: "",
     ageing: "",
-    report_type: "tyre"
+    report_type: "tyre-wise"
   },
 };
 

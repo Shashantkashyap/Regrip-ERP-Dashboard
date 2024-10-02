@@ -7,20 +7,15 @@ import ScrapAnalysisFilter from "./ScrapAnalysisFilter";
 import axios from "axios";
 import { setScrapFilterFormData } from "../../redux/Slices/scrapFilter";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
+import useScrapData from "../../custom-hooks/ScrapDataFetching";
 
-const TyreListComponent = () => {
+const TyreListComponent = ({ data, tyreListFilter }) => {
   const [showTyreScrapFilter, setShowshowTyreScrapFilter] = useState(false);
-  const dispatch = useDispatch();
   const [filterData, setFilterData] = useState("");
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [sortOrder, setSortOrder] = useState({
-    sortField: "",
-    sortOrder: "desc",
-  });
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [totalRecords, setTotalRecords] = useState(0);
+  // const [tyreList] = useScrapData(selectVal);
 
   const handleFilterToggle = () => {
     setShowshowTyreScrapFilter(!showTyreScrapFilter);
@@ -39,178 +34,12 @@ const TyreListComponent = () => {
 
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
-  const tyres = [
-    {
-      tyreNo: "CZ89031132021",
-      size: "1000-20",
-      make: "Bridgestone",
-      model: "JUH",
-      purchaseDate: "13 Sep 23",
-      fitmentDate: "14 Sep 23",
-      stdNsd: 12.5,
-      scrapNsd: 4.0,
-      scrapDate: "15 Sep 24",
-      reasonOfScrap: "Tyre Burst",
-    },
-    {
-      tyreNo: "CZ89031132021",
-      size: "1000-20",
-      make: "Bridgestone",
-      model: "JUH",
-      purchaseDate: "13 Sep 23",
-      fitmentDate: "14 Sep 23",
-      stdNsd: 12.5,
-      scrapNsd: 4.0,
-      scrapDate: "15 Sep 24",
-      reasonOfScrap: "Tyre Burst",
-    },
-    {
-      tyreNo: "CZ89031132021",
-      size: "1000-20",
-      make: "Bridgestone",
-      model: "JUH",
-      purchaseDate: "13 Sep 23",
-      fitmentDate: "14 Sep 23",
-      stdNsd: 12.5,
-      scrapNsd: 4.0,
-      scrapDate: "15 Sep 24",
-      reasonOfScrap: "Tyre Burst",
-    },
-    {
-      tyreNo: "CZ89031132021",
-      size: "1000-20",
-      make: "Bridgestone",
-      model: "JUH",
-      purchaseDate: "13 Sep 23",
-      fitmentDate: "14 Sep 23",
-      stdNsd: 12.5,
-      scrapNsd: 4.0,
-      scrapDate: "15 Sep 24",
-      reasonOfScrap: "Tyre Burst",
-    },
-    {
-      tyreNo: "CZ89031132021",
-      size: "1000-20",
-      make: "Bridgestone",
-      model: "JUH",
-      purchaseDate: "13 Sep 23",
-      fitmentDate: "14 Sep 23",
-      stdNsd: 12.5,
-      scrapNsd: 4.0,
-      scrapDate: "15 Sep 24",
-      reasonOfScrap: "Tyre Burst",
-    },
-    {
-      tyreNo: "CZ89031132021",
-      size: "1000-20",
-      make: "Bridgestone",
-      model: "JUH",
-      purchaseDate: "13 Sep 23",
-      fitmentDate: "14 Sep 23",
-      stdNsd: 12.5,
-      scrapNsd: 4.0,
-      scrapDate: "15 Sep 24",
-      reasonOfScrap: "Tyre Burst",
-    },
-    {
-      tyreNo: "CZ89031132021",
-      size: "1000-20",
-      make: "Bridgestone",
-      model: "JUH",
-      purchaseDate: "13 Sep 23",
-      fitmentDate: "14 Sep 23",
-      stdNsd: 12.5,
-      scrapNsd: 4.0,
-      scrapDate: "15 Sep 24",
-      reasonOfScrap: "Tyre Burst",
-    },
-    {
-      tyreNo: "CZ89031132021",
-      size: "1000-20",
-      make: "Bridgestone",
-      model: "JUH",
-      purchaseDate: "13 Sep 23",
-      fitmentDate: "14 Sep 23",
-      stdNsd: 12.5,
-      scrapNsd: 4.0,
-      scrapDate: "15 Sep 24",
-      reasonOfScrap: "Tyre Burst",
-    },
-    {
-      tyreNo: "CZ89031132021",
-      size: "1000-20",
-      make: "Bridgestone",
-      model: "JUH",
-      purchaseDate: "13 Sep 23",
-      fitmentDate: "14 Sep 23",
-      stdNsd: 12.5,
-      scrapNsd: 4.0,
-      scrapDate: "15 Sep 24",
-      reasonOfScrap: "Tyre Burst",
-    },
-    {
-      tyreNo: "CZ89031132021",
-      size: "1000-20",
-      make: "Bridgestone",
-      model: "JUH",
-      purchaseDate: "13 Sep 23",
-      fitmentDate: "14 Sep 23",
-      stdNsd: 12.5,
-      scrapNsd: 4.0,
-      scrapDate: "15 Sep 24",
-      reasonOfScrap: "Tyre Burst",
-    },
-    // Add more tyre objects as necessary...
-  ];
-
-  const fetchTyrePurchaseData = useCallback(
-    async (filterData = {}) => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        // send filter data object in the body and take it from body
-        // const response = await axios.post(
-        //   ``,
-        //   {...filterData, report_type},
-        //   {
-        //     headers: {
-        //       "Content-Type": "multipart/form-data",
-        //       Authorization: "google",
-        //     },
-        //   }
-        // );
-
-        console.log("Response Submitted", filterData);
-        // const responseData = response.data;
-        // console.log("Response Data: ", responseData);
-        // setTotalPages(responseData.pagination.total);
-        // setData(responseData.data || []);
-      } catch (error) {
-        console.log(error);
-        setError("Failed to fetch data. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    },
-    [filterData]
-  );
-
-  const handleSort = (data) => {
-    const { sortField, sortOrder } = data;
-    dispatch(setScrapFilterFormData({ sortOrder, sortField }));
-  };
-
   useEffect(() => {
-    handleSort(sortOrder);
-  }, [sortOrder]);
-
-  useEffect(() => {
-    fetchTyrePurchaseData(filterData);
-  }, [fetchTyrePurchaseData, filterData]);
+    console.log("TyreList: ", data);
+  }, [data]);
 
   return (
-    <div className="max-w-full overflow-x-auto">
+    <div className="max-w-full overflow-x-auto -translate-y-12">
       <div className="rounded-lg border border-gray-200 bg-white p-6">
         <div className="flex justify-between w-full items-center">
           <h2 className="text-lg font-semibold mb-4">Tyre List</h2>
@@ -237,129 +66,115 @@ const TyreListComponent = () => {
           <table className="min-w-full bg-white rounded-xl font-semibold whitespace-nowrap table-auto">
             <thead className="bg-[#FFF] border-b sticky top-0 rounded-lg">
               <tr>
+                <td className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
+                  #
+                </td>
+                <td className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
+                  Tyre S.No.
+                </td>
+                <td className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
+                  Size
+                </td>
+                <td className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
+                  Make
+                </td>
+                <td className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
+                  Model
+                </td>
+                <td className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
+                  Std. NSD
+                </td>
+                <td className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
+                  Scrap NSD
+                </td>
                 <th className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
-                  <small>#</small>
+                  Reason of Scrap
                 </th>
-                <th className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
-                  <small>Tyre S.No.</small>
-                </th>
-                <th className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
-                  <small>Size</small>
-                  <button
-                    onClick={() =>
-                      setSortOrder((prev) => {
-                        if (prev.sortOrder === "asc") {
-                          return { sortField: "size", sortOrder: "desc" };
-                        }
-                        return { sortField: "size", sortOrder: "asc" };
-                      })
-                    }
-                  >
-                    <FaSort className="inline ml-1 mr-1 cursor-pointer" />
-                  </button>
-                </th>
-                <th className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
-                  <small>Make</small>
-                </th>
-                <th className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
-                  <small>Model</small>
-                </th>
-                <th className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
-                  <small>Purchase Date</small>
-                  <button
-                    onClick={() =>
-                      setSortOrder((prev) => {
-                        console.log(prev);
-
-                        if (prev.sortOrder === "asc") {
-                          return {
-                            sortField: "purchase_date",
-                            sortOrder: "desc",
-                          };
-                        }
-                        return { sortField: "purchase_date", sortOrder: "asc" };
-                      })
-                    }
-                  >
-                    <FaSort className="inline ml-1 mr-1 cursor-pointer" />
-                  </button>
-                </th>
-                <th className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
-                  <small>Fitment Date</small>
-                  <button onClick={() => handleSort()}>
-                    <FaSort className="inline ml-1 mr-1 cursor-pointer" />
-                  </button>
-                </th>
-                <th className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
-                  <small>Std. NSD</small>
-                  <button onClick={() => handleSort()}>
-                    <FaSort className="inline ml-1 mr-1 cursor-pointer" />
-                  </button>
-                </th>
-                <th className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
-                  <small>Scrap NSD</small>
-                  <button onClick={() => handleSort()}>
-                    <FaSort className="inline ml-1 mr-1 cursor-pointer" />
-                  </button>
-                </th>
-                <th className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
-                  <small>Scrap Date</small>
-                  <button onClick={() => handleSort()}>
-                    <FaSort className="inline ml-1 mr-1 cursor-pointer" />
-                  </button>
-                </th>
-                <th className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
-                  <small>Reason of Scrap</small>
-                </th>
-                <th className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
-                  <small>Image</small>
-                </th>
+                <td className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
+                  Fitment Date
+                </td>
+                <td className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
+                  Purchased Date
+                </td>
+                <td className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
+                  Scrap Date
+                </td>
+                <td className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
+                  Image
+                </td>
               </tr>
             </thead>
+
             <tbody className="rounded-lg">
-              {tyres.map((tyre, index) => (
-                <tr
-                  key={index}
-                  className="border-b hover:bg-gray-100 transition-all"
-                >
-                  <td className="px-4 py-2 text-sm text-gray-700 text-center">
-                    {index + 1}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-700 text-center">
-                    {tyre.tyreNo}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-700 text-center">
-                    {tyre.size}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-700 text-center">
-                    {tyre.make}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-700 text-center">
-                    {tyre.model}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-700 text-center">
-                    {tyre.purchaseDate}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-700 text-center">
-                    {tyre.fitmentDate}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-700 text-center">
-                    {tyre.stdNsd.toFixed(2)}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-700 text-center">
-                    {tyre.scrapNsd.toFixed(2)}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-700 text-center">
-                    {tyre.scrapDate}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-700 text-center">
-                    {tyre.reasonOfScrap}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-700 text-center">
-                    {tyre.image}
-                  </td>
-                </tr>
-              ))}
+              {data?.map((tyre, index) => {
+                // Filter actions for each relevant action type
+                const fitmentAction = tyre.actions?.find(
+                  (item) => item.action === "Fitment"
+                );
+                const purchasedAction = tyre.actions?.find(
+                  (item) => item.action === "Purchased"
+                );
+                const removalAction = tyre.actions?.find(
+                  (item) => item.action === "Removal"
+                );
+                const scrapAction = tyre.actions?.find(
+                  (item) => item.action === "Scrap"
+                );
+
+                return (
+                  <tr
+                    key={index}
+                    className="border-b hover:bg-gray-100 transition-all"
+                  >
+                    <td className="px-4 py-2 text-sm text-gray-700 text-center">
+                      {index + 1}
+                    </td>
+                    <td className="px-4 py-2 text-sm text-gray-700 text-center">
+                      {tyre.serial_no}
+                    </td>
+                    <td className="px-4 py-2 text-sm text-gray-700 text-center">
+                      {tyre.tyre_size}
+                    </td>
+                    <td className="px-4 py-2 text-sm text-gray-700 text-center">
+                      {tyre.brand_name}
+                    </td>
+                    <td className="px-4 py-2 text-sm text-gray-700 text-center">
+                      {tyre.model_name}
+                    </td>
+                    <td className="px-4 py-2 text-sm text-gray-700 text-center">
+                      {tyre.standard_nsd}
+                    </td>
+                    <td className="px-4 py-2 text-sm text-gray-700 text-center">
+                      {tyre.scrap_nsd}
+                    </td>
+                    <td className="px-4 py-2 text-sm text-gray-700 text-center">
+                      {tyre.scrap_reason}
+                    </td>
+                    {/* Render Fitment Date */}
+                    <td className="px-4 py-2 text-sm text-gray-700 text-center">
+                      {fitmentAction
+                        ? fitmentAction.action_date || (fitmentAction.date)
+                        : "NA"}
+                    </td>
+                    {/* Render Purchased Date */}
+                    <td className="px-4 py-2 text-sm text-gray-700 text-center">
+                      {purchasedAction
+                        ? purchasedAction.action_date || purchasedAction.date
+                        : "NA"}
+                    </td>
+                    {/* Render Removal Date */}
+                    <td className="px-4 py-2 text-sm text-gray-700 text-center">
+                      {removalAction
+                        ? removalAction.action_date || removalAction.date
+                        : "NA"}
+                    </td>
+                    {/* Render Image */}
+                    <td className="px-4 py-2 text-sm text-gray-700 text-center">
+                      {tyre.image ? <img src={tyre.image} alt="Tyre" /> : "NA"}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

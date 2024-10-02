@@ -8,7 +8,7 @@ const PendingInspectionFilterSidebar = ({ isVisible, onClose, onSubmit }) => {
 
   const filters = [
     { label: 'Vehicle Number', type: 'text', name: 'vehicle_no', placeholder: 'Enter Vehicle Number' },
-    { label: 'Ageing (Days)', type: 'text', name: 'min_inspection_days', placeholder: 'Enter Ageing(eg. 30,60)' },
+    { label: 'Ageing (Days)', type: 'text', name: 'min_inspection_days', placeholder: 'Enter Ageing greater than(eg. 30,60)' },
   ];
 
   // Initialize form data only once when the component mounts

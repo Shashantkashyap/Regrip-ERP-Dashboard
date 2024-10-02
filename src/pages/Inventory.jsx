@@ -75,10 +75,12 @@ function Inventory() {
         },
       });
 
+      
+
       const totalItems = response.data.total_tyres;
       const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-      console.log(response);
+     
       setTyreData(response.data.data || []);
       setTotalPages(totalPages);
     } catch (error) {
@@ -86,7 +88,7 @@ function Inventory() {
     }
   };
 
-  console.log(tyreSummary);
+  
 
   useEffect(() => {
     fetchTyreSummary();
@@ -140,13 +142,13 @@ function Inventory() {
    utilizedDetails: [
       {
         count: tyreSummary.data[5]?.total || 0,
-        label: "In Use",
+        label: "On-Wheel",
         current_status: "On-Wheel",
       },
       {
         count: tyreSummary.data[4]?.total || 0,
         label: "Scrap",
-        tyre_condition: "Scrap",
+        current_status: "Scrap",
       },
       {
         count: tyreSummary.data[7]?.total || 0,

@@ -10,6 +10,8 @@ function PopupComponent({ close }) {
   const knowUser = JSON.parse(localStorage.getItem("userData"));
   const apiKey = knowUser.data.api_key;
 
+  console.log(localStorage.getItem("current_status"))
+
   const url = "https://api.regripindia.com/api";
   const [tyreData, setTyreData] = useState([]);
   const itemsPerPage = 10;
@@ -40,18 +42,25 @@ function PopupComponent({ close }) {
     setLoading(true); // Start loading
     try {
       const formData = new FormData();
+      
       for (const key in tyreBody) {
         if (tyreBody.hasOwnProperty(key)) {
           formData.append(key, tyreBody[key]);
         }
       }
 
+      if(tyreBody.hasOwnProperty("tyre_depth") || tyreBody.hasOwnProperty("brand_id")){
+        formData.append("current_status", localStorage.getItem("current_status"))
+      }
+      
       const response = await axios.post(`${url}/tyre-list`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: apiKey,
         },
       });
+
+      console.log(response)
 
       const totalItems = response.data.total_tyres;
       const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -100,7 +109,7 @@ function PopupComponent({ close }) {
                   ? `${tyreBody.current_status} Tyres`
                   : tyreBody.tyre_condition
                   ? `${tyreBody.tyre_condition} Tyres`
-                  : tyreBody.tyre_depth && tyreBody.current_status
+                  : tyreBody.tyre_depth
                   ? `Tyres with ${tyreBody.tyre_depth} mm Depth`
                   : tyreBody.product_category
                   ? `On-Wheel (${tyreBody.product_category}) Tyres`
@@ -148,10 +157,15 @@ function PopupComponent({ close }) {
               <tr className="bg-[#F5F5F5] text-[#727272] font-normal text-[15px] leading-[21.42px] sticky">
                 <td className="text-left p-3">#</td>
                 <td className="text-left p-3">Serial No.</td>
+                <td className="text-left p-3">Vehicle No.</td>
                 <td className="text-left p-2">Size</td>
                 <td className="text-left p-3">Brand</td>
                 <td className="text-left p-3">Model</td>
+                <td className="text-left p-3">Construction</td>
                 <td className="text-left p-3">Category</td>
+                <td className="text-left p-3">Min NSD</td>
+                <td className="text-left p-3">Max NSD</td>
+                <td className="text-left p-3">Remaining life</td>
               </tr>
             </thead>
 
@@ -160,10 +174,34 @@ function PopupComponent({ close }) {
                 <tr key={index} className="border-b border-[1px] font-normal text-[14px] leading-[21.42px] text-[#333333] border-gray-200">
                   <td className="p-3">{(currentPage - 1) * itemsPerPage + index + 1}</td>
                   <td className="p-3 text-green-600 cursor-pointer" onClick={() => showTyreJourney(item.id, item.serial_no)}>{item.serial_no}</td>
+                  <td className="p-2">{item.vehicle_no}</td>
                   <td className="p-2">{item.tyre_size}</td>
                   <td className="p-3">{item.brand_name}</td>
                   <td className="p-3">{item.model_name}</td>
                   <td className="p-3">{item.construction_type}</td>
+                  <td className="p-3">{item.product_category}</td>
+                  <td className="p-3">
+  {Math.min(
+    item.nsd1 ?? Infinity,
+    item.nsd2 ?? Infinity,
+    item.nsd3 ?? Infinity,
+    item.nsd4 ?? Infinity
+  )}
+</td>
+<td className="p-3">
+  {Math.max(
+    item.nsd1 ?? 0,
+    item.nsd2 ?? 0,
+    item.nsd3 ?? 0,
+    item.nsd4 ?? 0
+  )}
+</td>
+<td className="p-3">
+     {  
+    Math.floor(100 -  (((item.std_nsd -3) - (Math.min(item.nsd1 ?? Infinity, item.nsd2 ?? Infinity, item.nsd3 ?? Infinity, item.nsd4 ?? Infinity))) / (item.std_nsd -3))* 100)
+  } %
+</td>
+
                 </tr>
               ))}
             </tbody>

@@ -97,6 +97,8 @@ function MasterScreen() {
         }
       );
 
+      console.log(vehicleData)
+
       const { data } = vehicleData.data;
       setVehicles(data);
       setCurrentPage(vehicleData.data.pagination.currentPage);
@@ -176,7 +178,7 @@ function MasterScreen() {
               </span>
               <p>Export</p>
             </button>
-            <button
+            {/* <button
               className="p-[5px_15px_10px_15px] text-center rounded-[10px] text-[16px] text-white bg-[#333333] flex gap-1 items-center border-[1px]"
               onClick={() => setAddVehicle(!addVehicle)}
             >
@@ -184,12 +186,12 @@ function MasterScreen() {
                 <IoMdAdd />
               </span>
               <p>Add</p>
-            </button>
+            </button> */}
           </div>
         </div>
 
         {/* AddVehicle Component */}
-        {addVehicle && (
+        {/* {addVehicle && (
           <>
             <div className="fixed inset-0 bg-[rgba(0,0,0,0.8)] z-30"></div>
             <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-40 min-w-[600px] overflow-x-auto">
@@ -198,7 +200,7 @@ function MasterScreen() {
               </div>
             </div>
           </>
-        )}
+        )} */}
 
         {/* TyreFitment Component */}
         {vehicleId !== null && (
@@ -240,7 +242,7 @@ function MasterScreen() {
         vehicles.map((vehicle, index) => (
           <tr key={index} className="border-b border-[1px] font-normal text-[14px] leading-[21.42px] text-[#333333] border-gray-200">
             <td className="p-3">{vehicle.sr_no}</td>
-            <td className="p-3 text-[#65A948] underline cursor-pointer" onClick={() => setVehicle(vehicle.id)}>
+            <td className="p-3 text-[#65A948] underline cursor-pointer" onClick={() => setVehicle(vehicle.vehicle_id)}>
               {vehicle.vehicle_no}
             </td>
             <td className="p-3">{vehicle.wheels_count}</td>

@@ -1,6 +1,15 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { setTableFilter } from '../../redux/Slices/DasboardPopup';
 
-function TyreInventory({ selectedTable, setSelectedTable, tyreInventory = [] }) {
+function TyreInventory({ selectedTable, setSelectedTable, tyreInventory = []  }) {
+
+  const dispatch = useDispatch()
+
+  const setCurrntStatus = async (status)=>{
+    console.log(status)
+    localStorage.setItem("current_status", status)
+  }
 
   
   // Calculate total sum of tyres safely
@@ -44,11 +53,11 @@ function TyreInventory({ selectedTable, setSelectedTable, tyreInventory = [] }) 
             <table className="w-[96%] mx-auto max-lg:text-[14px] table-auto text-center border-collapse ">
               <tbody>
                 {tyreInventory.map((row, index) => (
-                  <tr key={index} className="text-center">
-                    <td className="px-2 pl-4 py-2 border-b text-left">{row.category}</td>
-                    <td className="px-1 py-2 border-b">{row.New}</td>
-                    <td className="px-4 py-2 border-b">{row.Retread}</td>
-                    <td className="px-3 pr-4 py-2 border-b">{row.Scrap}</td>
+                  <tr key={index} className="text-center" onClick={()=>dispatch(setTableFilter({ key:"tyre_depth" , value: row.category}))} >    
+                    <td className="px-2 pl-4 py-2 border-b text-left " >{row.category}</td>
+                    <td className="px-1 py-2 border-b cursor-pointer" onClick={()=> setCurrntStatus("New")}>{row.New}</td>
+                    <td className="px-4 py-2 border-b cursor-pointer" onClick={()=> setCurrntStatus("Retreaded")}>{row.Retread}</td>
+                    <td className="px-3 pr-4 py-2 border-b cursor-pointer" onClick={()=> setCurrntStatus("Scrap")}>{row.Scrap}</td>
                     <td className="px-2 py-2 border-b">{row.Total}</td>
                   </tr>
                 ))}
@@ -58,12 +67,12 @@ function TyreInventory({ selectedTable, setSelectedTable, tyreInventory = [] }) 
             <table className="w-[100%] max-lg:text-[14px] text-[14px] mx-auto table-auto text-center border-collapse ">
               <tbody>
                 {tyreInventory.map((row, index) => (
-                  <tr key={index} className="text-center">
-                    <td className="px-2 pl-3  py-2 border-b text-left">{row.category}</td>
-                    <td className="px-2 py-2 pr-8 border-b">{row.New}</td>
-                    <td className="px-4 py-2 pr-8 border-b">{row.Retread}</td>
-                    <td className="px-3 pr-8 py-2 border-b">{row.Scrap}</td>
-                    <td className="px-2 py-2 pr-6 border-b">{row.Total}</td>
+                  <tr key={index} className="text-center" onClick={()=>dispatch(setTableFilter({ key:"brand_id" , value: row.id}))}>
+                    <td className="px-2 pl-8  py-2 border-b text-left">{row.category}</td>
+                    <td className="px-2 py-2 pr-6 border-b cursor-pointer" onClick={()=> setCurrntStatus("New")}>{row.New}</td>
+                    <td className="px-4 py-2 pr-2 border-b cursor-pointer" onClick={()=> setCurrntStatus("Retreaded")}>{row.Retread}</td>
+                    <td className="px-3 pl-6 py-2 border-b cursor-pointer" onClick={()=> setCurrntStatus("Scrap")}>{row.Scrap}</td>
+                    <td className="px-2 py-2 pr-6 border-b ">{row.Total}</td>
                   </tr>
                 ))}
               </tbody>

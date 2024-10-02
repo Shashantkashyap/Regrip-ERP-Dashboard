@@ -23,7 +23,7 @@ function Dashboard() {
 
   const knowUser = JSON.parse(localStorage.getItem("userData"));
 
-  console.log(knowUser)
+  
 
   if (knowUser == null) {
     localStorage.removeItem("isLoggedIn");

@@ -200,7 +200,7 @@ const TyreStatus = () => {
   <tr className="bg-[#F5F5F5] text-[#727272] font-normal text-[15px] leading-[21.42px]">
     <td className="text-left p-4">#</td>
     
-    <td className="text-left p-4">Office</td>
+    
     <td className="text-left p-4">Insp. Date</td>
     <td className="text-left p-4">Tyre Insp. Location</td>
     <td className="text-left p-4">Last Updated Type</td>
@@ -239,7 +239,7 @@ const TyreStatus = () => {
                     <tr key={index} className="border-b border-[1px] font-normal text-[14px] leading-[21.42px] text-[#333333] border-gray-200">
                       <td className="text-left p-3">{noData(index + 1)}</td>
                       
-                      <td className="text-left p-1">{noData(tyre.city)}</td>
+                      
                       <td className="text-left p-1">{noData(formatDate(tyre.Last_Updated_time))}</td>
                       <td className="text-left p-3">{noData(tyre.tyre_inspection)}</td>
                       <td className="text-left p-3">{noData(tyre.current_status)}</td>

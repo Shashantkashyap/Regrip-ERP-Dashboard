@@ -74,6 +74,9 @@ const filterTab = useSelector((state) => state.dashboardTableFilter.tableFilter)
        else if (filterTab.hasOwnProperty("current_status") || filterTab.hasOwnProperty("ongoing_status") || filterTab.hasOwnProperty("stock_status")){
         setShowPopup(true)
       }
+      else if (filterTab.hasOwnProperty("tyre_depth") || filterTab.hasOwnProperty("ongoing_status") || filterTab.hasOwnProperty("stock_status") || filterTab.hasOwnProperty("brand_id")){
+        setShowPopup(true)
+      }
     } else {
       console.log("Filter is empty.");
     }
@@ -142,7 +145,10 @@ const filterTab = useSelector((state) => state.dashboardTableFilter.tableFilter)
           },
         }
       );
+
+      
       setTyreInventory(inventoryData.data.data || []); // Default to empty array if no data
+      console.log(tyreInventoryData)
     } catch (error) {
       toast.error('Error fetching tyre inventory data'); // Show error toast
       console.error('Error fetching tyre inventory data:', error);
@@ -191,6 +197,7 @@ const filterTab = useSelector((state) => state.dashboardTableFilter.tableFilter)
   const closeFilterTab = ()=>{
     dispatch(clearTableFilter())
     setShowPopup(false);
+    localStorage.removeItem("current_status")
     
   }
 
@@ -239,6 +246,7 @@ const filterTab = useSelector((state) => state.dashboardTableFilter.tableFilter)
                 selectedTable={selectedTable}
                 setSelectedTable={setSelectedTable}
                 tyreInventory={tyreInventoryData.inventory} // Fixed to use correct variable
+                
               />
               <Alerts alertItems={alertItems} />
 

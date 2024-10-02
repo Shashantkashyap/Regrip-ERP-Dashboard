@@ -3,8 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   formData: {
     vendor_name: "",
-    from: "",
-    to: "",
+    from_date: "",
+    to_date: "",
     report_type: "invoice-wise",
     page: 1,
     limit: 10

@@ -21,7 +21,13 @@ function formatDate(dateStr) {
 }
 
 function TyrePurchaseReport() {
+
+  const knowUser = JSON.parse(localStorage.getItem("userData"));
+  const apiKey = knowUser.data.api_key
+
   const itemsPerPage = 10;
+  const [searchText, setSearchText] = useState(""); // State to store search input
+
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [showTyrePurchaseFilter, setShowTyrePurchaseFilter] = useState(false);
@@ -44,23 +50,40 @@ function TyrePurchaseReport() {
       setLoading(true);
       setError(null);
 
+
       try {
+
+        const formData = new FormData();
+
+        console.log(searchText)
+
+        if (searchText.trim()) {
+          formData.append("text", searchText);
+        }
+
+        formData.append("report_type", filterData.report_type)
+       
+        
+        
+
+        console.log(formData)
+
+
         const response = await axios.post(
-          `https://newstaging.regripindia.com/api/tyre-purchase-report`,
-          {...filterData, report_type},
+          "https://newstaging.regripindia.com/api/tyre-purchase-report",
+          formData,  // Send formData, not an object
           {
             headers: {
               "Content-Type": "multipart/form-data",
-              Authorization: "google",
+              Authorization: apiKey,
             },
           }
         );
 
-        const responseData = response?.data?.map((item, idx, self) => {
-          self.address = item.address.split(',')[0];
-          console.log("Address: ", item.address);
-        });
-        console.log("Response Data: ", responseData);
+        console.log(response)
+        const responseData= response.data
+
+        
         setTotalPages(responseData.pagination.total);
         setData(responseData.data || []);
       } catch (error) {
@@ -70,14 +93,14 @@ function TyrePurchaseReport() {
         setLoading(false);
       }
     },
-    [currentPage, filterData, report_type]
+    [currentPage, filterData, report_type, searchText]
   );
 
   useEffect(() => {
     fetchTyrePurchaseData(filterData); 
     console.log(filterData, report_type);
     // setFilterData('');
-  }, [fetchTyrePurchaseData, currentPage, report_type, filterData]);
+  }, [fetchTyrePurchaseData, currentPage, report_type, filterData, searchText]);
 
   const handleSubmit = (data) => {
     setFilterData(data);
@@ -101,6 +124,10 @@ function TyrePurchaseReport() {
     setVehicleNumberId(null);
   };
 
+  const handleSearchChange = (e) => {
+    setSearchText(e.target.value);
+  };
+
   //   useEffect(() => {
 //     console.log(data, activeTable, formData.report_type);
 //   }, [data, activeTable]);
@@ -122,6 +149,7 @@ function TyrePurchaseReport() {
               type="text"
               placeholder="Search Vehicle"
               className="outline-none text-sm bg-[#EBEBEB] text-[#949494] font-outfit font-normal text-[19px] leading-[23.94px]"
+              onChange={handleSearchChange}
             />
           </div>
           <span className="p-[3px_4px]">
@@ -300,7 +328,7 @@ function TyrePurchaseReport() {
                         <td className="p-3">
                           {noData(formatDate(tyre.purchased_date))}
                         </td>
-                        <td className="p-3 text-[#65A948] underline cursor-pointer" onClick={() => setVehicleNumberId(tyre.dealer_id)}>{noData(tyre.tyres_count)}</td>
+                        <td className="p-3 ">{noData(tyre.tyres_count)}</td>
                         <td className="p-3">{noData(tyre.invoice_no)}</td>
                         <td className="p-3">{noData(tyre.dealer_name)}</td>
                         <td className="p-3">{noData(tyre.address)}</td>

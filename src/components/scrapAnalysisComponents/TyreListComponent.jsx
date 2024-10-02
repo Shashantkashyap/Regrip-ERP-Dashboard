@@ -1,26 +1,33 @@
 import React, { useCallback, useEffect, useState } from "react";
 import "../scrollBar.css";
 import { IoFilterSharp } from "react-icons/io5";
-import { FaSort } from "react-icons/fa";
+import { FaDownload, FaSort } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import ScrapAnalysisFilter from "./ScrapAnalysisFilter";
 import axios from "axios";
 import { setScrapFilterFormData } from "../../redux/Slices/scrapFilter";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
+import TyreJourney from "../masterComponent/TyreJourney";
+import toast from "react-hot-toast";
 
 const TyreListComponent = () => {
+
+  const url = "https://newstaging.regripindia.com/api"
+  const knowUser = JSON.parse(localStorage.getItem("userData"));
+  const apiKey = knowUser.data.api_key
+
+
   const [showTyreScrapFilter, setShowshowTyreScrapFilter] = useState(false);
   const dispatch = useDispatch();
   const [filterData, setFilterData] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [sortOrder, setSortOrder] = useState({
-    sortField: "",
-    sortOrder: "desc",
-  });
+  
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [totalRecords, setTotalRecords] = useState(0);
+  const [tyreId, setTyreId] = useState(null); 
+  const [tyreNo, setTyreNo] = useState();
 
   const handleFilterToggle = () => {
     setShowshowTyreScrapFilter(!showTyreScrapFilter);
@@ -201,13 +208,52 @@ const TyreListComponent = () => {
     dispatch(setScrapFilterFormData({ sortOrder, sortField }));
   };
 
-  useEffect(() => {
-    handleSort(sortOrder);
-  }, [sortOrder]);
+  
 
   useEffect(() => {
     fetchTyrePurchaseData(filterData);
   }, [fetchTyrePurchaseData, filterData]);
+
+
+  const showTyreJourney = (id, serial_no) => {
+    setTyreId(id);
+    setTyreNo(serial_no);
+  };
+
+  const closeTyreJourney = () => {
+    setTyreId(null);
+  };
+
+  const getScrapReport = async(tyreNo)=>{
+
+    try {
+      const formData = new FormData();
+      formData.append('serial_no', tyreNo); // Use the provided id
+
+      // Replace `${url}` and `apiKey` with your actual values
+      const response = await axios.post(`${url}/get-scrap-report`, formData, {
+          headers: {
+              Authorization: apiKey,
+              'Content-Type': 'multipart/form-data',
+          }
+      });
+
+      console.log(response)
+
+      //const pdfUrl = response.data.return_data.pdfUrl;
+      
+      // if (pdfUrl) {
+      //     // Open the PDF URL in a new tab
+      //     window.open(`${pdfUrl}`, '_blank');
+      // } else {
+      //     toast.error('No PDF URL returned.');
+      // }
+  } catch (error) {
+      console.error('Error downloading report:', error);
+      toast.error('Inspection report not available');
+  }
+
+  }
 
   return (
     <div className="max-w-full overflow-x-auto">
@@ -233,19 +279,36 @@ const TyreListComponent = () => {
           </div>
         )}
 
-        <div className="max-h-[400px] overflow-y-auto overflow-x-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300 rounded-lg">
-          <table className="min-w-full bg-white rounded-xl font-semibold whitespace-nowrap table-auto">
+
+        {/* Background Overlay */}
+      {tyreId !== null && (
+        <div className="fixed inset-0 bg-[rgba(0,0,0,0.8)] z-30"></div>
+      )}
+
+      {/* AddVehicle Component */}
+      {tyreId !== null && (
+        <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-40 min-w-[700px] overflow-x-auto">
+          <div className="bg-white w-[80%] max-w-[1145px] h-[600px] min-h-[500px] min-w-[700px] overflow-x-auto rounded-[28px] shadow-lg">
+            <TyreJourney close={closeTyreJourney} tyreId={tyreId} tyreNo={tyreNo} />
+          </div>
+        </div>
+      )}
+
+
+
+        <div className="max-h-[400px] overflow-y-auto overflow-x-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300 rounded-lg font-outfit">
+          <table className="min-w-full bg-white rounded-xl font-normal whitespace-nowrap table-auto">
             <thead className="bg-[#FFF] border-b sticky top-0 rounded-lg">
               <tr>
-                <th className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
-                  <small>#</small>
-                </th>
-                <th className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
-                  <small>Tyre S.No.</small>
-                </th>
-                <th className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
-                  <small>Size</small>
-                  <button
+                <td className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
+                  #
+                </td>
+                <td className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
+                  Tyre S.No.
+                </td>
+                <td className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
+                 Size
+                  {/* <button
                     onClick={() =>
                       setSortOrder((prev) => {
                         if (prev.sortOrder === "asc") {
@@ -256,17 +319,17 @@ const TyreListComponent = () => {
                     }
                   >
                     <FaSort className="inline ml-1 mr-1 cursor-pointer" />
-                  </button>
-                </th>
+                  </button> */}
+                </td>
+                <td className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
+                  Make
+                </td>
+                <td className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
+                  Model
+                </td>
                 <th className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
-                  <small>Make</small>
-                </th>
-                <th className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
-                  <small>Model</small>
-                </th>
-                <th className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
-                  <small>Purchase Date</small>
-                  <button
+                  Purchase Date
+                  {/* <button
                     onClick={() =>
                       setSortOrder((prev) => {
                         console.log(prev);
@@ -282,38 +345,39 @@ const TyreListComponent = () => {
                     }
                   >
                     <FaSort className="inline ml-1 mr-1 cursor-pointer" />
-                  </button>
+                  </button> */}
                 </th>
-                <th className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
-                  <small>Fitment Date</small>
-                  <button onClick={() => handleSort()}>
+                <td className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
+                  Fitment Date
+                  {/* <button onClick={() => handleSort()}>
                     <FaSort className="inline ml-1 mr-1 cursor-pointer" />
-                  </button>
-                </th>
-                <th className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
-                  <small>Std. NSD</small>
-                  <button onClick={() => handleSort()}>
+                  </button> */}
+                </td>
+                <td className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
+                  Std. NSD
+                  {/* <button onClick={() => handleSort()}>
                     <FaSort className="inline ml-1 mr-1 cursor-pointer" />
-                  </button>
-                </th>
-                <th className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
-                  <small>Scrap NSD</small>
-                  <button onClick={() => handleSort()}>
+                  </button> */}
+                </td>
+                <td className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
+                  Scrap NSD
+                  {/* <button onClick={() => handleSort()}>
                     <FaSort className="inline ml-1 mr-1 cursor-pointer" />
-                  </button>
-                </th>
+                  </button> */}
+                </td>
+                <td className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
+                  Scrap Date
+                 
+                </td>
                 <th className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
-                  <small>Scrap Date</small>
-                  <button onClick={() => handleSort()}>
-                    <FaSort className="inline ml-1 mr-1 cursor-pointer" />
-                  </button>
+                  Reason of Scrap
                 </th>
-                <th className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
-                  <small>Reason of Scrap</small>
-                </th>
-                <th className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
-                  <small>Image</small>
-                </th>
+                <td className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
+                Image
+                </td>
+                <td className="px-4 py-2 text-sm font-semibold text-gray-600 text-center">
+                Report
+                </td>
               </tr>
             </thead>
             <tbody className="rounded-lg">
@@ -325,7 +389,7 @@ const TyreListComponent = () => {
                   <td className="px-4 py-2 text-sm text-gray-700 text-center">
                     {index + 1}
                   </td>
-                  <td className="px-4 py-2 text-sm text-gray-700 text-center">
+                  <td className="px-4 py-2 text-sm  text-center text-[#65A948] cursor-pointer " onClick={() => showTyreJourney( 3070, "70509053322")}>
                     {tyre.tyreNo}
                   </td>
                   <td className="px-4 py-2 text-sm text-gray-700 text-center">
@@ -357,6 +421,10 @@ const TyreListComponent = () => {
                   </td>
                   <td className="px-4 py-2 text-sm text-gray-700 text-center">
                     {tyre.image}
+                  </td>
+                  
+                  <td className="px-8 py-2 text-sm text-gray-700 text-center cursor-pointer" onClick={()=>getScrapReport("70509053322")}>
+                  <FaDownload  color="green"/>
                   </td>
                 </tr>
               ))}

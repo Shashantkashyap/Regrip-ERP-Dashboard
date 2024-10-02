@@ -40,6 +40,9 @@ const Rotation = () => {
           formData.append(key, filterData[key]);
         });
         formData.append("page", currentPage);
+
+        formData.append("rotation_status", "pending")
+        
         
 
         const response = await axios.post(
@@ -57,7 +60,7 @@ const Rotation = () => {
 
         setData(responseData.data || []);
         setTotalItems(responseData.totalItems || 0); // Fetch the total items
-        setTotalPages(responseData.totalPages); // Calculate total pages
+        setTotalPages(responseData.totalPages || 1); // Calculate total pages
       } catch (error) {
         setError("Failed to fetch data. Please try again later.");
       } finally {
@@ -141,6 +144,7 @@ const Rotation = () => {
                   <td className="text-left p-2">Last Rotation date</td>
                   <td className="text-left p-2">Last Rotation(km)</td>
                   <td className="text-left p-2">Last Inspection date</td>
+                  <td className="text-left p-2">Last Inspection(km)</td>
                   <td className="text-left p-3">Running since last rotation</td>
                   
                   
@@ -158,10 +162,11 @@ const Rotation = () => {
                     <tr key={index} className="border-b border-[1px] font-normal text-[14px] leading-[21.42px] text-[#333333] border-gray-200">
                       <td className="p-3">{(currentPage - 1) * itemsPerPage + index + 1}</td>
                       <td className="p-3 text-[#65A948] underline cursor-pointer">{noData(vehicle.vehicle_no)}</td>
-                      <td className="p-3">{formatDate(vehicle.datetime_created)}</td>
-                      <td className="p-3">{vehicle.total_rotation_count}</td>
-                      <td className="p-3">{vehicle.wheels_count}</td>
-                      <td className="p-3">{vehicle.last_rotation_days}</td>
+                      <td className="p-3">{vehicle.last_rotation}</td> {/* Date formatted */}
+                      <td className="p-3">{vehicle.last_rotation_km || 0}</td>
+                      <td className="p-3">{vehicle.last_inspection_date || "NA"}</td>
+                      <td className="p-3">{vehicle.last_inspection_km || 0}</td>
+                      <td className="p-3">{Math.abs((vehicle.last_inspection_km || 0) - (vehicle.last_rotation_km || 0))}</td>
                     </tr>
                   ))
                 )}

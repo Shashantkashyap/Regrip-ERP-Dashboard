@@ -8,14 +8,13 @@ import { PiExportBold } from "react-icons/pi";
 import { IoMdAdd } from "react-icons/io";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import InspectionCountDetails from "../components/inspectionComponent/InspectionCountDetails";
-import InspectionFilter from "../components/inspectionComponent/InspectionFilter";
+import TyreStatusFilter from "../components/tyreStatusReport/TyreStatusFilter";
 import "../components/scrollBar.css";
 import { useSelector } from "react-redux";
 
-const InspectionReport = () => {
- // const apiKey = useSelector((state) => state.user.user.data.api_key);
- const knowUser = JSON.parse(localStorage.getItem("userData"));
-  const apiKey = knowUser.data.api_key
+const TyreStatus = () => {
+
+  const apiKey = useSelector((state)=> state.user.user.data.api_key);
 
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
@@ -23,39 +22,41 @@ const InspectionReport = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [vehicleNumberId, setVehicleNumberId] = useState(null);
-  const [showInspectionFilter, setShowInspectionFilter] = useState(false);
+  const [TyreId, setTyreId] = useState(null);
+  const [showTyreStatusFilter, setTyreStatusFilter] = useState(false);
   const [filterData, setFilterData] = useState({});
-  const [globalText, setGlobalText] = useState("");
-  const [totalRecords, setTotalRecords] = useState(0);
+  const [searchText, setSearchText] = useState(""); // State to store search input
+
 
   const noData = (value) => value || "--";
 
+  const [totalRecords, setTotalRecords] = useState();
+
   const handleFilterToggle = () => {
-    setShowInspectionFilter(!showInspectionFilter);
+    setTyreStatusFilter(!showTyreStatusFilter);
   };
 
-  const fetchInspectionReportData = useCallback(
+  const fetchTyreStatusReportData = useCallback(
     async (filterData = {}) => {
       setLoading(true);
       setError(null);
       try {
         const formData = new FormData();
-        formData.append("text", globalText);
-
-        console.log(globalText)
-
+        if (searchText.trim()) {
+          formData.append("global_filter", searchText);
+        }
+        
         // Append filter data to formData
         Object.keys(filterData).forEach((key) => {
           formData.append(key, filterData[key]);
         });
-
+  
         // Append page to formData
         formData.append("page", currentPage);
-
+  
         const response = await axios.post(
-          "https://newstaging.regripindia.com/api/inspection-report-data",
-          formData,
+          "https://newstaging.regripindia.com/api/tyreStatusroute",
+          formData,  // Send formData, not an object
           {
             headers: {
               "Content-Type": "multipart/form-data",
@@ -63,27 +64,29 @@ const InspectionReport = () => {
             },
           }
         );
-
-        console.log(response)
-
+        
         const responseData = response.data;
+        
+          setData(responseData.data || []);
+          setTotalPages(responseData.pagination.totalPages || 1);
 
-        setTotalPages(responseData.pagination.totalPages);
-        setTotalRecords(responseData.pagination.totalRecords)
-        setData(responseData.data || []);
+        setTotalRecords(responseData.pagination.totalRecords || 0)
+        
       } catch (error) {
         setError("Failed to fetch data. Please try again later.");
+        
+        setData( []);
+        setTotalPages(1)
+        setTotalRecords(0)
       } finally {
         setLoading(false);
       }
     },
-    [currentPage, globalText, apiKey]
+    [currentPage , filterData, searchText]  // Ensure the hook is refreshed when currentPage or apiKey changes
   );
-
-  // Fetch data when globalText or currentPage changes
   useEffect(() => {
-    fetchInspectionReportData();
-  }, [fetchInspectionReportData, currentPage, globalText]);
+    fetchTyreStatusReportData();
+  }, [fetchTyreStatusReportData, currentPage]);
 
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
@@ -92,38 +95,50 @@ const InspectionReport = () => {
   };
 
   const closeInspection = () => {
-    setVehicleNumberId();
+    setTyreId();
   };
 
   const handleSubmit = (data) => {
     setFilterData(data);
     handleFilterToggle();
-    fetchInspectionReportData(data);
+    fetchTyreStatusReportData(data);
   };
 
-  const setVehicle = (id) => {
-    setVehicleNumberId(id);
+  const setTyre = (id) => {
+    setTyreId(id);
+    console.log("Tyre ID set:", id);
   };
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    if (isNaN(date)) return ''; // Return empty if date is invalid
+  
+    const options = { month: 'short', day: 'numeric' };
+    const formattedDate = date.toLocaleDateString('en-US', options);
+    const year = date.getFullYear().toString().slice(-2); // Get last two digits of the year
+  
+    return `${formattedDate}, ${year}`; // Combine formatted date and year
+  };
+  
 
-  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
-
-  console.log(data)
+  const handleSearchChange = (e) => {
+    setSearchText(e.target.value);
+  };
 
   return (
     <div className="p-6 bg-[#F7F7F7] rounded-[50px] overflow-x-auto relative">
       <div className="flex justify-between mb-6">
         <p className="font-inter font-semibold text-[30px] leading-[36.31px] text-[#65A143]">
-          Inspection Report ({totalRecords})
+          Tyre Status Report
         </p>
         <div className="flex items-center gap-[34px]">
           <div className="flex bg-[#EBEBEB] rounded-[37px] p-[9px_24px] items-center gap-[7px]">
             <img src={search} alt="search icon" className="w-6 h-6 bg-[#EBEBEB] text-[#949494]" />
             <input
               type="text"
-              placeholder="Search Vehicle"
+              placeholder="Search Tyre"
               className="outline-none text-sm bg-[#EBEBEB] text-[#949494] font-outfit font-normal text-[19px] leading-[23.94px]"
-              onChange={(e) => setGlobalText(e.target.value)} // Directly update globalText
+              onChange={handleSearchChange}
             />
           </div>
           <span className="p-[3px_4px]">
@@ -150,85 +165,106 @@ const InspectionReport = () => {
           </div>
         </div>
 
-        {showInspectionFilter && (
+        {showTyreStatusFilter && (
           <div className="z-30">
-            <InspectionFilter
-              isVisible={showInspectionFilter}
+            <TyreStatusFilter
+              isVisible={showTyreStatusFilter}
               onClose={handleFilterToggle}
               onSubmit={handleSubmit}
             />
           </div>
         )}
 
-        {vehicleNumberId && (
+        {TyreId && (
           <>
             <div className="fixed inset-0 bg-[rgba(0,0,0,0.8)] z-30"></div>
             <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-40 min-w-[600px] overflow-x-auto">
               <div className="bg-white w-[80%] max-w-[1145px] h-auto rounded-[28px] shadow-lg min-w-[700px] overflow-x-auto">
-                <InspectionCountDetails close={closeInspection} vehicleId={vehicleNumberId} />
+                <InspectionCountDetails close={closeInspection} TyresId={TyreId} />
               </div>
             </div>
           </>
         )}
 
         {/* Loader */}
+            
+
         {loading ? (
           <div className="absolute inset-0 flex items-center justify-center">
             <Loader />
           </div>
         ) : (
           <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300">
-            <table className="min-w-[120%] w-[100%] font-outfit">
-              <thead>
-                <tr className="bg-[#F5F5F5] text-[#727272] font-normal text-[15px] leading-[21.42px]">
-                  <td className="text-left p-3">#</td>
-                  <td className="text-left p-2">Vehicle No.</td>
-                  <td className="text-left p-1">Inspection Date</td>
-                  
-                  <td className="text-left p-3">Prev km</td>
-                  <td className="text-left p-3">Curr. km</td>
-                  
-              <td className="py-2 px-0 text-left border-b font-outfit text-[#727272] font-normal text-[14px] leading-[21.42px]">Km Running </td>
-                  <td className="text-left p-3">Total Insp.</td>
-                  {/* <td className="text-left p-3">Tyre Insp.</td> */}
-                  <td className="text-left p-3">Inspected By</td>
-                 
-                  <td className="text-left p-3">Driver</td>
-                  
-                  <td className="text-left p-3">Mobile No.</td>
-                  <td className="text-left p-3">Vehicle Status</td>
-                </tr>
-              </thead>
+            <table className="min-w-[100%] w-[250%] font-outfit">
+            <thead>
+  <tr className="bg-[#F5F5F5] text-[#727272] font-normal text-[15px] leading-[21.42px]">
+    <td className="text-left p-4">#</td>
+    
+    <td className="text-left p-4">Office</td>
+    <td className="text-left p-4">Insp. Date</td>
+    <td className="text-left p-4">Tyre Insp. Location</td>
+    <td className="text-left p-4">Last Updated Type</td>
+    <td className="text-left p-4">Invoice No.</td>
+    <td className="text-left p-4">Tyre Number</td>
+    <td className="text-left p-4">Make</td>
+    <td className="text-left p-4">Model</td>
+    <td className="text-left p-4">Size</td>
+    <td className="text-left p-4">On Status</td>
+    <td className="text-left p-4">Current Vehicle No.</td>
+    <td className="text-left p-4">Reason</td>
+    <td className="text-left p-4">Defect Type</td>
+    <td className="text-left p-4">Fresh/Retread</td>
+    <td className="text-left p-4">Material Type</td>
+    <td className="text-left p-4">Position</td>
+    <td className="text-left p-4">Standard Depth</td>
+    <td className="text-left p-4">NSD1</td>
+    <td className="text-left p-4">NSD2</td>
+    <td className="text-left p-4">NSD3</td>
+    <td className="text-left p-4">Minimum NSD</td>
+    <td className="text-left p-4">Maximum NSD</td>
+    <td className="text-left p-4">Tyre Price (exc. GST)</td>
+    <td className="text-left p-4">Running KM</td>
+  </tr>
+</thead>
+
               <tbody>
-                {data.length === 0 ? (
+                {data.length === 0  && !loading ? (
                   <tr>
-                    <td colSpan="13" className="text-center p-3">
+                    <td colSpan="15" className="text-center p-3">
                       Data not found
                     </td>
                   </tr>
                 ) : (
-                  data.map((vehicle, index) => (
+                  data.map((tyre, index) => (
                     <tr key={index} className="border-b border-[1px] font-normal text-[14px] leading-[21.42px] text-[#333333] border-gray-200">
-                      <td className="p-3">{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                      <td 
-                        className="p-3 text-[#65A948] underline cursor-pointer" 
-                        onClick={() => setVehicle(vehicle.id)}
-                      >
-                        {noData(vehicle.vehicle_no)}
+                      <td className="text-left p-3">{noData(index + 1)}</td>
+                      
+                      <td className="text-left p-1">{noData(tyre.city)}</td>
+                      <td className="text-left p-1">{noData(formatDate(tyre.Last_Updated_time))}</td>
+                      <td className="text-left p-3">{noData(tyre.tyre_inspection)}</td>
+                      <td className="text-left p-3">{noData(tyre.current_status)}</td>
+                      <td className="text-left p-3">{noData(tyre.invoice_no)}</td>
+                      <td className="text-left p-3 cursor-pointer text-[#63A142]" onClick={() => setTyre(tyre.serial_no)}>
+                        {noData(tyre.serial_no)}
                       </td>
-                     {/* <td className="p-3">{noData(vehicle.trailer_no)}</td> */}
-                     <td className="p-3">{noData(vehicle.last_inspection)}</td>
-                      
-                      
-                      <td className="p-3">{(vehicle.prev_km)}</td>
-                      <td className="p-3">{noData(vehicle.vehicle_km)}</td>
-                      <td className="py-2 px-4">{vehicle.vehicle_km - vehicle.prev_km}</td>
-                      <td className="p-3 px-8">{noData(vehicle.inspectionCount)}</td>
-                      {/* <td className="p-3">{noData(vehicle.inspection_tyre_count)}</td> */}
-                      <td className="p-3">{noData(vehicle.service_er)}</td>
-                      <td className="p-3">{noData(vehicle.driver_contact)}</td>
-                      <td className="p-3">{noData(vehicle.driver_name)}</td>
-                      <td className="p-3">{vehicle.is_active === 1 ? "Live" : "Not Live"}</td>
+                      <td className="text-left p-3">{noData(tyre.brand_name)}</td>
+                      <td className="text-left p-3">{noData(tyre.model_name)}</td>
+                      <td className="text-left p-3">{noData(tyre.tyre_size)}</td>
+                      <td className="text-left p-3">{noData(tyre.current_status)}</td>
+                      <td className="text-left p-3">{noData(tyre.vehicle_no)}</td>
+                      <td className="text-left p-3">{noData(tyre.defect_type_name)}</td>
+                      <td className="text-left p-3">{noData(tyre.defect_type)}</td>
+                      <td className="text-left p-3">{noData(tyre.product_category)}</td>
+                     <td className="text-left p-3">{noData(tyre.construction_type)}</td>
+                      <td className="text-left p-3">{noData(tyre.position)}</td>
+                      <td className="text-left p-3">{noData(tyre.standard_nsd)}</td>
+                      <td className="text-left p-3">{noData(tyre.nsd1)}</td>
+                      <td className="text-left p-3">{noData(tyre.nsd2)}</td>
+                      <td className="text-left p-3">{noData(tyre.nsd3)}</td>
+                      <td className="text-left p-3">{noData(tyre.minimum_nsd)}</td>
+                      <td className="text-left p-3">{noData(tyre.maximum_nsd)}</td>
+                      <td className="text-left p-3">{noData(tyre.tyre_price)}</td>
+                      <td className="text-left p-3">{noData(tyre.tyre_km)}</td>
                     </tr>
                   ))
                 )}
@@ -237,11 +273,12 @@ const InspectionReport = () => {
           </div>
         )}
 
-        {/* Pagination */}
+
+        {/* Pagination controls */}
         <div className="flex justify-between items-center mt-4 px-4 py-2 bg-[#F7F7F7] rounded-b-lg">
           <p className="text-[14px] font-outfit font-normal leading-[22.4px] text-[#4E4F54]">
-            Showing {(currentPage - 1) * 10 + 1}-
-            {Math.min(currentPage * 10, totalRecords)} of {totalRecords} items
+            Showing {(currentPage - 1) * itemsPerPage + 1}-
+            {Math.min(currentPage * itemsPerPage, data.length)} of {totalRecords} items
           </p>
           <div className="flex items-center gap-4">
             <div>
@@ -250,14 +287,14 @@ const InspectionReport = () => {
                 onChange={(e) => handlePageChange(Number(e.target.value))}
                 className="px-1 py-1 rounded-md border-[1px] border-gray-300"
               >
-                {pageNumbers.map((page) => (
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                   <option key={page} value={page}>
                     Page {page}
                   </option>
                 ))}
               </select>
             </div>
-            <div className="flex items-center gap-3 ">
+            <div className="flex items-center gap-3">
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
@@ -280,4 +317,5 @@ const InspectionReport = () => {
   );
 };
 
-export default InspectionReport;
+
+export default TyreStatus;

@@ -8,6 +8,7 @@ import { PiExportBold } from "react-icons/pi";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import PendingInspectionFilterSidebar from "../../components/pendingInspection/PendingInspectionFilter";
 import { useSelector } from "react-redux";
+import TyreFitment from "../masterComponent/TyreFitment";
 
 const Inspection = () => {
  // const apiKey = useSelector((state) => state.user.user.data.api_key);
@@ -24,6 +25,7 @@ const Inspection = () => {
   const [showPendingFilter, setShowPendingFilter] = useState(false);
   const [filterData, setFilterData] = useState({});
   const [error, setError] = useState(null);
+  const [vehicleId, setVehicleId] = useState(null);
 
   const noData = (value) => value != "Not"? value : "--";
   const url = "https://newstaging.regripindia.com/api";
@@ -85,6 +87,14 @@ const Inspection = () => {
     fetchInspectionData(data);
   };
 
+
+  const setVehicle = (id) => {
+    setVehicleId(id);
+  };
+
+  const closeTyreComponent = () => {
+    setVehicleId(null);
+  };
   // Create an array of page numbers for the dropdown
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
@@ -116,6 +126,17 @@ const Inspection = () => {
           </div>
         </div>
 
+        {vehicleId !== null && (
+          <>
+            <div className="fixed inset-0 bg-[rgba(0,0,0,0.9)] z-30"></div>
+            <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-40 min-w-[600px] overflow-x-auto">
+              <div className="bg-white w-[80%] max-w-[1145px] max-h-[700px] rounded-[28px] shadow-lg min-w-[700px] overflow-x-auto">
+                <TyreFitment close={closeTyreComponent} vehicle={vehicleId} />
+              </div>
+            </div>
+          </>
+        )}
+
         {loading ? (
           <div className="absolute inset-0 flex items-center justify-center">
             <Loader />
@@ -144,7 +165,7 @@ const Inspection = () => {
                   data.map((vehicle, index) => (
                     <tr key={index} className="border-b border-[1px] font-normal text-[14px] leading-[21.42px] text-[#333333] border-gray-200">
                       <td className="p-3">{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                      <td className="p-3 text-[#65A948] underline cursor-pointer">{noData(vehicle.vehicle_no)}</td>
+                      <td className="p-3 text-[#65A948] underline cursor-pointer" onClick={() => setVehicle(vehicle.id)}>{noData(vehicle.vehicle_no)}</td>
                       <td className="p-3">{vehicle.last_inspection}</td>
                       <td className="p-3">{vehicle.total_inspection_count}</td>
                       <td className="p-3">{vehicle.total_tyres}</td>

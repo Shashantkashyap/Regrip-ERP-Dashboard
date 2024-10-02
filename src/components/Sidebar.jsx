@@ -93,23 +93,22 @@ function Sidebar() {
       iconActive: InventoryG,
       
     },
-    { id: 4, name: "Scrap Analysis", icon: Retreaders, iconActive: RetreadersG },
-
+    
     {
       id: 5,
       name: "Reports",
       icon: Reports,
       iconActive: ReportsG,
 
-      dropdown: ["Inspection", "Pending Reports", "Low NSD", "Mechanical Defect", "Tyre Wear", "Purchase", "Tyre Status"],
+      dropdown: ["Purchase", "Inspection","Mechanical Defect","Tyre Wear", "Low NSD",    "Tyre Status", "Pending Reports"],
 
     },
-    { id: 6, name: "Analytics", icon: Analytics, iconActive: AnalyticsG },
+    
     {
       id: 10,
       name: "Scrap Analysis",
-      icon: Reports,
-      iconActive: ReportsG,
+      icon: Tools ,
+      iconActive: ToolsG,
       
     },
     
@@ -171,11 +170,11 @@ function Sidebar() {
                   openDropdownId === item.id ? "max-h-80" : "max-h-0"
                 }`}
               >
-                <div className="ml-4 max-lg:ml-1  max-lg:text-[11px] flex flex-col gap-[7px] max-lg:gap-1 mt-2">
+                <div className="ml-4 max-lg:ml-1  max-lg:text-[11px] flex flex-col gap-[px] max-lg:gap-1 mt-2">
                   {item.dropdown.map((dropdownItem, index) => (
                     <p
                       key={index}
-                      className={`text-[#777] text-[14px] max-lg:text-[11px] font-medium cursor-pointer hover:bg-gray-100 p-2 rounded transition-all ${
+                      className={`text-[#777] text-[13px] max-lg:text-[11px] font-medium cursor-pointer hover:bg-gray-100 p-2 rounded transition-all ${
                         activeDropdownItem === dropdownItem ? "bg-[#e6f4ea] text-[#65A143]" : ""
                       }`}
                       onClick={() => dispatch(setActiveDropdownItem(dropdownItem))}

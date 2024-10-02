@@ -226,7 +226,7 @@ function MasterScreen() {
         <td className="w-1/12 text-left p-3">Tyre</td>
         <td className="w-2/12 text-left p-3">Make</td>
         <td className="w-2/12 text-left p-3">Model</td>
-        <td className="w-1/12 text-left p-3">Make Year</td>
+        <td className="w-1/12 text-left p-3">Make Year</td>    
         <td className="w-2/12 text-left p-3">Created Date</td>
         <td className="w-1/12 text-left p-3">Branch</td>
       </tr>
@@ -240,7 +240,7 @@ function MasterScreen() {
         vehicles.map((vehicle, index) => (
           <tr key={index} className="border-b border-[1px] font-normal text-[14px] leading-[21.42px] text-[#333333] border-gray-200">
             <td className="p-3">{vehicle.sr_no}</td>
-            <td className="p-3 text-[#65A948] underline cursor-pointer" onClick={() => setVehicle(vehicle.vehicle_id)}>
+            <td className="p-3 text-[#65A948] underline cursor-pointer" onClick={() => setVehicle(vehicle.id)}>
               {vehicle.vehicle_no}
             </td>
             <td className="p-3">{vehicle.wheels_count}</td>

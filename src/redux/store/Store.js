@@ -14,6 +14,7 @@ import lowNsdFilter from "../Slices/lowNsdFilterSlice.js";
 import tyreWearFilter from "../Slices/tyreWearFilterSlice.js";
 import tyrePurchaseFilter from '../Slices/tyrePurchaseFilterSlice.js';
 import scrapAnalysisFilter from "../Slices/scrapFilter.js";
+import tyreStatusFilter from "../Slices/TyreStatusFilterSlice.js"
 
 // Persist configuration
 const persistConfig = {
@@ -33,7 +34,8 @@ const rootReducer = combineReducers({
   lowNsdFilter: lowNsdFilter,
   tyreWearFilter,
   tyrePurchaseFilter,
-  scrapAnalysisFilter
+  scrapAnalysisFilter,
+  tyreStatusFilter : tyreStatusFilter
 });
 
 // Create persisted reducer

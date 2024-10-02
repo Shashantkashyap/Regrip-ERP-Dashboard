@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import TyreWearReport from "../pages/TyreWearReport";
 import TyrePurchaseReport from "../pages/TyrePurchaseReport";
 import ScrapAnalysisReport from "../pages/ScrapAnalysisReport";
+import TyreStatusReport from "../pages/TyreStatus"
 
 function Dashboard() {
 
@@ -167,6 +168,14 @@ function Dashboard() {
           activeMenuItem === 5 && activeDropdownItem === "Purchase" ? (
             <div>
               <TyrePurchaseReport />
+            </div>
+          ) : ("")
+        }
+
+{
+          activeMenuItem === 5 && activeDropdownItem === "Tyre Status" ? (
+            <div>
+              <TyreStatusReport/>
             </div>
           ) : ("")
         }

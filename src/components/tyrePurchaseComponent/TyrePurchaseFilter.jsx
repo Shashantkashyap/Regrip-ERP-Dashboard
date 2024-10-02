@@ -18,14 +18,14 @@ function TyrePurchaseFilter({ isVisible, onClose, onSubmit, setFilterData }) {
       label: "Period",
       type: "date",
       element: "input",
-      name: "from",
+      name: "from_date",
       placeholder: "From",
     },
     {
       label: "",
       type: "date",
       element: "input",
-      name: "to",
+      name: "to_date",
       placeholder: "To",
     },
   ];

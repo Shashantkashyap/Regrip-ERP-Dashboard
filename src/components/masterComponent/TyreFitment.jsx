@@ -119,7 +119,7 @@ function TyreFitment({ close, vehicle }) {
           <div className="flex justify-end mb-2">
             <button className="bg-[#333333] text-white text-[14px] py-2 px-4 rounded-md flex items-center gap-2 hover:bg-green-600 transition">
               <PiExportBold size={20} />
-              <span>Export</span>
+              <span>Download</span>
             </button>
           </div>
 

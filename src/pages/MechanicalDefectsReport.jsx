@@ -81,7 +81,8 @@ const MechanicalDefectsReport = () => {
         const responseData = response.data;
 
         console.log(data);
-
+        console.log(response)
+        console.log(responseData)
         setTotalPages(responseData.totalPages);
         setData(responseData.data || []);
       } catch (error) {
@@ -138,6 +139,7 @@ const MechanicalDefectsReport = () => {
     setSearchText(e.target.value);
   };
 
+  
   return (
     <div className="p-6 bg-[#F7F7F7] rounded-[50px] overflow-x-auto relative">
        {isModalOpen && (
@@ -189,7 +191,7 @@ const MechanicalDefectsReport = () => {
 
             <button className="border border-[#333333] text-[#333333] px-4 py-[7px] rounded-lg flex items-center gap-2 hover:border-[#65A948] hover:text-[#65A948]">
               <IosShare fontSize="small" />
-              Export
+              Download
             </button>
           </div>
         </div>
@@ -330,9 +332,10 @@ const MechanicalDefectsReport = () => {
                       <td className="p-3 px-4 whitespace-nowrap">
                         {noData(vehicle.pending_aging_days)}
                       </td>
-                      <td className="p-3 px-4 whitespace-nowrap">
-                        {noData(vehicle.status)}
-                      </td>
+                       <td className="p-3 px-4 whitespace-nowrap">
+                          {vehicle.status === 0 ? "Pending" : vehicle.status === 1 ? "Done" : noData(vehicle.status)}
+                        </td>
+
                       <td className="p-3 px-4 whitespace-nowrap">
                         {noData(vehicle.action_days)}
                       </td>

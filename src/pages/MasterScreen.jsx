@@ -176,7 +176,7 @@ function MasterScreen() {
               <span>
                 <PiExportBold />
               </span>
-              <p>Export</p>
+              <p>Download</p>
             </button>
             {/* <button
               className="p-[5px_15px_10px_15px] text-center rounded-[10px] text-[16px] text-white bg-[#333333] flex gap-1 items-center border-[1px]"

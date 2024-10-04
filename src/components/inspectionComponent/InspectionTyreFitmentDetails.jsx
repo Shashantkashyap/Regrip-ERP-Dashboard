@@ -21,6 +21,7 @@ function InspectionTyreFitmentDetails({ inspectionId, close, vehicleNo }) {
       setLoading(true); // Set loading to true when data fetching starts
       const formData = new FormData();
       formData.append("inspection_id", inspectionId);
+      console.log(inspectionId)
 
       const details = await axios.post(
         `${url}/inspection-tyre-details`,
@@ -81,7 +82,7 @@ function InspectionTyreFitmentDetails({ inspectionId, close, vehicleNo }) {
       <div className="flex justify-end mb-2">
         <button className="bg-[#333333] text-white text-[14px] py-2 px-4 rounded-md flex items-center gap-2 hover:bg-green-600 transition">
           <PiExportBold size={20} />
-          <span>Export</span>
+          <span>Download</span>
         </button>
       </div>
 

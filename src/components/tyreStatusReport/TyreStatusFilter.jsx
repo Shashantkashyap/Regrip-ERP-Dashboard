@@ -7,8 +7,8 @@ function TyreStatusFilter({ isVisible, onClose, onSubmit }) {
   const formData = useSelector((state) => state.tyreStatusFilter.formData);
 
   const filters = [
-    { label: "Customer Name", type: "text", name: "company_name", placeholder: "Enter customer name" },
-    { label: "Office", type: "text", name: "city", placeholder: "Enter office city" },
+    // { label: "Customer Name", type: "text", name: "company_name", placeholder: "Enter customer name" },
+    // { label: "Office", type: "text", name: "city", placeholder: "Enter office city" },
     { label: "Defect Type", type: "text", name: "defect_type", placeholder: "Enter defect type" },
     { label: "Tyre Make", type: "text", name: "manufacturer", placeholder: "Enter brand name" },
     { label: "Status", type: "text", name: "status", placeholder: "Enter Status" },

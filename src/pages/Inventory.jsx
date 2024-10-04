@@ -671,6 +671,12 @@ function Inventory() {
                       <td className="text-left p-3">Status</td>
                      
                       <td className="text-left p-3">Now In</td>
+                      {tyreBody && tyreBody.current_status === 'Retreadable' && (
+          <>
+            <td className="text-left p-3">Patch</td>
+            <td className="text-left p-3">Belt Pattern</td>
+          </>
+        )}
                     </tr>
                   </thead>
 
@@ -738,6 +744,13 @@ function Inventory() {
                             ></img>
                           )}
                         </td>
+                        {item.current_status === 'Retreadable' && (
+  <>
+    <td className="p-2">{item.patch ? item.patch : 'NA'}</td>
+    <td className="p-2">{item.belt_pattern ? item.belt_pattern : 'NA'}</td>
+  </>
+)}
+
                       </tr>
                     ))}
                   </tbody>

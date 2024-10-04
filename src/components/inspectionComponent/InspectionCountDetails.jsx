@@ -163,7 +163,7 @@ console.log(inspectionData)
                   <td className="py-2 px-4 font-outfit text-green-600 font-normal text-[14px] leading-[21.42px] cursor-pointer" onClick={() => showInspectionTyreFitmentDetails(tyre.details[0].inspection_id, tyre.details[0].vehicle_no)}>{tyre.details[0].vehicle_no}</td>
                   <td className="py-2 px-4 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">{tyre.details[0].km_total_reading}</td>
                   <td className="py-2 px-8 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">{tyre.details[0].vehicle_km}</td>
-                  <td className="py-2 px-4">{tyre.details[0].vehicle_km - tyre.details[0].km_total_reading}</td>
+                  <td className="py-2 px-8 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">{tyre.details[0].vehicle_km - tyre.details[0].km_total_reading}</td>
                   <td className="py-2 text-green-600 px-4 cursor-pointer" onClick={() => showInspectionTyreFitmentDetails(tyre.details[0].inspection_id, tyre.details[0].vehicle_no)}>{tyre.count}</td>
                   <td className="py-2 px-4 font-outfit font-normal text-[14px] leading-[21.42px] cursor-pointer" onClick={() => fetchDownloadReport(tyre.details[0].inspection_id,tyre.details[0].vehicle_no)}>
                     <IoCloudDownloadOutline fontSize={20} />

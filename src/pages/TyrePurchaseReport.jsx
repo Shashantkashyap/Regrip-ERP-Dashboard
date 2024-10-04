@@ -257,7 +257,7 @@ function TyrePurchaseReport() {
                 {/* Export Button */}
                 <button className="flex items-center gap-1 p-[5px_15px_10px_15px] text-center rounded-[10px] text-[16px] border-[1px]">
                 <PiExportBold />
-                <p>Export</p>
+                <p>Download</p>
                 </button>
 
                 {/* Add Button */}

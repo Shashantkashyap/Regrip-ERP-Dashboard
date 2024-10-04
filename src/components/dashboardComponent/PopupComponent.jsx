@@ -196,7 +196,7 @@ function PopupComponent({ close }) {
               <span>
                 <PiExportBold />
               </span>
-              <p>Export</p>
+              <p>Download</p>
             </button>
            
           </div>

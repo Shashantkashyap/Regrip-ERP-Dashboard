@@ -249,7 +249,7 @@ function TyreWearReport() {
                 <span>
                   <PiExportBold />
                 </span>
-                <p>Export</p>
+                <p>Download</p>
               </button>
             </div>
         </div>

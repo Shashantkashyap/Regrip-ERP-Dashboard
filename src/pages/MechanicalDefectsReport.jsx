@@ -84,7 +84,7 @@ const MechanicalDefectsReport = () => {
 
         const responseData = response.data;
 
-       
+
         setTotalPages(responseData.totalPages);
         setData(responseData.data || []);
       } catch (error) {
@@ -139,9 +139,11 @@ const MechanicalDefectsReport = () => {
     setSearchText(e.target.value);
   };
 
+
   const closeTyreComponent = () => {
     setVehicleId(null);
   };
+
 
   return (
     <div className="p-6 bg-[#F7F7F7] rounded-[50px] overflow-x-auto relative">
@@ -179,21 +181,24 @@ const MechanicalDefectsReport = () => {
         </div>
       </div>
 
-      <div className="flex flex-col w-full pt-3  rounded-2xl font-outfit bg-white" style={{ boxShadow: "2px 2px 15px 0px rgba(0, 0, 0, 0.09)" }}>
-      <div className="flex justify-end">
-          <div className="flex gap-4 items-center mr-5 mb-3">
-            <span className="mr-2">
-              <IoFilter
-                fontSize={23}
-                onClick={handleFilterToggle}
-                className="cursor-pointer"
-              />
-            </span>
-            <button className="p-[5px_15px_10px_15px] text-center rounded-[10px] text-[16px] flex gap-1 items-center border-[1px]">
-              <span>
-                <PiExportBold />
-              </span>
-              <p>Export</p>
+
+      <div className="flex flex-col w-full rounded-2xl font-outfit">
+        <div className="flex justify-end items-center mb-4">
+          <div className="flex">
+            <button
+              onClick={handleFilterToggle}
+              className="mr-5 text-[#333333] rounded-lg flex items-center gap-2 hover:border-[#65A948] hover:text-[#65A948]"
+            >
+              <FilterList fontSize="small" />
+              Filter
+            </button>
+
+            <div className="border-r mr-5 h-7 items-center self-center flex border-gray-300" />
+
+            <button className="border border-[#333333] text-[#333333] px-4 py-[7px] rounded-lg flex items-center gap-2 hover:border-[#65A948] hover:text-[#65A948]">
+              <IosShare fontSize="small" />
+              Download
+
             </button>
             {/* <button
               className="p-[5px_15px_10px_15px] text-center rounded-[10px] text-[16px] text-white bg-[#333333] flex gap-1 items-center border-[1px]"
@@ -341,10 +346,13 @@ const MechanicalDefectsReport = () => {
                       <td className="p-1 px-4 whitespace-nowrap">
                         {noData(vehicle.pending_aging_days)}
                       </td>
-                      <td className="p-1 px-4 whitespace-nowrap">
-                        {noData(vehicle.status)}
-                      </td>
-                      <td className="p-1 px-4 whitespace-nowrap">
+
+                       <td className="p-3 px-4 whitespace-nowrap">
+                          {vehicle.status === 0 ? "Pending" : vehicle.status === 1 ? "Done" : noData(vehicle.status)}
+                        </td>
+
+                      <td className="p-3 px-4 whitespace-nowrap">
+
                         {noData(vehicle.action_days)}
                       </td>
                       <td className="p-1 px-4 whitespace-nowrap">

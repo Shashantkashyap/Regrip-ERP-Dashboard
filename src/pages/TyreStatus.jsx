@@ -70,8 +70,13 @@ const TyreStatus = () => {
 
         console.log(responseData)
         
+        
+       
+        
           setData(responseData.data || []);
           setTotalPages(responseData.pagination.totalPages || 1);
+
+          
 
         setTotalRecords(responseData.pagination.totalRecords || 0)
         
@@ -165,7 +170,7 @@ const TyreStatus = () => {
               <span>
                 <PiExportBold />
               </span>
-              <p>Export</p>
+              <p>Download</p>
             </button>
           </div>
         </div>
@@ -203,13 +208,14 @@ const TyreStatus = () => {
             <thead>
   <tr className="bg-[#F5F5F5] text-[#727272] font-normal text-[15px] leading-[21.42px]">
     <td className="text-left p-4">#</td>
+    <td className="text-left p-4">Tyre Number</td>
     
     
     <td className="text-left p-4">Insp. Date</td>
-    <td className="text-left p-4">Tyre Insp. Location</td>
+    {/* <td className="text-left p-4">Tyre Insp. Location</td> */}
     <td className="text-left p-4">Last Updated Type</td>
-    <td className="text-left p-4">Invoice No.</td>
-    <td className="text-left p-4">Tyre Number</td>
+    {/* <td className="text-left p-4">Invoice No.</td> */}
+    {/* <td className="text-left p-4">Tyre Number</td> */}
     <td className="text-left p-4">Make</td>
     <td className="text-left p-4">Model</td>
     <td className="text-left p-4">Size</td>
@@ -231,48 +237,54 @@ const TyreStatus = () => {
   </tr>
 </thead>
 
-              <tbody>
-                {data.length === 0  && !loading ? (
-                  <tr>
-                    <td colSpan="15" className="text-center p-3">
-                      Data not found
-                    </td>
-                  </tr>
-                ) : (
-                  data.map((tyre, index) => (
-                    <tr key={index} className="border-b border-[1px] font-normal text-[14px] leading-[21.42px] text-[#333333] border-gray-200">
-                      <td className="text-left p-3">{noData(index + 1)}</td>
-                      
-                      
-                      <td className="text-left p-1">{noData(formatDate(tyre.Last_Updated_time))}</td>
-                      <td className="text-left p-3">{noData(tyre.tyre_inspection)}</td>
-                      <td className="text-left p-3">{noData(tyre.current_status)}</td>
-                      <td className="text-left p-3">{noData(tyre.invoice_no)}</td>
-                      <td className="text-left p-3 cursor-pointer text-[#63A142]" onClick={() => showTyreJourney(tyre.id , tyre.serial_no)}>
-                        {noData(tyre.serial_no)}
-                      </td>
-                      <td className="text-left p-3">{noData(tyre.brand_name)}</td>
-                      <td className="text-left p-3">{noData(tyre.model_name)}</td>
-                      <td className="text-left p-3">{noData(tyre.tyre_size)}</td>
-                      <td className="text-left p-3">{noData(tyre.current_status)}</td>
-                      <td className="text-left p-3">{noData(tyre.vehicle_no)}</td>
-                      <td className="text-left p-3">{noData(tyre.defect_type_name)}</td>
-                      <td className="text-left p-3">{noData(tyre.defect_type)}</td>
-                      <td className="text-left p-3">{noData(tyre.product_category)}</td>
-                     <td className="text-left p-3">{noData(tyre.construction_type)}</td>
-                      <td className="text-left p-3">{noData(tyre.position)}</td>
-                      <td className="text-left p-3">{noData(tyre.standard_nsd)}</td>
-                      <td className="text-left p-3">{noData(tyre.nsd1)}</td>
-                      <td className="text-left p-3">{noData(tyre.nsd2)}</td>
-                      <td className="text-left p-3">{noData(tyre.nsd3)}</td>
-                      <td className="text-left p-3">{noData(tyre.minimum_nsd)}</td>
-                      <td className="text-left p-3">{noData(tyre.maximum_nsd)}</td>
-                      <td className="text-left p-3">{noData(tyre.tyre_price)}</td>
-                      <td className="text-left p-3">{noData(tyre.tyre_km)}</td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
+
+<tbody>
+  {data.length === 0 && !loading ? (
+    <tr>
+      <td colSpan="15" className="text-center p-3">
+        Data not found
+      </td>
+    </tr>
+  ) : (
+    data.map((tyre, index) => (
+        <tr
+          key={index}
+          className="border-b border-[1px] font-normal text-[14px] leading-[21.42px] text-[#333333] border-gray-200"
+        >
+          <td className="text-left p-3">{noData(index + 1)}</td>
+          <td
+            className="text-left p-3 cursor-pointer text-[#63A142]"
+            onClick={() => setTyre(tyre.serial_no)}
+          >
+            {noData(tyre.serial_no)}
+          </td>
+
+          <td className="text-left p-1">{noData(formatDate(tyre.Last_Updated_time))}</td>
+          <td className="text-left p-3">{noData(tyre.current_status)}</td>
+          <td className="text-left p-3">{noData(tyre.brand_name)}</td>
+          <td className="text-left p-3">{noData(tyre.model_name)}</td>
+          <td className="text-left p-3">{noData(tyre.tyre_size)}</td>
+          <td className="text-left p-3">{noData(tyre.current_status)}</td>
+          <td className="text-left p-3">{noData(tyre.vehicle_no)}</td>
+          <td className="text-left p-3">{noData(tyre.defect_type_name)}</td>
+          <td className="text-left p-3">{noData(tyre.defect_type)}</td>
+          <td className="text-left p-3">{noData(tyre.product_category)}</td>
+          <td className="text-left p-3">{noData(tyre.construction_type)}</td>
+          <td className="text-left p-3">{noData(tyre.position)}</td>
+          <td className="text-left p-3">{noData(tyre.standard_nsd)}</td>
+          <td className="text-left p-3">{noData(tyre.nsd1)}</td>
+          <td className="text-left p-3">{noData(tyre.nsd2)}</td>
+          <td className="text-left p-3">{noData(tyre.nsd3)}</td>
+          <td className="text-left p-3">{noData(tyre.minimum_nsd)}</td>
+          <td className="text-left p-3">{noData(tyre.maximum_nsd)}</td>
+          <td className="text-left p-3">{noData(tyre.tyre_price)}</td>
+          <td className="text-left p-3">{noData(tyre.tyre_km)}</td>
+        </tr>
+      ))
+  )}
+</tbody>
+
+
             </table>
           </div>
         )}

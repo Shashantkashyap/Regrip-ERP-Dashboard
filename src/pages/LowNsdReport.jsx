@@ -144,7 +144,7 @@ const LowNsdTyre = () => {
               <span>
                 <PiExportBold />
               </span>
-              <p>Export</p>
+              <p>Download</p>
             </button>
           </div>
         </div>
@@ -188,37 +188,51 @@ const LowNsdTyre = () => {
                   <td className="text-left p-3">Last Insp. Date</td>
                   <td className="text-left p-3">Vehicle No.</td>
                   <td className="text-left p-3">Avg. NSD</td>
+                  <td className="text-left p-3">Min. NSD</td>
+                  <td className="text-left p-3">Max. NSD</td>
                   <td className="text-left p-3">PSI</td>
                   <td className="text-left p-3">Status</td>
                 </tr>
               </thead>
               <tbody>
-                {data.length === 0 ? (
-                  <tr>
-                    <td colSpan="9" className="text-center p-3">Data not found</td>
-                  </tr>
-                ) : (
-                  data.map((tyre, index) => (
-                    <tr key={index} className="border-b border-[1px] font-normal text-[14px] leading-[21.42px] text-[#333333] border-gray-200">
-                      <td className="p-2">{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                      
-                      <td className="p-3 text-[#65A948] underline cursor-pointer" onClick={() => showTyreJourney(tyre.tyre_id, tyre.serial_no)}>
-                        {tyre.serial_no}
-                      </td>
+  {data.length === 0 ? (
+    <tr>
+      <td colSpan="9" className="text-center p-3">Data not found</td>
+    </tr>
+  ) : (
+    data.map((tyre, index) => {
+      const nsdValues = [tyre.nsd1, tyre.nsd2, tyre.nsd3];
+      const minNSD = Math.min(...nsdValues);
+      const maxNSD = Math.max(...nsdValues);
+      
+      return (
+        <tr key={index} className="border-b border-[1px] font-normal text-[14px] leading-[21.42px] text-[#333333] border-gray-200">
+          <td className="p-2">{(currentPage - 1) * itemsPerPage + index + 1}</td>
+          
+          <td className="p-3 text-[#65A948] underline cursor-pointer" onClick={() => showTyreJourney(tyre.tyre_id, tyre.serial_no)}>
+            {tyre.serial_no}
+          </td>
 
-                      <td className="p-2">{tyre.brand_name}</td>
-                      <td className="p-2">{tyre.model_name}</td>
-                      <td className="p-2">{tyre.inspection_date}</td>
-                      <td className="p-2">{tyre.vehicle_no}</td>
-                      <td className="p-2">{Number.isInteger(tyre.avg_nsd) ? tyre.avg_nsd.toFixed(1) : tyre.avg_nsd.toFixed(1)}</td>
-                      <td className="p-2">{tyre.psi}</td>
-                      <td className="p-2">
-                        {tyre.is_active === 1 ? "Done" : "Pending"}
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
+
+          <td className="p-2">{tyre.brand_name}</td>
+          <td className="p-2">{tyre.model_name}</td>
+          <td className="p-2">{tyre.inspection_date}</td>
+          <td className="p-2">{tyre.vehicle_no}</td>
+          <td className="p-2">{tyre.avg_nsd}</td>
+          <td className="p-2">{minNSD}</td>
+          <td className="p-2">{maxNSD}</td>
+          <td className="p-2">{tyre.psi}</td>
+          <td className="p-2">
+            {tyre.is_resolved === 1 ? "Done" : "Pending"}
+          </td>
+        </tr>
+      );
+    })
+  )}
+</tbody>
+
+             
+
             </table>
           </div>
         )}

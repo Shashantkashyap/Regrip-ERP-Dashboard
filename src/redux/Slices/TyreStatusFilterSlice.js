@@ -3,11 +3,11 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   formData: {
     company_name: "",
-    city: "",
+    city : "",
     defect_type: "",
     manufacturer: "",
-    status: "",
-    serial_no: "",
+    status : "",
+    serial_no : "",
     
 
   },

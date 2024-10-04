@@ -67,6 +67,9 @@ const InspectionReport = () => {
         console.log(response)
 
         const responseData = response.data;
+        console.log(response)
+  console.log(responseData)
+
 
         setTotalPages(responseData.pagination.totalPages);
         setTotalRecords(responseData.pagination.totalRecords)
@@ -109,7 +112,7 @@ const InspectionReport = () => {
 
 
   console.log(data)
-
+  
   return (
     <div className="p-6 bg-[#F7F7F7] rounded-[50px] overflow-x-auto relative">
       <div className="flex justify-between mb-6">
@@ -145,7 +148,7 @@ const InspectionReport = () => {
               <span>
                 <PiExportBold />
               </span>
-              <p>Export</p>
+              <p>Download</p>
             </button>
           </div>
         </div>
@@ -192,10 +195,8 @@ const InspectionReport = () => {
                   <td className="text-left p-3">Total Insp.</td>
                   {/* <td className="text-left p-3">Tyre Insp.</td> */}
                   <td className="text-left p-3">Inspected By</td>
-                 
                   <td className="text-left p-3">Driver</td>
-                  
-                  <td className="text-left p-3">Mobile No.</td>
+                  <td className="text-left p-3">Driver Mobile No.</td>
                   <td className="text-left p-3">Vehicle Status</td>
                 </tr>
               </thead>
@@ -226,8 +227,9 @@ const InspectionReport = () => {
                       <td className="p-3 px-8">{noData(vehicle.inspectionCount)}</td>
                       {/* <td className="p-3">{noData(vehicle.inspection_tyre_count)}</td> */}
                       <td className="p-3">{noData(vehicle.service_er)}</td>
-                      <td className="p-3">{noData(vehicle.driver_contact)}</td>
                       <td className="p-3">{noData(vehicle.driver_name)}</td>
+                      <td className="p-3">{noData(vehicle.driver_contact)}</td>
+                      
                       <td className="p-3">{vehicle.is_active === 1 ? "Live" : "Not Live"}</td>
                     </tr>
                   ))

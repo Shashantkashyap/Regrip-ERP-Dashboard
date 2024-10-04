@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setInspectionFormData } from "../../redux/Slices/inspectionFilterSlice";
+import { resetInspectionFormData, setInspectionFormData } from "../../redux/Slices/inspectionFilterSlice";
 
 function InspectionFilter({ isVisible, onClose, onSubmit }) {
   const dispatch = useDispatch();
@@ -50,6 +50,12 @@ function InspectionFilter({ isVisible, onClose, onSubmit }) {
     onSubmit(formData);
   };
 
+  const handleReset = () => {
+    dispatch(resetInspectionFormData()); // Reset form data
+    onSubmit({}); // Trigger unfiltered data fetch
+  };
+
+
   return (
     <div
     style={{ boxShadow: '-5px 0px 16.6px 0px #00000021' }}
@@ -87,7 +93,7 @@ function InspectionFilter({ isVisible, onClose, onSubmit }) {
           <div className="flex justify-between  border-t-[2px] pt-3">
             <button
               type="button"
-              onClick={() => dispatch(setFormData({}))} 
+              onClick={handleReset}
               className="bg-[#f0eeee] border-[1px] rounded-[9px] p-[10px_22px_10px_22px] text-[15px] leading-[23.94px] font-normal transition duration-300 ease-in-out hover:scale-[1.02] hover:shadow-md"
             >
               Reset
@@ -95,6 +101,7 @@ function InspectionFilter({ isVisible, onClose, onSubmit }) {
             <button
               type="submit"
               className="bg-[#65A948] text-white py-2 px-4 p-[10px_22px_10px_22px] text-[15px] rounded-md hover:bg-green-700 transition duration-300 ease-in-out hover:scale-[1.02] hover:shadow-md"
+              
             >
               Apply now
             </button>

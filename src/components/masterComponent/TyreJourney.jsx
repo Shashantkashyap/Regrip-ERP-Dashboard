@@ -5,6 +5,7 @@ import { PiExportBold } from "react-icons/pi";
 import { useSelector } from "react-redux";
 import Loader from "../common/Loader"; // Assuming you have a Loader component
 import "../scrollBar.css"
+import ImageModal from "../mechanicalDefectComponent/ImageModal";
 
 
 function TyreJourney({ tyreId, close, tyreNo }) {
@@ -17,6 +18,8 @@ function TyreJourney({ tyreId, close, tyreNo }) {
   const [tyreImgDetails, setTyreImgDetails] = useState()
   const [loading, setLoading] = useState(true); // State to handle loading
   const [isFetchComplete, setIsFetchComplete] = useState(false); // Track fetch completion
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const url = "https://newstaging.regripindia.com/api";
 
@@ -73,6 +76,12 @@ function TyreJourney({ tyreId, close, tyreNo }) {
     }
     return acc;
   }, []);
+
+
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setIsModalOpen(true);
+  };
   
   
 
@@ -88,15 +97,23 @@ function TyreJourney({ tyreId, close, tyreNo }) {
   <p>Tyre History: {tyreNo}</p>
   
   {tyreImgDetails && tyreImgDetails.length > 0 && tyreImgDetails[0].image_url.trim() !== "" && (
-    <div className="w-[305px] h-[100px]">
+    <div className="max-w-[50px] h-[50px] rounded-full cursor-pointer">
       <img 
         src={tyreImgDetails[0].image_url || ""} 
          
-        className="w-full h-full object-contain"
+        className="w-full h-full object-fill rounded-xl"
+        onClick={() => handleImageClick(tyreImgDetails[0].image_url)}
       />
     </div>
   )}
 </div>
+
+{isModalOpen && (
+        <ImageModal
+          imageUrl={selectedImage} // Pass the selected image URL to the modal
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
 
       {/* Loader */}
       {loading ? (
@@ -174,7 +191,7 @@ function TyreJourney({ tyreId, close, tyreNo }) {
                         {entry.standard_nsd}
                       </td>
                       <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">
-                        {entry.avg_nsd}
+                      {Number.isInteger(entry.avg_nsd) ? entry.avg_nsd.toFixed(1) : entry.avg_nsd.toFixed(1)}
                       </td>
                       <td className="px-4 py-2 font-outfit text-[14px] leading-[21.42px] text-[#333333] font-normal">
                         {Math.floor(100 - ((entry.standard_nsd - entry.avg_nsd)/entry.standard_nsd)*100)}%

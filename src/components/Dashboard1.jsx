@@ -29,10 +29,14 @@ function DashboardMain() {
   const [summary, setSummary] = useState({});
   const [tyreInventoryData, setTyreInventory] = useState([]);
   const [selectedTable, setSelectedTable] = useState("NSD");
-  const [loading, setLoading] = useState(true); // Track loading state
+  const [loading, setLoading] = useState(false); // Track loading state
   const url = "https://newstaging.regripindia.com/api";
   let summaryItems = []
   const [showPopup , setShowPopup] = useState(false);
+
+  const [alertLoading, setAlertLoading] = useState(true);
+  const [summaryLoading, setSummaryLoading] = useState(true);
+  const [tyreInventoryLoading, setTyreInventoryLoading] = useState(true);
   
 const dispatch = useDispatch()
 
@@ -89,6 +93,7 @@ const filterTab = useSelector((state) => state.dashboardTableFilter.tableFilter)
 
 
   const fetchAlertData = async () => {
+    setAlertLoading(true); // Start loading
     try {
       const alertData = await axios.post(
         `${url}/alert-box`,
@@ -102,15 +107,17 @@ const filterTab = useSelector((state) => state.dashboardTableFilter.tableFilter)
       );
       setAlert(alertData.data.data || []); // Default to empty array if no data
     } catch (error) {
-      toast.error('Error fetching alert data'); // Show error toast
+      toast.error('Error fetching alert data');
       console.error('Error fetching alert data:', error);
+    } finally {
+      setAlertLoading(false); // End loading
     }
   };
 
   const fetchSummaryData = async () => {
+    setSummaryLoading(true); // Start loading
     try {
       const summaryData = await axios.post(
-        // `${url}/vehicle-stats`,
         `https://api.regripindia.com/api/tyre-summary`,
         {},
         {
@@ -120,20 +127,21 @@ const filterTab = useSelector((state) => state.dashboardTableFilter.tableFilter)
           },
         }
       );
-      //console.log(summaryData)
       setSummary(summaryData.data.data || {}); // Default to empty object if no data
-      console.log(summary)
     } catch (error) {
-      toast.error('Error fetching summary data'); // Show error toast
+      toast.error('Error fetching summary data');
       console.error('Error fetching summary data:', error);
+    } finally {
+      setSummaryLoading(false); // End loading
     }
   };
 
   
   const fetchTyreInventory = async () => {
+    setTyreInventoryLoading(true); // Start loading
     const inventoryFormData = new FormData();
     inventoryFormData.append("group_by", selectedTable.toLowerCase());
-
+  
     try {
       const inventoryData = await axios.post(
         `${url}/tyre-inventory`,
@@ -145,23 +153,20 @@ const filterTab = useSelector((state) => state.dashboardTableFilter.tableFilter)
           },
         }
       );
-
-      
       setTyreInventory(inventoryData.data.data || []); // Default to empty array if no data
-      console.log(tyreInventoryData)
     } catch (error) {
-      toast.error('Error fetching tyre inventory data'); // Show error toast
+      toast.error('Error fetching tyre inventory data');
       console.error('Error fetching tyre inventory data:', error);
+    } finally {
+      setTyreInventoryLoading(false); // End loading
     }
   };
 
   useEffect(() => {
-    setLoading(true); // Start loading when fetching begins
     const fetchData = async () => {
       await fetchAlertData();
       await fetchSummaryData();
       await fetchTyreInventory();
-      setLoading(false); // End loading when fetching is complete
     };
     fetchData();
   }, []);
@@ -198,6 +203,7 @@ const filterTab = useSelector((state) => state.dashboardTableFilter.tableFilter)
     dispatch(clearTableFilter())
     setShowPopup(false);
     localStorage.removeItem("current_status")
+    localStorage.removeItem("product_category")
     
   }
 
@@ -238,20 +244,11 @@ const filterTab = useSelector((state) => state.dashboardTableFilter.tableFilter)
   </>
 )}
 
-            <div className="flex gap-4">
-            <Summary summaryItems={summaryItems} handleClick={handleClick} />
-              
-
-            <TyreInventory
-                selectedTable={selectedTable}
-                setSelectedTable={setSelectedTable}
-                tyreInventory={tyreInventoryData.inventory} // Fixed to use correct variable
-                
-              />
-              <Alerts alertItems={alertItems} />
-
-              
-            </div>
+<div className="flex gap-4 min-h-[300px]">
+            <Summary summaryItems={summaryItems} handleClick={handleClick} loading={summaryLoading} />
+            <TyreInventory selectedTable={selectedTable} setSelectedTable={setSelectedTable} tyreInventory={tyreInventoryData.inventory} loading={tyreInventoryLoading} />
+            <Alerts alertItems={alertItems} loading={alertLoading} />
+          </div>
 
             {/* <div className="flex gap-4 mt-8">
               <div className="w-[100%] max-h-[800px]">

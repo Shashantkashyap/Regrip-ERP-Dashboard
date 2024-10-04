@@ -1,12 +1,19 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { setTableFilter } from '../../redux/Slices/DasboardPopup';
+import Loader from '../common/Loader';
 
-function Alerts({ alertItems }) {
+function Alerts({ alertItems, loading }) {
   const dispatch = useDispatch();
   
   return (
     <div className="w-[340px] min-w-[230px] bg-white px-[20px] rounded-[15px] border-[1px] font-outfit cursor-pointer">
+      {loading ? (
+        <div className="absolute inset-0 flex items-center justify-center">
+          {/* <Loader /> */}
+        </div>
+      ) : (
+        <>
       <div className="font-semibold text-[22px] mt-2 max-lg:text-[18px] text-gray-800 mb-6">Alerts</div>
       <div className="flex flex-col gap-[15px]">
         {alertItems.map((item, index) => (
@@ -30,6 +37,8 @@ function Alerts({ alertItems }) {
           </div>
         ))}
       </div>
+      </>
+      )}
     </div>
   );
 }

@@ -213,6 +213,7 @@ const LowNsdTyre = () => {
             {tyre.serial_no}
           </td>
 
+
           <td className="p-2">{tyre.brand_name}</td>
           <td className="p-2">{tyre.model_name}</td>
           <td className="p-2">{tyre.inspection_date}</td>
@@ -231,6 +232,7 @@ const LowNsdTyre = () => {
 </tbody>
 
              
+
             </table>
           </div>
         )}

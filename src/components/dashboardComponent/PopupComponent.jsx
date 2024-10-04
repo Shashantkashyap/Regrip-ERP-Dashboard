@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import search from "../../assets/icons/search@2x.png";
 import { PiExportBold } from 'react-icons/pi';
 import { MdCancel, MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import TyreJourney from '../masterComponent/TyreJourney';
 import Loader from '../common/Loader';
+import { IoFilter } from 'react-icons/io5';
+import PopupFilter from './PopupFilter';
+import { resetPopupFormData } from '../../redux/Slices/PopupfilterSlice';
 
 function PopupComponent({ close }) {
   const knowUser = JSON.parse(localStorage.getItem("userData"));
@@ -12,7 +16,7 @@ function PopupComponent({ close }) {
 
   console.log(localStorage.getItem("current_status"))
 
-  const url = "https://api.regripindia.com/api";
+  const url = "https://newstaging.regripindia.com/api";
   const [tyreData, setTyreData] = useState([]);
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
@@ -21,6 +25,10 @@ function PopupComponent({ close }) {
   const [tyreId, setTyreId] = useState(null);
   const [tyreNo, setTyreNo] = useState();
   const [loading, setLoading] = useState(false); // Loader state
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
+  const [searchText, setSearchText] = useState(""); // State to store search input
+  const [filterData, setFilterData] = useState({})
+
 
   const dispatch = useDispatch();
   const filterTab = useSelector((state) => state.dashboardTableFilter.tableFilter);
@@ -33,12 +41,13 @@ function PopupComponent({ close }) {
 
   const isEmpty = (obj) => Object.keys(obj).length === 0;
 
-  const fetchTyreData = async () => {
+  const fetchTyreData = async (filterData) => {
     if (!tyreBody || isEmpty(tyreBody)) {
       console.log("Tyre body is empty, skipping fetch.");
       return;
     }
 
+    
     setLoading(true); // Start loading
     try {
       const formData = new FormData();
@@ -50,10 +59,33 @@ function PopupComponent({ close }) {
       }
 
       if(tyreBody.hasOwnProperty("tyre_depth") || tyreBody.hasOwnProperty("brand_id")){
-        formData.append("current_status", localStorage.getItem("current_status"))
+
+        if(localStorage.getItem("current_status") == "Scrap"){
+          formData.append("current_status", localStorage.getItem("current_status"))
+        }else{
+          formData.append("current_status", "on-wheel")
+          formData.append("product_category", localStorage.getItem("product_category"))
+        }
+
+        
+        
       }
+
+      if(searchText){
+        formData.append("text",searchText)
+      }
+
+
+    if(filterData != undefined)
+    {
+      Object.keys(filterData).forEach((key) => {
+        formData.append(key, filterData[key]);
+      });
+    }
+    
       
-      const response = await axios.post(`${url}/tyre-list`, formData, {
+      
+      const response = await axios.post(`${url}/erp-tyre-list`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: apiKey,
@@ -75,7 +107,7 @@ function PopupComponent({ close }) {
 
   useEffect(() => {
     fetchTyreData();
-  }, [tyreBody]);
+  }, [tyreBody , searchText]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -90,6 +122,23 @@ function PopupComponent({ close }) {
 
   const closeTyreJourney = () => {
     setTyreId(null);
+  };
+
+  const handleFilterToggle = () => {
+    setIsFilterVisible(!isFilterVisible);
+  };
+
+  const handleSubmit = (data) => {
+    setFilterData(data);
+    handleFilterToggle();
+    fetchTyreData(data)
+    setCurrentPage(1);
+    setFilterData({})
+    dispatch(resetPopupFormData())
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchText(e.target.value);
   };
 
   return (
@@ -120,16 +169,50 @@ function PopupComponent({ close }) {
             )}
           </div>
 
-          <div className="flex gap-4 items-center mr-5 mt-10">
+          <div className="flex justify-end">
+          <div className="flex gap-4 items-center mr-16 ">
+          <div className="flex bg-[#EBEBEB] rounded-[37px] p-[9px_24px] items-center gap-[7px]">
+            <img
+              src={search}
+              alt="search icon"
+              className="w-6 h-6 bg-[#EBEBEB] text-[#949494]"
+            />
+            <input
+              type="text"
+              placeholder="Search Vehicle"
+              className="outline-none text-sm bg-[#EBEBEB] text-[#949494] font-outfit font-normal text-[19px] leading-[23.94px]"
+              value={searchText} 
+              onChange={handleSearchChange} 
+            />
+          </div>
+            <span className="mr-2">
+              <IoFilter
+                fontSize={23}
+                onClick={handleFilterToggle}
+                className="cursor-pointer"
+              />
+            </span>
             <button className="p-[5px_15px_10px_15px] text-center rounded-[10px] text-[16px] flex gap-1 items-center border-[1px]">
               <span>
                 <PiExportBold />
               </span>
               <p>Download</p>
             </button>
+           
           </div>
         </div>
+        </div>
       </div>
+
+      {isFilterVisible && (
+          <div className="z-30">
+            <PopupFilter
+              isVisible={isFilterVisible}
+              onClose={handleFilterToggle}
+              onSubmit={handleSubmit}
+            />
+          </div>
+        )}
 
       {/* Background Overlay */}
       {tyreId !== null && (
@@ -182,10 +265,10 @@ function PopupComponent({ close }) {
                   <td className="p-3">{item.product_category}</td>
                   <td className="p-3">
   {Math.min(
-    item.nsd1 ?? Infinity,
-    item.nsd2 ?? Infinity,
-    item.nsd3 ?? Infinity,
-    item.nsd4 ?? Infinity
+    item.nsd1 ==0 ? Infinity : item.nsd1,
+    item.nsd2 ==0 ? Infinity : item.nsd2,
+    item.nsd3  == 0 ? Infinity : item.nsd3,
+    item.nsd4 ==0 ? Infinity : item.nsd4
   )}
 </td>
 <td className="p-3">
@@ -198,7 +281,17 @@ function PopupComponent({ close }) {
 </td>
 <td className="p-3">
      {  
-    Math.floor(100 -  (((item.std_nsd -3) - (Math.min(item.nsd1 ?? Infinity, item.nsd2 ?? Infinity, item.nsd3 ?? Infinity, item.nsd4 ?? Infinity))) / (item.std_nsd -3))* 100)
+    Math.floor(100 -  (((item.std_nsd -3) - Math.min(
+      item.nsd1 ==0 ? Infinity : item.nsd1,
+      item.nsd2 ==0 ? Infinity : item.nsd2,
+      item.nsd3  == 0 ? Infinity : item.nsd3,
+      item.nsd4 ==0 ? Infinity : item.nsd4
+    )) / (item.std_nsd -3))* 100)   > 100 ? 100 :  Math.floor(100 -  (((item.std_nsd -3) - Math.min(
+      item.nsd1 ==0 ? Infinity : item.nsd1,
+      item.nsd2 ==0 ? Infinity : item.nsd2,
+      item.nsd3  == 0 ? Infinity : item.nsd3,
+      item.nsd4 ==0 ? Infinity : item.nsd4
+    )) / (item.std_nsd -3))* 100)
   } %
 </td>
 

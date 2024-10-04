@@ -9,6 +9,9 @@ function useScrapData(selectVal, customDateRange, tyreListFilter) {
   const [doughnutData, setDoughnutData] = useState();
   const [nsdData, setNsdData] = useState();
   const [tyreList, setTyreList] = useState();
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const knowUser = JSON.parse(localStorage.getItem("userData"));
@@ -64,12 +67,13 @@ function useScrapData(selectVal, customDateRange, tyreListFilter) {
       const data = response.data.data;
       if (data) {
         const updatedData = data.map((item) => {
-          const { brand_id, ...rest } = item; // Destructure to exclude brand_id
+          item.scrap_percent = ((item?.scrap_per_brand / (countData?.total_scrap_count || countData?.current_scrap_count)) * 100).toFixed(2);
+          const { brand_id, tyres_per_brand, action, tyre_status, action_date, tyre_id, ...rest } = item; // Destructure to exclude brand_id
           return rest; // Return the remaining properties
         });
 
-        console.log("Updated Data: ", updatedData);
-        setBrandData(updatedData);
+        console.log("Brand Data: ", updatedData);
+        setBrandData(updatedData?.sort((a, b) => a.scrap_percent - b.scrap_percent));
       }
     } catch (error) {
       console.log(error);
@@ -77,7 +81,7 @@ function useScrapData(selectVal, customDateRange, tyreListFilter) {
     } finally {
       setLoading(false);
     }
-  }, [selectVal]);
+  }, [selectVal, countData]);
 
   const fetchReasonWiseData = useCallback(async () => {
     setLoading(true);
@@ -99,26 +103,25 @@ function useScrapData(selectVal, customDateRange, tyreListFilter) {
       // setTotalPages(responseData.pagination.total);
       const data = response.data.data;
       if (data) {
-        let sum = data?.reduce((acc, curr) => acc + curr.total_tyres, 0);
-        console.log("Sum: ", sum);
-
         const updatedData = data.map((item) => {
-          item.scrap_percent = `${((item.total_tyres / sum) * 100).toFixed(
+          item.scrap_percent = ((item?.scrap_count / (countData?.total_scrap_count || countData?.current_scrap_count)) * 100).toFixed(
             2
-          )}%`;
+          );
           const {
             tp_entity_id,
             current_status,
             serial_no,
             defect_id,
             defect_type,
+            tyre_status,
+            action,
             ...rest
           } = item; // Destructure to exclude brand_id
           return rest; // Return the remaining properties
         });
 
-        console.log("Updated Data: ", updatedData);
-        setReasonData(updatedData);
+        console.log("Reason Data: ", updatedData);
+        setReasonData(updatedData?.sort((a, b) => a?.scrap_percent - b?.scrap_percent));
       }
     } catch (error) {
       console.log(error);
@@ -126,7 +129,7 @@ function useScrapData(selectVal, customDateRange, tyreListFilter) {
     } finally {
       setLoading(false);
     }
-  }, [selectVal]);
+  }, [selectVal, countData]);
 
   const fetchVehicleWiseData = useCallback(async () => {
     setLoading(true);
@@ -160,7 +163,7 @@ function useScrapData(selectVal, customDateRange, tyreListFilter) {
           return rest; // Return the remaining properties
         });
 
-        console.log("Updated Data: ", updatedData);
+        console.log("Vehicle Data: ", updatedData);
         setVehicleData(updatedData);
       }
     } catch (error) {
@@ -240,7 +243,7 @@ function useScrapData(selectVal, customDateRange, tyreListFilter) {
     try {
       const response = await axios.post(
         `https://newstaging.regripindia.com/api/scrap/tyre-list-details`,
-        { date_filter: selectVal },
+        { date_filter: selectVal, page: currentPage, limit: 10 },
         {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -249,7 +252,7 @@ function useScrapData(selectVal, customDateRange, tyreListFilter) {
         }
       );
 
-      console.log("Tyre List Data: ", response.data.data);
+      console.log("Tyre List Data: ", response.data);
       // setTotalPages(responseData.pagination.total);
       const data = response.data.data;
       if (data) {
@@ -265,19 +268,23 @@ function useScrapData(selectVal, customDateRange, tyreListFilter) {
 
   useEffect(() => {
     fetchTyreCount();
-    fetchBrandWiseData();
-    fetchReasonWiseData();
     fetchVehicleWiseData();
     fetchDoughnutChartData();
     fetchNsdData();
-    // console.log("API Key: ", apiKey);
   }, [selectVal, customDateRange]);
 
   useEffect(() => {
+    if (countData) {
+      fetchBrandWiseData();
+      fetchReasonWiseData();
+    }
+  }, [countData, selectVal]);
+  
+  useEffect(() => {
     fetchTyreListDetails();
-  }, [selectVal, customDateRange, tyreListFilter]);
+  }, [selectVal, customDateRange, tyreListFilter, currentPage]);
 
-  return { countData, brandData, reasonData, vehicleData, doughnutData, nsdData, tyreList, loading, error };
+  return { countData, brandData, reasonData, vehicleData, doughnutData, nsdData, tyreList, currentPage, setCurrentPage, itemsPerPage, totalPages, setTotalPages, loading, error };
 }
 
 export default useScrapData;

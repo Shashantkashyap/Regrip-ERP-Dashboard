@@ -9,6 +9,7 @@ import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import PendingInspectionFilterSidebar from "../pendingInspection/PendingInspectionFilter";
 import { format } from 'date-fns';  // Use if you want an external library
 import { useSelector } from "react-redux";
+import TyreFitment from "../masterComponent/TyreFitment";
 
 const Alignment = () => {
  // const apiKey = useSelector((state) => state.user.user.data.api_key);
@@ -16,7 +17,7 @@ const Alignment = () => {
   const apiKey = knowUser.data.api_key
   
   const itemsPerPage = 10;
-  
+  const [vehicleId, setVehicleId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
@@ -98,7 +99,14 @@ const Alignment = () => {
 
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1); // Create array of page numbers
 
-  
+  const setVehicle = (id) => {
+    setVehicleId(id);
+  };
+
+  const closeTyreComponent = () => {
+    setVehicleId(null);
+  };
+
   return (
     <div className="p-6 bg-[#F7F7F7] rounded-[50px] overflow-x-auto relative">
       {showAlignmentFilter && (
@@ -126,6 +134,18 @@ const Alignment = () => {
             </button>
           </div>
         </div>
+
+        {/* TyreFitment Component */}
+        {vehicleId !== null && (
+          <>
+            <div className="fixed inset-0 bg-[rgba(0,0,0,0.9)] z-30"></div>
+            <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-40 min-w-[600px] overflow-x-auto">
+              <div className="bg-white w-[80%] max-w-[1145px] max-h-[700px] rounded-[28px] shadow-lg min-w-[700px] overflow-x-auto">
+                <TyreFitment close={closeTyreComponent} vehicle={vehicleId} />
+              </div>
+            </div>
+          </>
+        )}
 
         {loading ? (
           <div className="absolute inset-0 flex items-center justify-center">
@@ -158,7 +178,7 @@ const Alignment = () => {
                   data.map((vehicle, index) => (
                     <tr key={index} className="border-b border-[1px] font-normal text-[14px] leading-[21.42px] text-[#333333] border-gray-200">
                       <td className="p-3">{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                      <td className="p-3 text-[#65A948] underline cursor-pointer">{noData(vehicle.vehicle_no)}</td>
+                      <td className="p-3 text-[#65A948] underline cursor-pointer" onClick={() => setVehicle(vehicle.vehicle_id)}>{noData(vehicle.vehicle_no)}</td>
                       <td className="p-3">{vehicle.last_alignment}</td> {/* Date formatted */}
                       <td className="p-3">{vehicle.last_alignment_km || 0}</td>
                       <td className="p-3">{vehicle.last_inspection_date || "NA"}</td>

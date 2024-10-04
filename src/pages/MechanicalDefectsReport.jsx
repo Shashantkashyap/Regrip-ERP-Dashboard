@@ -16,6 +16,9 @@ import {
   ChevronLeft,
 } from "@mui/icons-material";
 import ImageModal from "../components/mechanicalDefectComponent/ImageModal";
+import { IoFilter } from "react-icons/io5";
+import { PiExportBold } from "react-icons/pi";
+import TyreFitment from "../components/masterComponent/TyreFitment";
 
 const MechanicalDefectsReport = () => {
 
@@ -34,6 +37,7 @@ const MechanicalDefectsReport = () => {
   const [selectedImage, setSelectedImage] = useState(null); // State to store selected image URL
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal open/close state
   const [searchText, setSearchText] = useState(""); // State to store search input
+  const [vehicleId, setVehicleId] = useState(null);
 
   const noData = (value) => value || "--";
 
@@ -80,9 +84,7 @@ const MechanicalDefectsReport = () => {
 
         const responseData = response.data;
 
-        console.log(data);
-        console.log(response)
-        console.log(responseData)
+
         setTotalPages(responseData.totalPages);
         setData(responseData.data || []);
       } catch (error) {
@@ -115,9 +117,7 @@ const MechanicalDefectsReport = () => {
     }
   };
 
-  const closeInspection = () => {
-    setVehicleNumberId();
-  };
+  
 
   const handleSubmit = (data) => {
     setFilterData(data);
@@ -126,8 +126,8 @@ const MechanicalDefectsReport = () => {
   };
 
   const setVehicle = (id) => {
-    setVehicleNumberId(id);
-    console.log("Vehicle ID set:", id);
+    setVehicleId(id);
+    
   };
 
   const handleImageClick = (imageUrl) => {
@@ -139,7 +139,12 @@ const MechanicalDefectsReport = () => {
     setSearchText(e.target.value);
   };
 
-  
+
+  const closeTyreComponent = () => {
+    setVehicleId(null);
+  };
+
+
   return (
     <div className="p-6 bg-[#F7F7F7] rounded-[50px] overflow-x-auto relative">
        {isModalOpen && (
@@ -176,6 +181,7 @@ const MechanicalDefectsReport = () => {
         </div>
       </div>
 
+
       <div className="flex flex-col w-full rounded-2xl font-outfit">
         <div className="flex justify-end items-center mb-4">
           <div className="flex">
@@ -192,7 +198,17 @@ const MechanicalDefectsReport = () => {
             <button className="border border-[#333333] text-[#333333] px-4 py-[7px] rounded-lg flex items-center gap-2 hover:border-[#65A948] hover:text-[#65A948]">
               <IosShare fontSize="small" />
               Download
+
             </button>
+            {/* <button
+              className="p-[5px_15px_10px_15px] text-center rounded-[10px] text-[16px] text-white bg-[#333333] flex gap-1 items-center border-[1px]"
+              onClick={() => setAddVehicle(!addVehicle)}
+            >
+              <span>
+                <IoMdAdd />
+              </span>
+              <p>Add</p>
+            </button> */}
           </div>
         </div>
 
@@ -206,15 +222,13 @@ const MechanicalDefectsReport = () => {
           </div>
         )}
 
-        {vehicleNumberId && (
+        {/* TyreFitment Component */}
+        {vehicleId !== null && (
           <>
-            <div className="fixed inset-0 bg-[rgba(0,0,0,0.8)] z-30"></div>
+            <div className="fixed inset-0 bg-[rgba(0,0,0,0.9)] z-30"></div>
             <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-40 min-w-[600px] overflow-x-auto">
-              <div className="bg-white w-[80%] max-w-[1145px] rounded-[28px] shadow-lg min-w-[700px] overflow-x-auto">
-                <InspectionCountDetails
-                  close={closeInspection}
-                  vehicleId={vehicleNumberId}
-                />
+              <div className="bg-white w-[80%] max-w-[1145px] max-h-[700px] rounded-[28px] shadow-lg min-w-[700px] overflow-x-auto">
+                <TyreFitment close={closeTyreComponent} vehicle={vehicleId} />
               </div>
             </div>
           </>
@@ -287,25 +301,25 @@ const MechanicalDefectsReport = () => {
                         {(currentPage - 1) * itemsPerPage + index + 1}
                       </td>
                       <td
-                        className="p-3 px-4 whitespace-nowrap text-[#65A948] underline cursor-pointer"
+                        className="p-1 px-4 whitespace-nowrap text-[#65A948] underline cursor-pointer"
                         onClick={() => setVehicle(vehicle.id)}
                       >
                         {noData(vehicle.vehicle_no)}
                       </td>
-                      <td className="p-3 px-4 whitespace-nowrap">
+                      <td className="p-1 px-4 whitespace-nowrap">
                         {vehicle.inspection_date
                           ? formatCustomDate(vehicle.inspection_date)
                           : "No Date"}
                       </td>
-                      <td className="p-3 px-4 whitespace-nowrap">
+                      <td className="p-1 px-4 whitespace-nowrap">
                         {noData(vehicle.defect_name)}
                       </td>
 
-                      <td className="p-3 px-4 whitespace-nowrap">
+                      <td className="p-1 px-4 whitespace-nowrap">
                         {noData(vehicle.position)}
                       </td>
                       <td
-                        className={`text-left whitespace-nowrap p-2 px-3 flex items-center justify-center rounded-md ${getPriorityClasses(
+                        className={`text-left whitespace-nowrap p-1 px-3 mt-3 flex items-center   rounded-md ${getPriorityClasses(
                           vehicle.priority
                         )} text-[14px] w-12 h-6 `}
                       >
@@ -313,7 +327,7 @@ const MechanicalDefectsReport = () => {
                       </td>
                       <td
                         onClick={() => handleImageClick(vehicle.image_url)} // Pass image URL to handleImageClick
-                        className="p-3 px-4 cursor-pointer whitespace-nowrap"
+                        className="p-1 px-4 cursor-pointer whitespace-nowrap"
                       >
                         <img
                           className="rounded-full w-8 h-8"
@@ -321,25 +335,27 @@ const MechanicalDefectsReport = () => {
                           alt="Vehicle"
                         />
                       </td>
-                      <td className="p-3 px-4 whitespace-nowrap">
+                      <td className="p-1 px-4 whitespace-nowrap">
                         {noData(vehicle.mechanic_name)}
                       </td>
-                      <td className="p-3 px-4 whitespace-nowrap">
+                      <td className="p-1 px-4 whitespace-nowrap">
                         {vehicle.mechanic_assigned_date
                           ? formatCustomDate(vehicle.mechanic_assigned_date)
                           : "No Date"}
                       </td>
-                      <td className="p-3 px-4 whitespace-nowrap">
+                      <td className="p-1 px-4 whitespace-nowrap">
                         {noData(vehicle.pending_aging_days)}
                       </td>
+
                        <td className="p-3 px-4 whitespace-nowrap">
                           {vehicle.status === 0 ? "Pending" : vehicle.status === 1 ? "Done" : noData(vehicle.status)}
                         </td>
 
                       <td className="p-3 px-4 whitespace-nowrap">
+
                         {noData(vehicle.action_days)}
                       </td>
-                      <td className="p-3 px-4 whitespace-nowrap">
+                      <td className="p-1 px-4 whitespace-nowrap">
                         {noData(vehicle.delay_days)}
                       </td>
                      

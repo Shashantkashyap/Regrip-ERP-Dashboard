@@ -160,7 +160,7 @@ console.log(inspectionData)
                 <tr key={index} className="border-b">
                   <td className="py-2 px-4 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">{index + 1}</td>
                   <td className="py-2 px-4 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">{formatDate(tyre.details[0].datetime_created)}</td>
-                  <td className="py-2 px-4 font-outfit font-normal text-[14px] leading-[21.42px] cursor-pointer">{tyre.details[0].vehicle_no}</td>
+                  <td className="py-2 px-4 font-outfit text-green-600 font-normal text-[14px] leading-[21.42px] cursor-pointer" onClick={() => showInspectionTyreFitmentDetails(tyre.details[0].inspection_id, tyre.details[0].vehicle_no)}>{tyre.details[0].vehicle_no}</td>
                   <td className="py-2 px-4 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">{tyre.details[0].km_total_reading}</td>
                   <td className="py-2 px-8 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">{tyre.details[0].vehicle_km}</td>
                   <td className="py-2 px-8 font-outfit text-[#333333] font-normal text-[14px] leading-[21.42px]">{tyre.details[0].vehicle_km - tyre.details[0].km_total_reading}</td>

@@ -54,7 +54,7 @@ function ScrapAnalysisReport() {
     startDate: null,
     endDate: null,
   });
-  const {countData, brandData, reasonData, vehicleData, doughnutData, nsdData, tyreList, loading, error} = useScrapData(selectVal, customDateRange, tyreListFilter);
+  const {countData, brandData, reasonData, vehicleData, doughnutData, nsdData, tyreList, currentPage, setCurrentPage, itemsPerPage, totalPages, setTotalPages, loading, error} = useScrapData(selectVal, customDateRange, tyreListFilter);
 
   const handleStartDateChange = (date) => {
     if (isFuture(date)) {
@@ -88,22 +88,12 @@ function ScrapAnalysisReport() {
     setShowEndCalendar(true);
   };
 
-  const headersArray = ["Brand", "Scrap Count", "Tyre Count", "Scrap %"];
+  const headersArray = ["Brand", "Scrap Count", "Scrap %"];
   const headersArray1 = ["Reason", "No. of Tyres", "%"];
 
-
-  const driverDataarray = [
-    ["Name1", 152, "10%"],
-    ["Name1", 152, "10%"],
-    ["Name1", 152, "10%"],
-    ["Name1", 152, "10%"],
-    ["Name1", 152, "10%"],
-    ["Name1", 152, "10%"],
-  ];
-
   useEffect(() => {
-    console.log("TyreList Data in Report: ", (tyreList));
-  }, [selectVal, customDateRange, tyreList]);
+    console.log("Count Data in Report: ", countData);
+  }, [selectVal, customDateRange, reasonData, brandData, vehicleData, countData]);
 
   return (
     <div className="p-6 rounded-[50px] overflow-x-auto relative">
@@ -120,7 +110,7 @@ function ScrapAnalysisReport() {
             />
             <input
               type="text"
-              placeholder="Search Vehicle"
+              placeholder="Search Tyre"
               className="outline-none text-sm bg-[#EBEBEB] text-[#949494] font-outfit font-normal text-[19px] leading-[23.94px]"
             />
           </div>
@@ -205,7 +195,7 @@ function ScrapAnalysisReport() {
                     </span>
                   </div>
                   <div className="flex items-center text-gray-500 text-sm mt-2 justify-center font-semibold lg:justify-start">
-                    {
+                    {/* {
                       selectVal !== "total_count" && (
                         <>
                           <span>
@@ -214,9 +204,9 @@ function ScrapAnalysisReport() {
                           <span className="mx-2 font-extralight">|</span>
                         </>
                       )
-                    }
+                    } */}
                     
-                    <select
+                    {/* <select
                       name="date-picker"
                       className="bg-transparent"
                       onChange={(e) => setSelectVal(e.target.value)}
@@ -227,7 +217,7 @@ function ScrapAnalysisReport() {
                       <option value="last_3_months">Last 3 Months</option>
                       <option value="last_6_months">Last 6 Months</option>
                       <option value="custom_date">Custom Date</option>
-                    </select>
+                    </select> */}
                   </div>
                   <div className="mt-4">
                     {selectVal === "custom_date" && (
@@ -327,7 +317,7 @@ function ScrapAnalysisReport() {
                   title="Brand Wise"
                   count={countData?.current_scrap_count || countData?.total_scrap_count}
                   tableHeaders={headersArray}
-                  tableData={brandData}
+                  tableData={brandData?.sort((a, b) => a.scrap_percentage - b.scrap_percentage)}
                   className="w-full"
                 />
                 <div className="pl-2 bg-white h-[350px] flex flex-col px-5 justify-center items-center gap-3 rounded-xl border border-gray-200 ">
@@ -390,21 +380,18 @@ function ScrapAnalysisReport() {
                 </div>
 
                 {/* Second chart container */}
-                <div className="-translate-y-12">
-                  <div className="flex justify-between items-center w-full px-4 md:px-6 lg:px-8 pt-1 translate-y-6 md:translate-y-8 lg:translate-y-10">
-                    <p className="font-semibold text-base md:text-lg lg:text-xl text-gray-800 -translate-x-1 translate-y-3 md:translate-y-5 lg:translate-y-5">
-                      Scrap Accountable
-                    </p>
-                    {/* DateRange component can be re-enabled if needed */}
-                    {/* <DateRange className="text-green-600 text-xl font-semibold translate-y-3" isYearly={true} /> */}
-                    <p className="text-green-600 text-base md:text-lg lg:text-xl font-semibold translate-y-3 md:translate-y-5 lg:translate-y-5">
-                      {countData?.total_scrap_count || countData?.current_scrap_count}
-                    </p>
-                  </div>
-                  <ChartComponent title="Scrap Accountable" count={0}>
-                    <BarChart />
-                  </ChartComponent>
+                <div className="-translate-y-12 md:-translate-y-0">
+                  <ScrapCountCard
+                    setTyreListFilter={setTyreListFilter}
+                    tyreListFilter={tyreListFilter}
+                    title="Vehicle"
+                    count={countData?.current_scrap_count || countData?.total_scrap_count}
+                    tableHeaders={["Vehicle", "Count", "%"]}
+                    tableData={vehicleData?.sort((a, b) => a.percentage - b.percentage)}
+                    className="w-full h-[300px]"
+                  />
                 </div>
+                
               </div>
 
               {/* Fourth Row */}
@@ -463,29 +450,20 @@ function ScrapAnalysisReport() {
               </div>
               
               {/* fifth Row */}
-              <div className="grid lg:grid-cols-2 gap-6 -translate-y-12">
+              {/* <div className="grid lg:grid-cols-2 gap-6 -translate-y-12">
                 <ScrapCountCard
                   setTyreListFilter={setTyreListFilter}
                   tyreListFilter={tyreListFilter}
                   title="Vehicle"
                   count={countData?.current_scrap_count || countData?.total_scrap_count}
                   tableHeaders={["Vehicle", "Count", "%"]}
-                  tableData={vehicleData}
+                  tableData={vehicleData?.sort((a, b) => a.percentage - b.percentage)}
                   className="w-full"
                 />
-                {/* <ScrapCountCard
-                  setTyreListFilter={setTyreListFilter}
-                  tyreListFilter={tyreListFilter}
-                  title="Driver"
-                  count={countData?.current_scrap_count || countData?.total_scrap_count}
-                  tableHeaders={["Driver Name", "Count", "%"]}
-                  tableData={Object.values(driverDataarray)}
-                  className="w-full"
-                /> */}
-              </div>
+              </div> */}
 
               {/* Sixth Row */}
-              <TyreListComponent data={tyreList} selectVal={selectVal} tyreListFilter={tyreListFilter} />
+              <TyreListComponent data={tyreList} selectVal={selectVal} tyreListFilter={tyreListFilter} setCurrentPage={setCurrentPage} currentPage={currentPage} itemsPerPage={itemsPerPage} totalPages={totalPages} setTotalPages={setTotalPages} />
             </div>
           </div>
         )}

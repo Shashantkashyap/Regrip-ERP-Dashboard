@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   formData: {
     vehicle_no:"",
-    trailor_no: '',
+    //trailor_no: '',
     start_date: '',
     end_date: '',
     manufacturer_year: '',

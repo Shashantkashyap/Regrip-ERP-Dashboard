@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 const ScrapCountCard = ({ title, count, tableHeaders, setTyreListFilter, tyreListFilter, tableData, className = '' }) => {
 
   return (
-    <div className={`p-4 rounded-xl border border-gray-200 bg-white w-[500px] h-[350px] ${className} overflow-y-auto overflow-x-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300 w-[100%]`}>
+    <div className={`p-4 rounded-xl border border-gray-200 bg-white w-[500px] max-h-[350px] overflow-y-auto overflow-x-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300 ${className} `}>
       {/* Title and Count */}
       <div className="flex justify-between items-center mb-4 px-1">
         <p className="font-semibold text-lg text-gray-800">{title}</p>
@@ -22,7 +22,7 @@ const ScrapCountCard = ({ title, count, tableHeaders, setTyreListFilter, tyreLis
           </tr>
         </thead>
         <tbody>
-          {tableData ? tableData.map((row, index) => {
+          {tableData ? tableData?.map((row, index) => {
               return (
                 <tr key={index} className="border-t">
                   {Object.entries(row).map((cell, i) => {
@@ -43,7 +43,9 @@ const ScrapCountCard = ({ title, count, tableHeaders, setTyreListFilter, tyreLis
                   })}
                 </tr>
               );
-          }) : <h1 className='text-center'>No Data Available</h1>}
+          }) : <tr className='flex justify-center items-center mt-8'>
+              <h1 className='text-center w-full'>No Data Available</h1>
+            </tr>}
         </tbody>
       </table>
     </div>

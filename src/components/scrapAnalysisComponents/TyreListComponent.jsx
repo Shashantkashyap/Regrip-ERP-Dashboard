@@ -9,13 +9,9 @@ import { setScrapFilterFormData } from "../../redux/Slices/scrapFilter";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import useScrapData from "../../custom-hooks/ScrapDataFetching";
 
-const TyreListComponent = ({ data, tyreListFilter }) => {
+const TyreListComponent = ({ data, tyreListFilter, currentPage, setCurrentPage, itemsPerPage, totalPages, setTotalPages }) => {
   const [showTyreScrapFilter, setShowshowTyreScrapFilter] = useState(false);
   const [filterData, setFilterData] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
-  const [totalRecords, setTotalRecords] = useState(0);
-  // const [tyreList] = useScrapData(selectVal);
 
   const handleFilterToggle = () => {
     setShowshowTyreScrapFilter(!showTyreScrapFilter);
@@ -35,7 +31,7 @@ const TyreListComponent = ({ data, tyreListFilter }) => {
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   useEffect(() => {
-    console.log("TyreList: ", data);
+    setTotalPages(Math.ceil(data?.length / itemsPerPage));
   }, [data]);
 
   return (
@@ -115,12 +111,11 @@ const TyreListComponent = ({ data, tyreListFilter }) => {
                   (item) => item.action === "Purchased"
                 );
                 const removalAction = tyre.actions?.find(
-                  (item) => item.action === "Removal"
-                );
-                const scrapAction = tyre.actions?.find(
-                  (item) => item.action === "Scrap"
+                  (item) => item.action === "Removal" || item.action === "Scrap"
                 );
 
+                // console.log(fitmentAction, purchasedAction, removalAction);
+                
                 return (
                   <tr
                     key={index}
@@ -153,7 +148,7 @@ const TyreListComponent = ({ data, tyreListFilter }) => {
                     {/* Render Fitment Date */}
                     <td className="px-4 py-2 text-sm text-gray-700 text-center">
                       {fitmentAction
-                        ? fitmentAction.action_date || (fitmentAction.date)
+                        ? fitmentAction.action_date || fitmentAction.date
                         : "NA"}
                     </td>
                     {/* Render Purchased Date */}
@@ -183,7 +178,7 @@ const TyreListComponent = ({ data, tyreListFilter }) => {
         <div className="flex justify-between items-center mt-4 px-4 py-2 bg-[#F7F7F7] rounded-b-lg">
           <p className="text-[14px] font-outfit font-normal leading-[22.4px] text-[#4E4F54]">
             Showing {(currentPage - 1) * 10 + 1}-
-            {Math.min(currentPage * 10, totalRecords)} of {totalRecords} items
+            {Math.min(currentPage * 10, data?.length)} of {data?.length} items
           </p>
           <div className="flex items-center gap-4">
             <div>

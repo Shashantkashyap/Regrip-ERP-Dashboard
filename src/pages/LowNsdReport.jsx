@@ -210,7 +210,7 @@ const LowNsdTyre = () => {
                       <td className="p-2">{tyre.model_name}</td>
                       <td className="p-2">{tyre.inspection_date}</td>
                       <td className="p-2">{tyre.vehicle_no}</td>
-                      <td className="p-2">{tyre.avg_nsd}</td>
+                      <td className="p-2">{Number.isInteger(tyre.avg_nsd) ? tyre.avg_nsd.toFixed(1) : tyre.avg_nsd.toFixed(1)}</td>
                       <td className="p-2">{tyre.psi}</td>
                       <td className="p-2">
                         {tyre.is_active === 1 ? "Done" : "Pending"}

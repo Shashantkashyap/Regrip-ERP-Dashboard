@@ -15,6 +15,7 @@ import tyreWearFilter from "../Slices/tyreWearFilterSlice.js";
 import tyrePurchaseFilter from '../Slices/tyrePurchaseFilterSlice.js';
 import scrapAnalysisFilter from "../Slices/scrapFilter.js";
 import tyreStatusFilter from "../Slices/TyreStatusFilterSlice.js"
+import PopupFilter from "../Slices/PopupfilterSlice.js"
 
 // Persist configuration
 const persistConfig = {
@@ -35,7 +36,9 @@ const rootReducer = combineReducers({
   tyreWearFilter,
   tyrePurchaseFilter,
   scrapAnalysisFilter,
-  tyreStatusFilter : tyreStatusFilter
+  tyreStatusFilter : tyreStatusFilter,
+  popupFilter : PopupFilter
+
 });
 
 // Create persisted reducer

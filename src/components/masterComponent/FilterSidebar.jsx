@@ -8,7 +8,7 @@ const FilterSidebar = ({ isVisible, onClose, onSubmit }) => {
 
   const filters = [
     { label: 'Vehicle No. :', type: 'text', name: 'vehicle_no', placeholder: 'Enter vehicle no.' },
-    { label: 'Trailer No. :', type: 'text', name: 'trailor_no' ,placeholder: 'Enter trailer no.' },
+    //{ label: 'Trailer No. :', type: 'text', name: 'trailor_no' ,placeholder: 'Enter trailer no.' },
     { label: 'Start Date :', type: 'date', name: 'start_date' },
     { label: 'End Date :', type: 'date', name: 'end_date' },
     { label: 'Manufacturing Year :', type: 'date', name: 'manufacturer_year' },

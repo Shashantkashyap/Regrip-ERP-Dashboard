@@ -7,7 +7,7 @@ import { IoFilter } from "react-icons/io5";
 import { PiExportBold } from "react-icons/pi";
 import { IoMdAdd } from "react-icons/io";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
-import InspectionCountDetails from "../components/inspectionComponent/InspectionCountDetails";
+import TyreJourney from "../components/masterComponent/TyreJourney";
 import TyreStatusFilter from "../components/tyreStatusReport/TyreStatusFilter";
 import "../components/scrollBar.css";
 import { useSelector } from "react-redux";
@@ -26,6 +26,7 @@ const TyreStatus = () => {
   const [showTyreStatusFilter, setTyreStatusFilter] = useState(false);
   const [filterData, setFilterData] = useState({});
   const [searchText, setSearchText] = useState(""); // State to store search input
+  const [tyreNo, setTyreNo] = useState();
 
 
   const noData = (value) => value || "--";
@@ -66,6 +67,8 @@ const TyreStatus = () => {
         );
         
         const responseData = response.data;
+
+        console.log(responseData)
         
           setData(responseData.data || []);
           setTotalPages(responseData.pagination.totalPages || 1);
@@ -96,6 +99,7 @@ const TyreStatus = () => {
 
   const closeInspection = () => {
     setTyreId();
+    setTyreNo()
   };
 
   const handleSubmit = (data) => {
@@ -104,9 +108,10 @@ const TyreStatus = () => {
     fetchTyreStatusReportData(data);
   };
 
-  const setTyre = (id) => {
+  const showTyreJourney = (id, serial_no) => {
+    console.log(id)
     setTyreId(id);
-    console.log("Tyre ID set:", id);
+    setTyreNo(serial_no)
   };
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -164,7 +169,6 @@ const TyreStatus = () => {
             </button>
           </div>
         </div>
-
         {showTyreStatusFilter && (
           <div className="z-30">
             <TyreStatusFilter
@@ -180,7 +184,7 @@ const TyreStatus = () => {
             <div className="fixed inset-0 bg-[rgba(0,0,0,0.8)] z-30"></div>
             <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-40 min-w-[600px] overflow-x-auto">
               <div className="bg-white w-[80%] max-w-[1145px] h-auto rounded-[28px] shadow-lg min-w-[700px] overflow-x-auto">
-                <InspectionCountDetails close={closeInspection} TyresId={TyreId} />
+                <TyreJourney close={closeInspection} tyreId={TyreId} tyreNo={tyreNo} />
               </div>
             </div>
           </>
@@ -244,7 +248,7 @@ const TyreStatus = () => {
                       <td className="text-left p-3">{noData(tyre.tyre_inspection)}</td>
                       <td className="text-left p-3">{noData(tyre.current_status)}</td>
                       <td className="text-left p-3">{noData(tyre.invoice_no)}</td>
-                      <td className="text-left p-3 cursor-pointer text-[#63A142]" onClick={() => setTyre(tyre.serial_no)}>
+                      <td className="text-left p-3 cursor-pointer text-[#63A142]" onClick={() => showTyreJourney(tyre.id , tyre.serial_no)}>
                         {noData(tyre.serial_no)}
                       </td>
                       <td className="text-left p-3">{noData(tyre.brand_name)}</td>

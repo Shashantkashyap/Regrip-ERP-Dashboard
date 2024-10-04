@@ -1,14 +1,20 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { setTableFilter } from '../../redux/Slices/DasboardPopup';
+import Loader from '../common/Loader';
 
-function TyreInventory({ selectedTable, setSelectedTable, tyreInventory = []  }) {
+function TyreInventory({ selectedTable, setSelectedTable, tyreInventory = [] , loading }) {
 
   const dispatch = useDispatch()
 
   const setCurrntStatus = async (status)=>{
-    console.log(status)
-    localStorage.setItem("current_status", status)
+    
+    if(status == "Scrap"){
+      localStorage.setItem("current_status","Scrap")
+    }else{
+      localStorage.setItem("current_status", "on-wheel")
+      localStorage.setItem("product_category", status)
+    }
   }
 
   
@@ -19,6 +25,12 @@ function TyreInventory({ selectedTable, setSelectedTable, tyreInventory = []  })
 
   return (
     <div className="bg-white px-4 py-3 rounded-[15px] border-[1px] w-[453px] min-w-[400px] font-outfit">
+      {loading ? (
+        <div className="absolute inset-0 flex items-center justify-center mb-40 ml-[300px]">
+          <Loader />
+        </div>
+      ) : (
+        <>
       <div className="flex justify-between">
         <p className="font-medium text-[22px] max-lg:text-[18px] leading-[27.72px] text-[#232323]">Tyre Inventory</p>
         <p className="font-semibold text-[22px] max-lg:text-[18px] leading-[27.72px] text-[#66A847]">
@@ -55,8 +67,8 @@ function TyreInventory({ selectedTable, setSelectedTable, tyreInventory = []  })
                 {tyreInventory.map((row, index) => (
                   <tr key={index} className="text-center" onClick={()=>dispatch(setTableFilter({ key:"tyre_depth" , value: row.category}))} >    
                     <td className="px-2 pl-4 py-2 border-b text-left " >{row.category}</td>
-                    <td className="px-1 py-2 border-b cursor-pointer" onClick={()=> setCurrntStatus("New")}>{row.New}</td>
-                    <td className="px-4 py-2 border-b cursor-pointer" onClick={()=> setCurrntStatus("Retreaded")}>{row.Retread}</td>
+                    <td className="px-1 py-2 border-b cursor-pointer" onClick={()=> setCurrntStatus("fresh")}>{row.New}</td>
+                    <td className="px-4 py-2 border-b cursor-pointer" onClick={()=> setCurrntStatus("rtd")}>{row.Retread}</td>
                     <td className="px-3 pr-4 py-2 border-b cursor-pointer" onClick={()=> setCurrntStatus("Scrap")}>{row.Scrap}</td>
                     <td className="px-2 py-2 border-b">{row.Total}</td>
                   </tr>
@@ -82,6 +94,8 @@ function TyreInventory({ selectedTable, setSelectedTable, tyreInventory = []  })
           <p className="text-center text-gray-500">No data available</p>
         )}
       </div>
+      </>
+      )}
     </div>
   );
 }

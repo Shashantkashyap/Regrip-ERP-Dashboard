@@ -56,7 +56,7 @@ const Rotation = () => {
             },
           }
         );
-        console.log(response)
+       
         const responseData = response.data;
 
         setData(responseData.data || []);

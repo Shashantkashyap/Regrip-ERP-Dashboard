@@ -19,7 +19,7 @@ const filterSlice = createSlice({
       setTyreWearFormData: (state, action) => {
         // Merge the current state with the updated field(s)    
         state.formData = { ...state.formData, ...action.payload };
-        console.log("Slice: ", state.formData, action.payload);
+      
       },
       resetTyreWearFormData: (state) => {
         state.formData = initialState.formData;

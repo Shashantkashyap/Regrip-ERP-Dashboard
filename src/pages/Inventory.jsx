@@ -262,7 +262,7 @@ function Inventory() {
     },
   ];
   
-  console.log(tyreBody);
+  
   const showTyreJourney = (id, serial_no) => {
     setTyreId(id);
     setTyreNo(serial_no);
@@ -304,13 +304,13 @@ function Inventory() {
               onChange={handleSearchChange}
             />
           </div>
-          <span className="p-[3px_4px]">
+          {/* <span className="p-[3px_4px]">
             <img
               src={notification}
               alt="notification icon"
               className="w-6 h-6"
             />
-          </span>
+          </span> */}
         </div>
       </div>
 

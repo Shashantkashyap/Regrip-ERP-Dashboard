@@ -36,7 +36,7 @@ function TyreJourney({ tyreId, close, tyreNo }) {
         },
       });
 
-      console.log(details);
+    
       setTyreImgDetails(details.data.tyreDetails)
       setTyreHistory(details.data.tyreHistory);
     } catch (error) {
@@ -60,7 +60,7 @@ function TyreJourney({ tyreId, close, tyreNo }) {
 
     return `${day}-${month}-${year}`;
   }
-  //console.log(tyreHistory)
+ 
 
   const finalHistory = (Array.isArray(tyreHistory) ? tyreHistory : []).reduce((acc, current) => {
     if (current.action === "Fitment") {
@@ -82,6 +82,9 @@ function TyreJourney({ tyreId, close, tyreNo }) {
     setSelectedImage(imageUrl);
     setIsModalOpen(true);
   };
+
+  
+  
   
   
 
@@ -123,6 +126,7 @@ function TyreJourney({ tyreId, close, tyreNo }) {
       ) : (
         <>
           <div className="flex justify-end mb-2">
+          
             <button className="bg-[#333333] text-white text-[14px] py-2 px-4 rounded-md flex items-center gap-2 hover:bg-green-600 transition">
               <PiExportBold size={20} />
               <span>Download</span>
@@ -155,10 +159,7 @@ function TyreJourney({ tyreId, close, tyreNo }) {
                   <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">PSI</td>
                   <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Status</td>
                   <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Fresh/Retread</td>
-                    {/* <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Nsd 2</td>
-                  <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Nsd 3</td>
-                  <td className="text-left px-4 py-2 font-outfit text-[14px] font-normal leading-[21.42px] text-[#727272]">Nsd 4</td> */}
-                </tr>
+                   </tr>
               </thead>
               <tbody>
                 {isFetchComplete && tyreHistory?.length === 0 ? (

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setTyreWearFormData } from "../../redux/Slices/tyreWearFilterSlice";
+import { resetTyreWearFormData, setTyreWearFormData } from "../../redux/Slices/tyreWearFilterSlice";
 import { setFormData } from "../../redux/Slices/masterFilterSlice";
 
 function TyreWearFilter({ isVisible, onClose, onSubmit, filterData }) {
@@ -78,9 +78,11 @@ function TyreWearFilter({ isVisible, onClose, onSubmit, filterData }) {
 
 
   const handleReset = () => {
-    dispatch(resetTyreWearFormData());
+    dispatch(resetTyreWearFormData({}))
     onSubmit({});
   };
+
+  
 
   // Function to format filter labels and values for display
   const formatFilterDisplay = (label, value) => {
@@ -101,7 +103,7 @@ function TyreWearFilter({ isVisible, onClose, onSubmit, filterData }) {
   };
 
   useEffect(() => {
-    console.log(filterData);
+   
   }, [filterData]);
 
   return (
@@ -177,7 +179,8 @@ function TyreWearFilter({ isVisible, onClose, onSubmit, filterData }) {
           <div className="flex justify-between  border-t-[2px] pt-3">
             <button
               type="button"
-              onClick={() => dispatch(setFormData({}))}
+              onClick={handleReset}
+              
               className="bg-[#f0eeee] border-[1px] rounded-[9px] p-[10px_22px_10px_22px] text-[15px] leading-[23.94px] font-normal transition duration-300 ease-in-out hover:scale-[1.02] hover:shadow-md"
             >
               Reset

@@ -40,9 +40,9 @@ function PendingInspectionReport() {
           <p className="font-inter font-semibold text-[30px] leading-[36.31px] text-[#65A143]">
             Pending Reports
           </p>
-          <span className="p-[3px_4px]">
+          {/* <span className="p-[3px_4px]">
             <img src={notification} alt="notification icon" className="w-6 h-6" />
-          </span>
+          </span> */}
         </div>
 
         {/* Buttons for Inspection, Alignment, and Rotation */}

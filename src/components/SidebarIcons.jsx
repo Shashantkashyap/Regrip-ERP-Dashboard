@@ -71,7 +71,7 @@ function SidebarIcons() {
   const menuItems = [
     { id: 1, photo: Dashboard, greenPhoto: DashboardG },
     { id: 2, photo: diamond, greenPhoto: diamondG },
-    { id: 3, photo: Retreaders, greenPhoto: RetreadersG },
+    { id: 3, photo: Inventory, greenPhoto: InventoryG },
     
     { id: 5, photo: Reports, greenPhoto: ReportsG }, // Reports item
     {

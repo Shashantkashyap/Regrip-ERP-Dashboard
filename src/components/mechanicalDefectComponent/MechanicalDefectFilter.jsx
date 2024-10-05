@@ -6,7 +6,7 @@ function MechanicalDefectFilter({ isVisible, onClose, onSubmit }) {
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.mechanicalFilter.formData);
 
-  console.log(formData)
+ 
   const filters = [
     {
       label: "Vehicle Number",
@@ -64,7 +64,7 @@ function MechanicalDefectFilter({ isVisible, onClose, onSubmit }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Submitting FormData:", formData);
+   
     onSubmit(formData);
   };
 

@@ -14,7 +14,7 @@ function PopupComponent({ close }) {
   const knowUser = JSON.parse(localStorage.getItem("userData"));
   const apiKey = knowUser.data.api_key;
 
-  console.log(localStorage.getItem("current_status"))
+ 
 
   const url = "https://newstaging.regripindia.com/api";
   const [tyreData, setTyreData] = useState([]);
@@ -43,7 +43,7 @@ function PopupComponent({ close }) {
 
   const fetchTyreData = async (filterData) => {
     if (!tyreBody || isEmpty(tyreBody)) {
-      console.log("Tyre body is empty, skipping fetch.");
+      
       return;
     }
 
@@ -92,7 +92,7 @@ function PopupComponent({ close }) {
         },
       });
 
-      console.log(response)
+      
 
       const totalItems = response.data.total_tyres;
       const totalPages = Math.ceil(totalItems / itemsPerPage);

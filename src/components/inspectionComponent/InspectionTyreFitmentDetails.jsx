@@ -21,7 +21,7 @@ function InspectionTyreFitmentDetails({ inspectionId, close, vehicleNo }) {
       setLoading(true); // Set loading to true when data fetching starts
       const formData = new FormData();
       formData.append("inspection_id", inspectionId);
-      console.log(inspectionId)
+     
 
       const details = await axios.post(
         `${url}/inspection-tyre-details`,

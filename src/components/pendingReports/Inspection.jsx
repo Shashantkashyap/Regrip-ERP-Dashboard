@@ -55,7 +55,7 @@ const Inspection = () => {
             },
           }
         );
-        console.log(response)
+      
 
         const responseData = response.data;
 

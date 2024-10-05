@@ -26,8 +26,7 @@ const TyreTable = ({
     item.manufacturer_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     item.model_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  console.log(currentItems)
-
+ 
   const toggleSearchInput = () => {
     setShowSearchInput(prev => !prev);
     // Clear search query when hiding input

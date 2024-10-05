@@ -18,7 +18,7 @@ const filterSlice = createSlice({
       setTyrePurchaseFormData: (state, action) => {
         // Merge the current state with the updated field(s)    
         state.formData = { ...state.formData, ...action.payload };
-        console.log("Slice: ", state.formData, action.payload);
+       
       },
       resetTyrePurchaseFormData: (state) => {
         state.formData = initialState.formData;

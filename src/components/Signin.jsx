@@ -3,10 +3,12 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import { useDispatch } from 'react-redux';
-import { setUser } from "../redux/Slices/userSlice"
+import { setUser } from "../redux/Slices/userSlice";
 import photo from '../assets/Anna.png';
 import photo2 from '../assets/Anna2.png';
 import logo from '../assets/logo.png';
+import Loader from "./common/Loader";
+import toast from 'react-hot-toast';
 
 function Signin() {
   const url = "https://staging.regripindia.com/api/login";
@@ -20,10 +22,9 @@ function Signin() {
   const [errors, setErrors] = useState({
     mobile: ''
   });
-
+  const [loading, setLoading] = useState(false); // State to manage loading
   const isSmallScreen = useMediaQuery({ query: '(max-width: 1000px)' });
 
-  // Validate mobile input to allow only numbers and check for 10 digits
   const validateMobileInput = (value) => {
     const phoneRegex = /^[0-9]*$/;
     return phoneRegex.test(value) && value.length <= 10; // Limit to 10 digits
@@ -34,11 +35,9 @@ function Signin() {
 
     if (name === 'mobile') {
       if (validateMobileInput(value)) {
-        // If valid, clear error
         setErrors({ ...errors, mobile: '' });
         setFormData({ ...formData, [name]: value });
       } else {
-        // If invalid (contains non-numeric or more than 10 digits), show error
         setErrors({ ...errors, mobile: 'Please enter a valid 10-digit mobile number.' });
       }
     } else {
@@ -61,6 +60,7 @@ function Signin() {
     formDataToSend.append('contact', formData.mobile);
     formDataToSend.append('password', formData.password);
 
+    setLoading(true); // Start loading
     try {
       const response = await axios.post(url, formDataToSend, {
         headers: {
@@ -72,10 +72,18 @@ function Signin() {
       dispatch(setUser(response.data));
       localStorage.setItem("userData", JSON.stringify(response.data)); // Store the user details
       localStorage.setItem("isLoggedIn", true);
-      // Navigate to dashboard
+      
+      // Show success toast and navigate to dashboard
+      toast.success('Login successful! Redirecting...');
+      setLoading(false);
       navigate("/");
+
     } catch (error) {
-      console.error('Error:', error.response?.data || error.message);
+      // Handle error and show toast
+      setLoading(false);
+      const errorMessage = error.response?.data?.message || error.message;
+      toast.error(`Error: ${errorMessage}`);
+      console.error('Error:', errorMessage);
     }
   };
 
@@ -92,6 +100,8 @@ function Signin() {
           boxShadow: '20px 0px 50px -20px rgba(0, 0, 0, 0.6)', 
         }}
       >
+        {/* {loading && <Loader />} Display loader when loading */}
+        
         <div className="flex justify-start">
           <img src={logo} alt="Logo" className="w-[100px] h-[60px] md:w-[126px] md:h-[79px]" />
         </div>
@@ -137,13 +147,15 @@ function Signin() {
             </div>
           </div>
           <div className="flex justify-center">
-            <button
-              type="submit"
-              className="bg-[#65A143] text-white py-2 px-6 rounded-[9px] w-full sm:w-auto h-[48px] md:h-[55px]"
-              disabled={errors.mobile || formData.mobile.length !== 10} // Disable if mobile is invalid
-            >
-              Sign In
-            </button>
+          <button
+  type="submit"
+  className={`py-2 px-6 rounded-[9px] w-full sm:w-auto h-[48px] md:h-[55px] text-white ${
+    loading ? 'bg-[#c6eda3]' : 'bg-[#65A143]'
+  }`} // Light green when loading
+  disabled={errors.mobile || formData.mobile.length !== 10 || loading} // Disable button during loading
+>
+  {loading ? 'Signing In...' : 'Sign In'}
+</button>
           </div>
         </form>
       </div>

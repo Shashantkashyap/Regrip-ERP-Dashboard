@@ -35,7 +35,7 @@ function InspectionCountDetails({ close, vehicleId }) {
         },
       });
 
-      console.log(details)
+      
 
       setInspectionData(details.data.data);
     } catch (error) {
@@ -74,7 +74,6 @@ function InspectionCountDetails({ close, vehicleId }) {
         });
 
         const pdfUrl = response.data.return_data.pdfUrl;
-        console.log('PDF URL:', pdfUrl);
 
         if (pdfUrl) {
             // Open the PDF URL in a new tab
@@ -105,8 +104,6 @@ function formatDate(dateString) {
   // Return formatted date
   return `${monthShort} ${day}, ${year}`;
 }
-
-console.log(inspectionData)
 
   return (
     <div className="font-inter relative p-5 w-[90%] bg-white mx-auto rounded-[28px] min-w-[700px] overflow-x-auto">

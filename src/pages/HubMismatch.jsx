@@ -111,7 +111,6 @@ function HubMismatch() {
   };
 
 
-  console.log(data)
 
   return (
 

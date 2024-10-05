@@ -65,7 +65,7 @@ const Alignment = () => {
           }
         );
 
-        console.log(response)
+      
 
         const responseData = response.data;
 

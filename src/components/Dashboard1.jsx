@@ -82,12 +82,12 @@ const filterTab = useSelector((state) => state.dashboardTableFilter.tableFilter)
         setShowPopup(true)
       }
     } else {
-      console.log("Filter is empty.");
+     
     }
   }, [filterTab, dispatch]); // Make sure to include dispatch in the dependency array
 
   const handleClick = () => {
-    console.log("Button clicked, current filterTab:", filterTab);
+   
     // You can add more logic here if needed
   };
 

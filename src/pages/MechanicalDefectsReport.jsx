@@ -155,7 +155,7 @@ const MechanicalDefectsReport = () => {
       )}
       <div className="flex justify-between mb-6">
         <p className="font-inter font-semibold text-[30px] leading-[36.31px] text-[#65A143]">
-          Mechanical Defects Report
+          Mechanical Defects Report : ({totalPages * itemsPerPage})
         </p>
         <div className="flex items-center gap-[34px]">
           <div className="flex bg-[#EBEBEB] rounded-[37px] p-[5px_24px] items-center gap-[7px]">
@@ -171,13 +171,13 @@ const MechanicalDefectsReport = () => {
               onChange={handleSearchChange}
             />
           </div>
-          <span className="p-[3px_4px]">
+          {/* <span className="p-[3px_4px]">
             <img
               src={notification}
               alt="notification icon"
               className="w-6 h-6"
             />
-          </span>
+          </span> */}
         </div>
       </div>
 

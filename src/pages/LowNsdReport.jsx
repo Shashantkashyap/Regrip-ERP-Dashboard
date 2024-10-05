@@ -104,14 +104,14 @@ const LowNsdTyre = () => {
     setCurrentPage(1); // Reset to first page on search
   };
 
-  console.log(data)
+ 
 
   return (
     <div className="p-4 bg-[#F7F7F7] rounded-[50px] overflow-x-auto relative">
       {/* Heading */}
       <div className="flex justify-between mb-6">
         <p className="font-inter ml-5 mt-3 font-semibold text-[30px] leading-[36.31px] text-[#65A143]">
-          Low NSD Tyres
+          Low NSD Tyres :({totalPages * itemsPerPage})
         </p>
         <div className="flex items-center gap-[34px">
           <div className="flex bg-[#EBEBEB] rounded-[37px] p-[9px_24px] items-center gap-[7px]">
@@ -124,9 +124,9 @@ const LowNsdTyre = () => {
               onChange={handleSearchChange} // Handle input change
             />
           </div>
-          <span className="p-[3px_4px]">
+          {/* <span className="p-[3px_4px]">
             <img src={notification} alt="notification icon" className="w-6 h-6" />
-          </span>
+          </span> */}
         </div>
       </div>
 

@@ -49,7 +49,7 @@ function MasterScreen() {
   };
 
   const handlePageChange = (newPage) => {
-    console.log(newPage)
+   
     if (newPage > 0 && newPage <= totalPages) {
       setCurrentPage(newPage);
     }
@@ -97,7 +97,7 @@ function MasterScreen() {
         }
       );
 
-      console.log(vehicleData)
+    
 
       const { data } = vehicleData.data;
       setVehicles(data);
@@ -148,13 +148,13 @@ function MasterScreen() {
               onChange={handleSearchChange} // Trigger search on change
             />
           </div>
-          <span className="p-[3px_4px]">
+          {/* <span className="p-[3px_4px]">
             <img
               src={notification}
               alt="notification icon"
               className="w-6 h-6"
             />
-          </span>
+          </span> */}
         </div>
       </div>
 

@@ -43,7 +43,7 @@ const InspectionReport = () => {
         const formData = new FormData();
         formData.append("text", globalText);
 
-        console.log(globalText)
+       
 
         // Append filter data to formData
         Object.keys(filterData).forEach((key) => {
@@ -64,11 +64,10 @@ const InspectionReport = () => {
           }
         );
 
-        console.log(response)
+       
 
         const responseData = response.data;
-        console.log(response)
-  console.log(responseData)
+       
 
 
         setTotalPages(responseData.pagination.totalPages);
@@ -111,7 +110,7 @@ const InspectionReport = () => {
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
 
-  console.log(data)
+ 
   
   return (
     <div className="p-6 bg-[#F7F7F7] rounded-[50px] overflow-x-auto relative">
@@ -129,9 +128,9 @@ const InspectionReport = () => {
               onChange={(e) => setGlobalText(e.target.value)} // Directly update globalText
             />
           </div>
-          <span className="p-[3px_4px]">
+          {/* <span className="p-[3px_4px]">
             <img src={notification} alt="notification icon" className="w-6 h-6" />
-          </span>
+          </span> */}
         </div>
       </div>
 

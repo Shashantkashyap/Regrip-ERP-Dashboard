@@ -17,11 +17,11 @@ export const scrapFilterSlice = createSlice({
     reducers: {
       setScrapFilterFormData: (state, action) => {
         state.formData = { ...state.formData, ...action.payload };
-        console.log(state.formData);
+      
       },
       resetScrapFilterFormData: (state, action) => {
         state.formData = action.payload;
-        console.log("Reset: ", state.formData);
+      
       },
     },
 });

@@ -68,7 +68,7 @@ const TyreStatus = () => {
         
         const responseData = response.data;
 
-        console.log(responseData)
+      
         
         
        
@@ -114,7 +114,7 @@ const TyreStatus = () => {
   };
 
   const showTyreJourney = (id, serial_no) => {
-    console.log(id)
+   
     setTyreId(id);
     setTyreNo(serial_no)
   };
@@ -139,7 +139,7 @@ const TyreStatus = () => {
     <div className="p-6 bg-[#F7F7F7] rounded-[50px] overflow-x-auto relative">
       <div className="flex justify-between mb-6">
         <p className="font-inter font-semibold text-[30px] leading-[36.31px] text-[#65A143]">
-          Tyre Status Report
+          Tyre Status Report : ({totalRecords})
         </p>
         <div className="flex items-center gap-[34px]">
           <div className="flex bg-[#EBEBEB] rounded-[37px] p-[9px_24px] items-center gap-[7px]">
@@ -151,9 +151,9 @@ const TyreStatus = () => {
               onChange={handleSearchChange}
             />
           </div>
-          <span className="p-[3px_4px]">
+          {/* <span className="p-[3px_4px]">
             <img src={notification} alt="notification icon" className="w-6 h-6" />
-          </span>
+          </span> */}
         </div>
       </div>
 
@@ -221,8 +221,8 @@ const TyreStatus = () => {
     <td className="text-left p-4">Size</td>
     <td className="text-left p-4">On Status</td>
     <td className="text-left p-4">Current Vehicle No.</td>
-    <td className="text-left p-4">Reason</td>
-    <td className="text-left p-4">Defect Type</td>
+    {/* <td className="text-left p-4">Reason</td>
+    <td className="text-left p-4">Defect Type</td> */}
     <td className="text-left p-4">Fresh/Retread</td>
     <td className="text-left p-4">Material Type</td>
     <td className="text-left p-4">Position</td>
@@ -266,8 +266,8 @@ const TyreStatus = () => {
           <td className="text-left p-3">{noData(tyre.tyre_size)}</td>
           <td className="text-left p-3">{noData(tyre.current_status)}</td>
           <td className="text-left p-3">{noData(tyre.vehicle_no)}</td>
-          <td className="text-left p-3">{noData(tyre.defect_type_name)}</td>
-          <td className="text-left p-3">{noData(tyre.defect_type)}</td>
+          {/* <td className="text-left p-3">{noData(tyre.defect_type_name)}</td>
+          <td className="text-left p-3">{noData(tyre.defect_type)}</td> */}
           <td className="text-left p-3">{noData(tyre.product_category)}</td>
           <td className="text-left p-3">{noData(tyre.construction_type)}</td>
           <td className="text-left p-3">{noData(tyre.position)}</td>

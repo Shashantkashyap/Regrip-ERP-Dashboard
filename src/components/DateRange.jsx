@@ -50,7 +50,7 @@ function DateRange({className = '', isCustomDate = false, isTotalCount = false, 
   };
 
   useEffect(() => {
-    console.log(dateRange, customDateRange);
+   
   }, [dateRange, customDateRange]);
 
   return (

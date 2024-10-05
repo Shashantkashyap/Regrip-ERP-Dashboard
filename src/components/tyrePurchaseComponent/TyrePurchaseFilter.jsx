@@ -41,7 +41,7 @@ function TyrePurchaseFilter({ isVisible, onClose, onSubmit, setFilterData }) {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    console.log("Value: ", value, "Name: ", name);
+   
     
     // Merge current formData with the new value
     dispatch(setTyrePurchaseFormData({ ...formData, [name]: value }));
@@ -49,7 +49,7 @@ function TyrePurchaseFilter({ isVisible, onClose, onSubmit, setFilterData }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Submitting FormData:", formData);
+   
     onSubmit(formData);
   };
 

@@ -55,7 +55,7 @@ function TyrePurchaseReport() {
 
         const formData = new FormData();
 
-        console.log(searchText)
+      
 
         if (searchText.trim()) {
           formData.append("text", searchText);
@@ -66,7 +66,7 @@ function TyrePurchaseReport() {
         
         
 
-        console.log(formData)
+      
 
 
         const response = await axios.post(
@@ -80,14 +80,14 @@ function TyrePurchaseReport() {
           }
         );
 
-        console.log(response)
+      
         const responseData= response.data
 
         
         setTotalPages(responseData.pagination.total);
         setData(responseData.data || []);
       } catch (error) {
-        console.log(error);
+      
         setError("Failed to fetch data. Please try again later.");
       } finally {
         setLoading(false);
@@ -98,7 +98,7 @@ function TyrePurchaseReport() {
 
   useEffect(() => {
     fetchTyrePurchaseData(filterData); 
-    console.log(filterData, report_type);
+   
     // setFilterData('');
   }, [fetchTyrePurchaseData, currentPage, report_type, filterData, searchText]);
 
@@ -115,7 +115,7 @@ function TyrePurchaseReport() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    console.log("Value: ", value, "Name: ", name);
+   
     // Merge current formData with the new value
     dispatch(setTyrePurchaseFormData({ [name]: value }));
   };
@@ -152,13 +152,13 @@ function TyrePurchaseReport() {
               onChange={handleSearchChange}
             />
           </div>
-          <span className="p-[3px_4px]">
+          {/* <span className="p-[3px_4px]">
             <img
               src={notification}
               alt="notification icon"
               className="w-6 h-6"
             />
-          </span>
+          </span> */}
         </div>
       </div>
       <div

@@ -9,7 +9,7 @@ import { setScrapFilterFormData } from "../../redux/Slices/scrapFilter";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import useScrapData from "../../custom-hooks/ScrapDataFetching";
 
-const TyreListComponent = ({ data, tyreListFilter, currentPage, setCurrentPage, itemsPerPage, totalPages, setTotalPages }) => {
+const TyreListComponent = ({ data, tyreListFilter, currentPage, setCurrentPage, itemsPerPage, totalPages, totalCount, realCount, count, setTyreListFilter }) => {
   const [showTyreScrapFilter, setShowshowTyreScrapFilter] = useState(false);
   const [filterData, setFilterData] = useState("");
 
@@ -25,29 +25,26 @@ const TyreListComponent = ({ data, tyreListFilter, currentPage, setCurrentPage, 
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
       setCurrentPage(newPage);
+      setTyreListFilter({...tyreListFilter, page_no: newPage});
     }
   };
 
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
-  useEffect(() => {
-    setTotalPages(Math.ceil(data?.length / itemsPerPage));
-  }, [data]);
-
   return (
     <div className="max-w-full overflow-x-auto -translate-y-12">
       <div className="rounded-lg border border-gray-200 bg-white p-6">
         <div className="flex justify-between w-full items-center">
-          <h2 className="text-lg font-semibold mb-4">Tyre List</h2>
+          <h2 className="text-lg font-semibold mb-4">Tyre List ({realCount} / {count}) </h2>
           <button onClick={handleFilterToggle} className="flex">
-            <IoFilterSharp className="-translate-x-4 text-xl -translate-y-3 cursor-pointer" />
-            <span className="font-semibold text-md -translate-x-2  -translate-y-4">
+            {/* <IoFilterSharp className="-translate-x-4 text-xl -translate-y-3 cursor-pointer" /> */}
+            {/* <span className="font-semibold text-md -translate-x-2  -translate-y-4">
               Filter
-            </span>
+            </span> */}
           </button>
         </div>
 
-        {showTyreScrapFilter && (
+        {/* {showTyreScrapFilter && (
           <div className="z-30">
             <ScrapAnalysisFilter
               isVisible={showTyreScrapFilter}
@@ -56,7 +53,7 @@ const TyreListComponent = ({ data, tyreListFilter, currentPage, setCurrentPage, 
               setFilterData={setFilterData}
             />
           </div>
-        )}
+        )} */}
 
         <div className="max-h-[400px] overflow-y-auto overflow-x-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300 rounded-lg">
           <table className="min-w-full bg-white rounded-xl font-semibold whitespace-nowrap table-auto">
@@ -122,7 +119,7 @@ const TyreListComponent = ({ data, tyreListFilter, currentPage, setCurrentPage, 
                     className="border-b hover:bg-gray-100 transition-all"
                   >
                     <td className="px-4 py-2 text-sm text-gray-700 text-center">
-                      {index + 1}
+                      {index + 1 + ((currentPage - 1) * 10)}
                     </td>
                     <td className="px-4 py-2 text-sm text-gray-700 text-center">
                       {tyre.serial_no}
@@ -177,8 +174,8 @@ const TyreListComponent = ({ data, tyreListFilter, currentPage, setCurrentPage, 
         {/* Pagination */}
         <div className="flex justify-between items-center mt-4 px-4 py-2 bg-[#F7F7F7] rounded-b-lg">
           <p className="text-[14px] font-outfit font-normal leading-[22.4px] text-[#4E4F54]">
-            Showing {(currentPage - 1) * 10 + 1}-
-            {Math.min(currentPage * 10, data?.length)} of {data?.length} items
+            Showing {(currentPage - 1) * 10 + 1} -
+            {Math.min(currentPage * 10, totalCount)} of {totalCount} items
           </p>
           <div className="flex items-center gap-4">
             <div>
@@ -187,7 +184,7 @@ const TyreListComponent = ({ data, tyreListFilter, currentPage, setCurrentPage, 
                 onChange={(e) => handlePageChange(Number(e.target.value))}
                 className="px-1 py-1 rounded-md border-[1px] border-gray-300"
               >
-                {pageNumbers.map((page) => (
+                {pageNumbers?.map((page) => (
                   <option key={page} value={page}>
                     Page {page}
                   </option>

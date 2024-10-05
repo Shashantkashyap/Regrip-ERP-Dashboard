@@ -8,9 +8,10 @@ import notification from "../assets/icons/notifications_unread (1).png";
 import { IoFilter } from "react-icons/io5";
 import { PiExportBold } from "react-icons/pi";
 import TyrePurchaseFilter from "../components/tyrePurchaseComponent/TyrePurchaseFilter";
-import TyrePurchaseCountDetails from "../components/tyrePurchaseComponent/tyrePurchaseCountDetails";
+// import TyrePurchaseCountDetails from "../components/tyrePurchaseComponent/tyrePurchaseCountDetails";
 import { useDispatch, useSelector } from "react-redux";
 import { setTyrePurchaseFormData } from "../redux/Slices/tyrePurchaseFilterSlice";
+import ImageModal from "../components/mechanicalDefectComponent/ImageModal";
 
 function formatDate(dateStr) {
   const date = new Date(dateStr);
@@ -30,6 +31,7 @@ function TyrePurchaseReport() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [totalRecords, setTotalRecords] = useState(0);
   const [showTyrePurchaseFilter, setShowTyrePurchaseFilter] = useState(false);
   const [filterData, setFilterData] = useState({report_type: "invoice-wise"});
   const [error, setError] = useState(null);
@@ -40,6 +42,8 @@ function TyrePurchaseReport() {
   const report_type = useSelector(state => state.tyrePurchaseFilter.formData.report_type);
   const noData = (value) => value || "--";
   const dispatch = useDispatch();
+
+  const [showImage, setShowImage] = useState(false);
 
   const handleFilterToggle = () => {
     setShowTyrePurchaseFilter(!showTyrePurchaseFilter);
@@ -55,18 +59,15 @@ function TyrePurchaseReport() {
 
         const formData = new FormData();
 
-      
+        console.log(searchText)
 
         if (searchText.trim()) {
           formData.append("text", searchText);
         }
 
         formData.append("report_type", filterData.report_type)
-       
-        
-        
 
-      
+        console.log(formData)
 
 
         const response = await axios.post(
@@ -80,14 +81,13 @@ function TyrePurchaseReport() {
           }
         );
 
-      
+        console.log(response)
         const responseData= response.data
-
-        
-        setTotalPages(responseData.pagination.total);
+        setTotalPages(responseData.pagination.totalPages);
+        setTotalRecords(  responseData.pagination.totalRecords)
         setData(responseData.data || []);
       } catch (error) {
-      
+        console.log(error);
         setError("Failed to fetch data. Please try again later.");
       } finally {
         setLoading(false);
@@ -98,7 +98,7 @@ function TyrePurchaseReport() {
 
   useEffect(() => {
     fetchTyrePurchaseData(filterData); 
-   
+    console.log(filterData, report_type);
     // setFilterData('');
   }, [fetchTyrePurchaseData, currentPage, report_type, filterData, searchText]);
 
@@ -115,7 +115,7 @@ function TyrePurchaseReport() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-   
+    console.log("Value: ", value, "Name: ", name);
     // Merge current formData with the new value
     dispatch(setTyrePurchaseFormData({ [name]: value }));
   };
@@ -152,13 +152,13 @@ function TyrePurchaseReport() {
               onChange={handleSearchChange}
             />
           </div>
-          {/* <span className="p-[3px_4px]">
+          <span className="p-[3px_4px]">
             <img
               src={notification}
               alt="notification icon"
               className="w-6 h-6"
             />
-          </span> */}
+          </span>
         </div>
       </div>
       <div
@@ -166,12 +166,12 @@ function TyrePurchaseReport() {
         style={{ boxShadow: "2px 2px 15px 0px rgba(0, 0, 0, 0.09)" }}
       >
         <div className="flex justify-between mb-2 px-4"> 
-            <div className="flex gap-4 items-center">
-                <div className="flex gap-2 border-gray-300 border-[1px] border-solid rounded-lg px-3">
+            {/* <div className="flex gap-4 items-center"> */}
+                {/* <div className="flex gap-2 border-gray-300 border-[1px] border-solid rounded-lg px-3"> */}
                     {/* Invoice Wise */}
-                    <div className="flex gap-2 p-2 justify-center items-center">
+                    {/* <div className="flex gap-2 p-2 justify-center items-center"> */}
                         {/* Hidden radio input for "invoice" */}
-                        <input
+                        {/* <input
                         type="radio"
                         name="report_type"
                         id="invoice"
@@ -181,9 +181,9 @@ function TyrePurchaseReport() {
                         }`}
                         checked={activeTable === "invoice"}
                         readOnly
-                        />
+                        /> */}
                         {/* Custom styled div acting as a radio button */}
-                        <div
+                        {/* <div
                         className={`w-4 h-4 border-2 rounded-full cursor-pointer relative flex justify-center items-center ${
                             activeTable === "invoice" ? "border-[#65A948]" : "border-gray-300"
                         }`}
@@ -205,12 +205,12 @@ function TyrePurchaseReport() {
                         </span>
                     </div>
 
-                    <span className="border-r-[1px] border-gray-300"></span>
+                    <span className="border-r-[1px] border-gray-300"></span> */}
 
                     {/* Tyre Wise */}
-                    <div className="flex gap-2 p-2 justify-center items-center">
+                    {/* <div className="flex gap-2 p-2 justify-center items-center"> */}
                         {/* Hidden radio input for "tyre" */}
-                        <input
+                        {/* <input
                         type="radio"
                         name="report_type"
                         id="tyre"
@@ -220,9 +220,9 @@ function TyrePurchaseReport() {
                         }`}
                         checked={activeTable === "tyre"}
                         readOnly
-                        />
+                        /> */}
                         {/* Custom styled div acting as a radio button */}
-                        <div
+                        {/* <div
                         className={`w-4 h-4 border-2 rounded-full cursor-pointer relative flex justify-center items-center ${
                             activeTable === "tyre" ? "border-[#65A948]" : "border-gray-300"
                         }`}
@@ -243,11 +243,11 @@ function TyrePurchaseReport() {
                         Tyre Wise
                         </span>
                     </div>
-                </div>
-            </div>
+                </div> */}
+            {/* </div> */}
 
             {/* Right side: Filter, Export, and Add button */}
-            <div className="flex items-center gap-4"> {/* Added gap for spacing */}
+            <div className="flex items-center justify-end w-full gap-4"> {/* Added gap for spacing */}
                 {/* Filter */}
                 <div className="flex items-center gap-1 cursor-pointer" onClick={handleFilterToggle}>
                 <IoFilter fontSize={23} />
@@ -257,7 +257,7 @@ function TyrePurchaseReport() {
                 {/* Export Button */}
                 <button className="flex items-center gap-1 p-[5px_15px_10px_15px] text-center rounded-[10px] text-[16px] border-[1px]">
                 <PiExportBold />
-                <p>Download</p>
+                <p>Export</p>
                 </button>
 
                 {/* Add Button */}
@@ -268,7 +268,7 @@ function TyrePurchaseReport() {
         </div>
 
         {showTyrePurchaseFilter && (
-          <div className="z-30">
+          <div className="z-30 absolute">
             <TyrePurchaseFilter
               isVisible={showTyrePurchaseFilter}
               onClose={handleFilterToggle}
@@ -277,6 +277,17 @@ function TyrePurchaseReport() {
             />
           </div>
         )}
+
+        {/* {
+          showImage && (
+            <div className="z-30 absolute">
+            <ImageModal
+              onClose={() => setShowImage(false)}
+              // imageUrl={data.image_url}
+            />
+          </div>
+          )
+        } */}
 
         {vehicleNumberId && (
         <>
@@ -296,7 +307,8 @@ function TyrePurchaseReport() {
         ) : (
           <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300">
             {activeTable === "invoice" ? (
-              <table className="min-w-[100%] w-[122.5%] font-outfit">
+              
+              <table className="min-w-[100%] w-[100%] font-outfit">
                 <thead>
                   <tr className="bg-[#F5F5F5] text-[#727272] font-normal text-[15px] leading-[21.42px]">
                     <td className="text-left p-3">#</td>
@@ -329,7 +341,11 @@ function TyrePurchaseReport() {
                           {noData(formatDate(tyre.purchased_date))}
                         </td>
                         <td className="p-3 ">{noData(tyre.tyres_count)}</td>
-                        <td className="p-3">{noData(tyre.invoice_no)}</td>
+                        {/* // change  */}
+                        <td className="p-3 text-[green] font-semibold cursor-pointer" onClick={() => setShowImage(prev => {
+                          console.log(!prev);
+                          return !prev;
+                        })}>{noData(tyre.invoice_no)}</td>
                         <td className="p-3">{noData(tyre.dealer_name)}</td>
                         <td className="p-3">{noData(tyre.address)}</td>
                         <td className="p-3">{noData(tyre.base_amount)}</td>
@@ -340,7 +356,7 @@ function TyrePurchaseReport() {
                 </tbody>
               </table>
             ) : (
-              <table className="min-w-[100%] w-[122.5%] font-outfit">
+              <table className="min-w-[100%] w-[100%] font-outfit">
                 <thead>
                   <tr className="bg-[#F5F5F5] text-[#727272] font-normal text-[15px] leading-[21.42px]">
                     <td className="text-left p-3">#</td>
@@ -376,20 +392,20 @@ function TyrePurchaseReport() {
                         <td className="p-3">
                           {noData(tyre.purchased_date)}
                         </td>
-                        <td className="p-3 text-[#65A948] underline cursor-pointer">{noData(tyre.serial_no)}</td>
-                        <td className="p-3">{noData(tyre.brand_name)}</td>
-                        <td className="p-3" onClick={(e) => setVehicleNumberId(e.target.value)}>{noData(tyre.model_name)}</td>
-                        <td className="p-3">{noData(tyre.tyre_size)}</td>
-                        <td className="p-3">{noData(tyre.construction_type)}</td>
-                        <td className="p-3">{noData(tyre.standard_nsd)}</td>
+                        <td className="p-3 text-[#65A948] underline cursor-pointer">{noData(tyre.serial_no || "NA")}</td>
+                        <td className="p-3">{noData(tyre.brand_name || "NA")}</td>
+                        <td className="p-3" onClick={(e) => setVehicleNumberId(e.target.value)}>{noData(tyre.model_name || "NA")}</td>
+                        <td className="p-3">{noData(tyre.tyre_size || "NA")}</td>
+                        <td className="p-3">{noData(tyre.construction_type || "NA")}</td>
+                        <td className="p-3">{noData(tyre.standard_nsd || "NA")}</td>
                         <td className="p-3">
-                          {noData(tyre.dealer_name)}
+                          {noData(tyre.dealer_name || "NA")}
                         </td>
                         <td className="p-3">
-                          {noData(tyre.base_amount)}
+                          {noData(tyre.base_amount || "NA")}
                         </td>
                         <td className="p-3">
-                          {noData(tyre.total_amount)}
+                          {noData(tyre.total_amount || "NA")}
                         </td>
                         <td className="p-3">
                           {noData(tyre.invoice_no)}
@@ -406,8 +422,8 @@ function TyrePurchaseReport() {
         {/* Pagination controls */}
         <div className="flex justify-between items-center mt-4 px-4 py-2 bg-[#F7F7F7] rounded-b-lg">
           <p className="text-[14px] font-outfit font-normal leading-[22.4px] text-[#4E4F54]">
-            Showing {(currentPage - 1) * itemsPerPage + 1}-
-            {Math.min(currentPage * itemsPerPage, data.length)} of{" "}
+            Showing {(currentPage - 1) * itemsPerPage + 1} -
+            {Math.min(currentPage * itemsPerPage, totalRecords)} of {totalRecords}
             {totalPages} items
           </p>
           <div className="flex items-center gap-4">
@@ -417,7 +433,7 @@ function TyrePurchaseReport() {
                 onChange={(e) => handlePageChange(Number(e.target.value))}
                 className="px-1 py-1 rounded-md border-[1px] border-gray-300"
               >
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                {Array.from({ length: totalRecords }, (_, i) => i + 1).map(
                   (page) => (
                     <option key={page} value={page}>
                       Page {page}

@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 
-const ScrapCountCard = ({ title, count, tableHeaders, setTyreListFilter, tyreListFilter, tableData, className = '' }) => {
+const ScrapCountCard = ({ title, count, tableHeaders, setTyreListFilter, tyreListFilter, tableData, className = '', realCount }) => {
 
   return (
     <div className={`p-4 rounded-xl border border-gray-200 bg-white w-[500px] max-h-[350px] overflow-y-auto overflow-x-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300 ${className} `}>
       {/* Title and Count */}
       <div className="flex justify-between items-center mb-4 px-1">
         <p className="font-semibold text-lg text-gray-800">{title}</p>
-        <p className="text-green-600 text-xl font-semibold">{count}</p>
+        <p className="text-green-600 text-xl font-semibold">{realCount} / {count}</p>
       </div>
 
       {/* Table */}
@@ -29,7 +29,7 @@ const ScrapCountCard = ({ title, count, tableHeaders, setTyreListFilter, tyreLis
                     const [key, value] = cell;
                     if (key === "brand_name" || key === "vehicle_no" || key === "defect_type_name") {
                       return (
-                        <td key={i} className="p-2 text-sm text-[#16A34A] text-center cursor-pointer underline" onClick={(e) => setTyreListFilter({...tyreListFilter, key: value})}>
+                        <td key={i} className="p-2 text-sm text-[#16A34A] text-center cursor-pointer underline" onClick={(e) => setTyreListFilter({...tyreListFilter, [key]: value})}>
                           {value}
                         </td>
                       );

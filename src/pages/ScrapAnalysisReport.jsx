@@ -46,7 +46,7 @@ function ScrapAnalysisReport() {
   const [dateRange, setDateRange] = useState({ startDate: addMonths(new Date(), -3), endDate: new Date() });
   const [data, setData] = useState([]);
   const [selectVal, setSelectVal] = useState("total_count");
-  const [tyreListFilter, setTyreListFilter] = useState({brand_name: "", vehicle_no: "", reason: ""});
+  const [tyreListFilter, setTyreListFilter] = useState({brand_name: "", vehicle_no: "", reason: "", page_no: 1, limit: 10});
   const [showStartCalendar, setShowStartCalendar] = useState(false);
   const [showEndCalendar, setShowEndCalendar] = useState(false);
   const [popupMessage, setPopupMessage] = useState('');
@@ -54,7 +54,7 @@ function ScrapAnalysisReport() {
     startDate: null,
     endDate: null,
   });
-  const {countData, brandData, reasonData, vehicleData, doughnutData, nsdData, tyreList, currentPage, setCurrentPage, itemsPerPage, totalPages, setTotalPages, loading, error} = useScrapData(selectVal, customDateRange, tyreListFilter);
+  const {countData, brandData, reasonData, vehicleData, doughnutData, nsdData, tyreList, currentPage, setCurrentPage, itemsPerPage, realBrandData, realReasonData, realVehicleData, realDoughnutData, realTyreListDataCount, realNsdData, loading, error} = useScrapData(selectVal, customDateRange, tyreListFilter);
 
   const handleStartDateChange = (date) => {
     if (isFuture(date)) {
@@ -92,8 +92,8 @@ function ScrapAnalysisReport() {
   const headersArray1 = ["Reason", "No. of Tyres", "%"];
 
   useEffect(() => {
-    console.log("Count Data in Report: ", countData);
-  }, [selectVal, customDateRange, reasonData, brandData, vehicleData, countData]);
+    console.log("Count Data in Report: ", doughnutData);
+  }, [selectVal, customDateRange, reasonData, brandData, vehicleData, doughnutData]);
 
   return (
     <div className="p-6 rounded-[50px] overflow-x-auto relative">
@@ -141,16 +141,16 @@ function ScrapAnalysisReport() {
                   </h2>
                   <div className="flex items-center gap-2 mb-3 justify-center lg:justify-start">
                     <span className="text-5xl font-semibold text-[#65A948] flex gap-2">
-                      {countData?.total_scrap_count ? countData?.total_scrap_count : countData?.current_scrap_count || countData?.total_scrap_count}
+                      {countData?.total_scrap_count || countData?.current_scrap_count || 0}
                       {
                         selectVal !== "total_count" && (
                           <div className="ml-2 flex items-center bg-[#65A948] text-[#FFF] rounded-full px-3 py-1 mt-2 text-sm font-medium flex-row">
                             <span className="flex gap-1">
                               { 
                                 // Calculate the scrap count difference
-                                (countData?.current_scrap_count || (countData?.total_scrap_count - countData?.previous_scrap_count)) > 0
-                                ? `${(countData?.current_scrap_count || countData?.total_scrap_count) - countData?.previous_scrap_count}`
-                                : `${Math.abs((countData?.current_scrap_count || countData?.total_scrap_count) - countData?.previous_scrap_count)}`
+                                ((countData?.current_scrap_count - countData?.previous_scrap_count)) >= 0
+                                ? `${(countData?.current_scrap_count || 0) - countData?.previous_scrap_count}` || 0
+                                : `${Math.abs((countData?.current_scrap_count || 0) - countData?.previous_scrap_count)}`
                               }
                               
                               { 
@@ -195,7 +195,7 @@ function ScrapAnalysisReport() {
                     </span>
                   </div>
                   <div className="flex items-center text-gray-500 text-sm mt-2 justify-center font-semibold lg:justify-start">
-                    {/* {
+                    {
                       selectVal !== "total_count" && (
                         <>
                           <span>
@@ -204,9 +204,9 @@ function ScrapAnalysisReport() {
                           <span className="mx-2 font-extralight">|</span>
                         </>
                       )
-                    } */}
+                    } 
                     
-                    {/* <select
+                    <select
                       name="date-picker"
                       className="bg-transparent"
                       onChange={(e) => setSelectVal(e.target.value)}
@@ -217,7 +217,7 @@ function ScrapAnalysisReport() {
                       <option value="last_3_months">Last 3 Months</option>
                       <option value="last_6_months">Last 6 Months</option>
                       <option value="custom_date">Custom Date</option>
-                    </select> */}
+                    </select> 
                   </div>
                   <div className="mt-4">
                     {selectVal === "custom_date" && (
@@ -315,7 +315,8 @@ function ScrapAnalysisReport() {
                   tyreListFilter={tyreListFilter}
                   setTyreListFilter={setTyreListFilter}
                   title="Brand Wise"
-                  count={countData?.current_scrap_count || countData?.total_scrap_count}
+                  realCount={realBrandData}
+                  count={countData?.current_scrap_count >= 0 ? countData?.current_scrap_count : countData?.total_scrap_count}
                   tableHeaders={headersArray}
                   tableData={brandData?.sort((a, b) => a.scrap_percentage - b.scrap_percentage)}
                   className="w-full"
@@ -323,7 +324,7 @@ function ScrapAnalysisReport() {
                 <div className="pl-2 bg-white h-[350px] flex flex-col px-5 justify-center items-center gap-3 rounded-xl border border-gray-200 ">
                   <div className="flex justify-between items-center w-full px-1">
                     <p className="font-semibold text-lg text-gray-800">NSD Wise</p>
-                    <p className="text-green-600 text-xl font-semibold">{countData?.current_scrap_count || countData?.total_scrap_count}</p>
+                    <p className="text-green-600 text-xl font-semibold">{realNsdData} / {countData?.current_scrap_count >= 0 ? countData?.current_scrap_count : countData?.total_scrap_count}</p>
                   </div>
                   <Bar
                     data={{
@@ -371,7 +372,7 @@ function ScrapAnalysisReport() {
                     {/* DateRange component can be re-enabled if needed */}
                     {/* <DateRange className="text-green-600 text-xl font-semibold translate-y-3" isYearly={true} /> */}
                     <p className="text-green-600 text-base md:text-lg lg:text-xl font-semibold translate-y-3 md:translate-y-5 lg:translate-y-5">
-                      {countData?.total_scrap_count || countData?.current_scrap_count}
+                      0 / {countData?.total_scrap_count || countData?.current_scrap_count}
                     </p>
                   </div>
                   <ChartComponent title="MonthWise" count={0}>
@@ -385,13 +386,13 @@ function ScrapAnalysisReport() {
                     setTyreListFilter={setTyreListFilter}
                     tyreListFilter={tyreListFilter}
                     title="Vehicle"
-                    count={countData?.current_scrap_count || countData?.total_scrap_count}
+                    realCount={realVehicleData}
+                    count={countData?.current_scrap_count >= 0 ? countData?.current_scrap_count : countData?.total_scrap_count}
                     tableHeaders={["Vehicle", "Count", "%"]}
                     tableData={vehicleData?.sort((a, b) => a.percentage - b.percentage)}
                     className="w-full h-[300px]"
                   />
                 </div>
-                
               </div>
 
               {/* Fourth Row */}
@@ -400,49 +401,51 @@ function ScrapAnalysisReport() {
                 <div className="bg-white px-6 py-12 pt-8 flex-col rounded-lg border border-gray-200 h-[350px] flex justify-center items-start">
                   <div className="flex justify-between items-center w-full">
                     <p className="font-semibold text-lg text-gray-800">Tyre Area</p>
-                    <p className="text-green-600 text-xl font-semibold">{countData?.current_scrap_count || countData?.total_scrap_count}</p>
+                    <p className="text-green-600 text-xl font-semibold">{realDoughnutData} / {countData?.current_scrap_count >= 0 ? countData?.current_scrap_count : countData?.total_scrap_count}</p>
                   </div>
                   {
                     doughnutData ? 
-                      <Doughnut
-                      data={{
-                        labels: ["Crown", "Side Wall", "Bead", "Inner Crown"],
-                        datasets: [
-                          {
-                            label: "Tyre Area",
-                            data: doughnutData, // Data matching the distribution
-                            backgroundColor: [
-                              "rgb(46, 159, 239)", // Crown
-                              "rgb(255, 195, 0)", // Side Wall
-                              "rgb(181, 23, 158)", // Tread
-                              "rgb(45, 47, 240)", // Inner Crown
-                            ],
-                            hoverOffset: 4,
-                            borderWidth: 0,
-                          },
-                        ],
-                      }}
-                      options={{
-                        maintainAspectRatio: false,
-                        plugins: {
-                          legend: {
-                            display: true,
-                            labels: {
-                              padding: 20,
-                              boxWidth: 20, // Adjust the legend box width
-                            },
+                    <Doughnut
+                    data={{
+                      labels: ["Crown", "Side Wall", "Bead", "Inner Crown"],
+                      datasets: [
+                        {
+                          label: "Tyre Area",
+                          data: doughnutData || [0, 0, 0, 0], // Ensure this array matches the number of labels
+                          backgroundColor: [
+                            "rgb(46, 159, 239)", // Crown
+                            "rgb(255, 195, 0)",  // Side Wall
+                            "rgb(181, 23, 158)", // Bead
+                            "rgb(45, 47, 240)",  // Inner Crown
+                          ],
+                          hoverOffset: 4,
+                          borderWidth: 0,
+                        },
+                      ],
+                    }}
+                    options={{
+                      maintainAspectRatio: false,
+                      plugins: {
+                        legend: {
+                          display: true,
+                          labels: {
+                            padding: 20,
+                            boxWidth: 20, // Adjust the legend box width
                           },
                         },
-                        cutout: "60%", // Keeps the doughnut hole size consistent
-                      }}
-                    /> : <h1>No Data Available</h1>
+                      },
+                      cutout: "60%", // Keeps the doughnut hole size consistent
+                    }}
+                  />
+                   : <h1>No Data Available</h1>
                   }
                 </div>
                 <ScrapCountCard
                   setTyreListFilter={setTyreListFilter}
                   tyreListFilter={tyreListFilter}
                   title="Reasons"
-                  count={countData?.current_scrap_count || countData?.total_scrap_count}
+                  realCount={realReasonData}
+                  count={countData?.current_scrap_count >= 0 ? countData?.current_scrap_count : countData?.total_scrap_count}
                   tableHeaders={headersArray1}
                   tableData={reasonData}
                   className="w-full"
@@ -463,7 +466,7 @@ function ScrapAnalysisReport() {
               </div> */}
 
               {/* Sixth Row */}
-              <TyreListComponent data={tyreList} selectVal={selectVal} tyreListFilter={tyreListFilter} setCurrentPage={setCurrentPage} currentPage={currentPage} itemsPerPage={itemsPerPage} totalPages={totalPages} setTotalPages={setTotalPages} />
+              <TyreListComponent data={tyreList?.data} selectVal={selectVal} tyreListFilter={tyreListFilter} setCurrentPage={setCurrentPage} currentPage={currentPage} itemsPerPage={itemsPerPage} totalPages={tyreList?.totalPages} totalCount={tyreList?.totalCount} realCount={realTyreListDataCount} count={countData?.current_scrap_count >= 0 ? countData?.current_scrap_count : countData?.total_scrap_count} setTyreListFilter={setTyreListFilter} />
             </div>
           </div>
         )}

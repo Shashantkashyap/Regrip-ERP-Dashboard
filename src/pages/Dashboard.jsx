@@ -16,6 +16,10 @@ import TyreWearReport from "../pages/TyreWearReport";
 import TyrePurchaseReport from "../pages/TyrePurchaseReport";
 import ScrapAnalysisReport from "../pages/ScrapAnalysisReport";
 import TyreStatusReport from "../pages/TyreStatus"
+import SellScrap from "./SellScrap";
+import SellingDetails from "../components/SellingDetails/SellingDetails";
+import InvoiceDetails from "../components/invoicedetails/InvoiceDetails";
+import UploadDetails from "../components/uploaddetails/UploadDetails";
 
 function Dashboard() {
 
@@ -184,6 +188,17 @@ function Dashboard() {
           activeMenuItem === 10 ? (
             <div>
               <ScrapAnalysisReport />
+            </div>
+          ) : ("")
+        }
+         {
+          activeMenuItem === 13 ? (
+            <div>
+              <SellScrap />
+                {/* <SellingDetails /> */}
+              {/* <InvoiceDetails/> */}
+              {/* <UploadDetails/> */}
+
             </div>
           ) : ("")
         }

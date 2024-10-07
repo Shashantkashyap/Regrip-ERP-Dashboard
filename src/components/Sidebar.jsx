@@ -27,6 +27,8 @@ import { setActiveDropdownItem, setActiveMenuItem } from "../redux/Slices/menuSl
 import { setTableFilter } from "../redux/Slices/DasboardPopup.js";
 import { GrLogout } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
+import sellscrap from '../assets/icons/Sellscrap.png'
+
 
 function Sidebar() {
 
@@ -109,6 +111,13 @@ function Sidebar() {
       name: "Scrap Analysis",
       icon: Tools ,
       iconActive: ToolsG,
+      
+    },
+    {
+      id: 13,
+      name: "Sell Scrap",
+      icon: sellscrap ,
+      iconActive: sellscrap,
       
     },
     

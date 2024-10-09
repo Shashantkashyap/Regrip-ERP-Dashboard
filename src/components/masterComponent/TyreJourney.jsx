@@ -6,6 +6,8 @@ import { useSelector } from "react-redux";
 import Loader from "../common/Loader"; // Assuming you have a Loader component
 import "../scrollBar.css"
 import ImageModal from "../mechanicalDefectComponent/ImageModal";
+import DownloadToExcel from "../common/DownloadToExcel";
+import DownloadToPDF from "../common/DownloadToPdf";
 
 
 function TyreJourney({ tyreId, close, tyreNo }) {
@@ -20,6 +22,7 @@ function TyreJourney({ tyreId, close, tyreNo }) {
   const [isFetchComplete, setIsFetchComplete] = useState(false); // Track fetch completion
   const [selectedImage, setSelectedImage] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [downloadToggle , setDownloadToggle] = useState("DownloadToExcel")
 
   const url = "https://newstaging.regripindia.com/api";
 
@@ -83,7 +86,12 @@ function TyreJourney({ tyreId, close, tyreNo }) {
     setIsModalOpen(true);
   };
 
-  
+   const handleSelectChange = (event) => {
+    setDownloadToggle(event.target.value); // Update state based on selected option
+  };
+
+  const selectedFields = ["datetime_created","action","vehicle_no","position","tyre_km","standard_nsd","avg_nsd","standard_nsd","psi","tyre_status","freshRetread"]
+
   
   
   
@@ -127,10 +135,41 @@ function TyreJourney({ tyreId, close, tyreNo }) {
         <>
           <div className="flex justify-end mb-2">
           
-            <button className="bg-[#333333] text-white text-[14px] py-2 px-4 rounded-md flex items-center gap-2 hover:bg-green-600 transition">
-              <PiExportBold size={20} />
-              <span>Download</span>
-            </button>
+          <button className="w-auto px-[5px]  py-[5px]  mb-[10px]  rounded-[10px] text-[14px] flex gap-1 items-center border-[1px]">
+      <span>
+        <PiExportBold />
+      </span>
+      <div>
+        <select 
+          name="" 
+          id="" 
+          className="w-[90%]pe-[5px] me-[10px] focus:outline-none" 
+          onChange={handleSelectChange} // Handle change here
+        >
+          <option value="DownloadToExcel">Excel</option>
+          <option value="DownloadToPDF">PDF</option>
+        </select>
+      </div>
+
+      {/* Conditional rendering based on the selected download type */}
+      {downloadToggle === "DownloadToExcel" ? (
+        <p>
+          <DownloadToExcel 
+            data={tyreHistory} 
+            fileName="tyreJourney" 
+            selectedFields={selectedFields} 
+          />
+        </p>
+      ) : downloadToggle === "DownloadToPDF" ? (
+        <p>
+          <DownloadToPDF
+            data={tyreHistory} 
+            fileName="tyreJourney" 
+            selectedFields={selectedFields} 
+          />
+        </p>
+      ) : null}
+    </button>
           </div>
 
           <div

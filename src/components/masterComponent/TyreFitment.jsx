@@ -5,6 +5,8 @@ import TyreJourney from "./TyreJourney";
 import axios from "axios";
 import Loader from "../common/Loader"; // Assuming you have a Loader component
 import "../scrollBar.css";
+import DownloadToExcel from "../common/DownloadToExcel";
+import DownloadToPDF from "../common/DownloadToPdf";
 
 function TyreFitment({ close, vehicle }) {
   const knowUser = JSON.parse(localStorage.getItem("userData"));
@@ -17,6 +19,7 @@ function TyreFitment({ close, vehicle }) {
   const [isFetchComplete, setIsFetchComplete] = useState(false); // Tracks if the fetch has been completed
   const [vehicleFitmentTime, setVehicleFitmentTime] = useState(1); // 1 for Past, 0 for Present
   const [vehiclePastData, setVehiclePastData] = useState([]);
+  const [downloadToggle , setDownloadToggle] = useState("DownloadToExcel")
 
   const url = "https://staging.regripindia.com/api";
   const url2 = "https://newstaging.regripindia.com/api";
@@ -66,6 +69,11 @@ function TyreFitment({ close, vehicle }) {
       setIsFetchComplete(true); // Mark fetch as complete
     }
   };
+  const handleSelectChange = (event) => {
+    setDownloadToggle(event.target.value); // Update state based on selected option
+  };
+  const selectedFields = ["position","serial_no","brand_name","model_name","construction_type","tyre_size","product_category","tyre_status"]
+
 
   useEffect(() => {
     fetchTyreFitmentData();
@@ -174,15 +182,47 @@ function TyreFitment({ close, vehicle }) {
             </div>
 
             {/* Download Button */}
-            <button className="ml-4 bg-[#333333] text-white py-2 px-6 rounded-md flex items-center gap-2 shadow-md hover:bg-green-600 transition-all duration-300">
-              <PiExportBold size={20} />
-              <span>Download</span>
-            </button>
+            <button className="w-auto px-[5px]  py-[5px]  mb-[10px]  rounded-[10px] text-[14px] flex gap-1 items-center border-[1px]">
+      <span>
+        <PiExportBold />
+      </span>
+      <div>
+        <select 
+          name="" 
+          id="" 
+          className="w-[90%]pe-[5px] me-[10px] focus:outline-none" 
+          onChange={handleSelectChange} // Handle change here
+        >
+          <option value="DownloadToExcel">Excel</option>
+          <option value="DownloadToPDF">PDF</option>
+        </select>
+      </div>
+
+      {/* Conditional rendering based on the selected download type */}
+      {downloadToggle === "DownloadToExcel" ? (
+        <p>
+          <DownloadToExcel 
+            data={dataToDisplay} 
+            fileName="vehicleFitment" 
+            selectedFields={selectedFields} 
+          />
+        </p>
+      ) : downloadToggle === "DownloadToPDF" ? (
+        <p>
+          <DownloadToPDF 
+            data={dataToDisplay} 
+            fileName="vehicleFitment" 
+            selectedFields={selectedFields} 
+          />
+        </p>
+      ) : null}
+    </button>
           </div>
 
           {loading === true ? (
             <Loader />
-          ) : dataToDisplay.length > 0 ? (
+          ) : dataToDisplay.length > 0 ?
+           (
             <div className="rounded-[10px] shadow-[2px_2px_15px_0px_rgba(0,0,0,0.25)] scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300">
               <table className="min-w-full bg-white border border-gray-200 rounded-[10px] text-[14px] font-outfit">
                 <thead className="bg-gray-100 text-gray-600">

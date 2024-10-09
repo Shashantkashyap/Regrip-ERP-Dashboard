@@ -11,6 +11,8 @@ import TyreJourney from "../components/masterComponent/TyreJourney";
 import Loader from "../components/common/Loader";
 import PopupFilter from "../components/dashboardComponent/PopupFilter";
 import { resetPopupFormData } from "../redux/Slices/PopupfilterSlice";
+import DownloadToExcel from "../components/common/DownloadToExcel";
+import DownloadToPDF from "../components/common/DownloadToPdf";
 
 function Inventory() {
   // const apiKey = useSelector((state)=> state.user.user.data.api_key)
@@ -37,7 +39,17 @@ function Inventory() {
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [tyreNo, setTyreNo] = useState();
   const [filterData, setFilterData] = useState({})
+  const [allData , setAllData] = useState([])
   const dispatch = useDispatch()
+  const [downloadToggle , setDownloadToggle] = useState("DownloadToExcel")
+
+   
+   const handleSelectChange = (event) => {
+    setDownloadToggle(event.target.value); // Update state based on selected option
+  };
+
+  const selectedFields = ["serial_no", "tyre_size", "brand_name","model_name", "nsd1","nsd2","nsd3", "nsd4","product_category","current_status","ongoing_status"]
+
 
 
   const fetchTyreSummary = async () => {
@@ -88,6 +100,8 @@ function Inventory() {
           Authorization: apiKey,
         },
       });
+
+      setAllData(response.data.data)
 
       const totalItems = response.data.total_tyres;
       const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -629,12 +643,41 @@ function Inventory() {
         <p className="text-[15px] font-medium">Filter</p>
       </div>
      
-                    <button className="p-[5px_15px_10px_15px] text-center rounded-[10px] text-[16px] flex gap-1 items-center border-[1px]">
-                      <span>
-                        <PiExportBold />
-                      </span>
-                      <p>Download</p>
-                    </button>
+      <button className="w-auto px-[5px]  py-[5px]  mb-[10px]  rounded-[10px] text-[14px] flex gap-1 items-center border-[1px]">
+  <span>
+    <PiExportBold />
+  </span>
+  <div>
+    <select 
+      name="" 
+      id="" 
+      className="w-[90%]pe-[5px] me-[10px] focus:outline-none" 
+      onChange={handleSelectChange} // Handle change here
+    >
+      <option value="DownloadToExcel">Excel</option>
+      <option value="DownloadToPDF">PDF</option>
+    </select>
+  </div>
+
+  {/* Conditional rendering based on the selected download type */}
+  {downloadToggle === "DownloadToExcel" ? (
+    <p>
+      <DownloadToExcel 
+        data={allData} 
+        fileName="vehicleMaster" 
+        selectedFields={selectedFields} 
+      />
+    </p>
+  ) : downloadToggle === "DownloadToPDF" ? (
+    <p>
+      <DownloadToPDF
+        data={allData} 
+        fileName="vehicleMaster" 
+        selectedFields={selectedFields} 
+      />
+    </p>
+  ) : null}
+</button>
                   </div>
                 </div>
               </div>

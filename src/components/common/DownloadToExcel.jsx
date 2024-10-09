@@ -21,8 +21,10 @@ const DownloadToExcel = ({ data, fileName, selectedFields }) => {
     XLSX.writeFile(workbook, `${fileName}.xlsx`);
   };
 
+  
+
   return (
-    <button onClick={handleExport}>
+    <button onClick={handleExport} className='bg-green-200 py-1 px-4 rounded-xl' >
       Download
     </button>
   );

@@ -64,8 +64,8 @@ const DownloadToPDF = ({ data, fileName, selectedFields, logoUrl = "https://res.
   };
 
   return (
-    <button onClick={handleExport}>
-      Download PDF
+    <button onClick={handleExport} className='bg-green-200 py-1 px-4 rounded-xl' >
+      Download
     </button>
   );
 };

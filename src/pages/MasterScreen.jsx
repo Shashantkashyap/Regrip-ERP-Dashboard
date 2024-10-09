@@ -35,6 +35,8 @@ function MasterScreen() {
   const [vehicleId, setVehicleId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [searchText, setSearchText] = useState(""); // State to store search input
+  const [allData , setAllData] = useState([])
+  const [downloadToggle , setDownloadToggle] = useState("DownloadToExcel")
 
   const dispatch = useDispatch();
 
@@ -100,9 +102,9 @@ function MasterScreen() {
       );
 
     
-
       const { data } = vehicleData.data;
       setVehicles(data);
+      setAllData(vehicleData.data.allData)
       setCurrentPage(vehicleData.data.pagination.currentPage);
       setTotalPages(vehicleData.data.pagination.totalPages);
       setTotalRecords(vehicleData.data.pagination.totalRecords);
@@ -113,6 +115,9 @@ function MasterScreen() {
     }
   };
 
+  const handleSelectChange = (event) => {
+    setDownloadToggle(event.target.value); // Update state based on selected option
+  };
   useEffect(() => {
     fetchVehicleMasterData();
   }, [currentPage, searchText]); // Trigger fetch on page or search text change
@@ -175,14 +180,41 @@ function MasterScreen() {
                 className="cursor-pointer"
               />
             </span>
-            <button className="p-[5px_15px_10px_15px] text-center rounded-[10px] text-[16px] flex gap-1 items-center border-[1px]">
-              <span>
-                <PiExportBold />
-              </span>
-              
-              <p><DownloadToExcel data = {vehicles} fileName="vehicleMaster" selectedFields={selectedFields}/></p>
-              {/* <p><DownloadToPDF data = {vehicles} fileName="vehicleMaster" selectedFields={selectedFields}/></p> */}
-            </button>
+            <button className="w-auto px-[5px]  py-[5px]  mb-[10px]  rounded-[10px] text-[14px] flex gap-1 items-center border-[1px]">
+      <span>
+        <PiExportBold />
+      </span>
+      <div>
+        <select 
+          name="" 
+          id="" 
+          className="w-[90%]pe-[5px] me-[10px] focus:outline-none" 
+          onChange={handleSelectChange} // Handle change here
+        >
+          <option value="DownloadToExcel">Excel</option>
+          <option value="DownloadToPDF">PDF</option>
+        </select>
+      </div>
+
+      {/* Conditional rendering based on the selected download type */}
+      {downloadToggle === "DownloadToExcel" ? (
+        <p>
+          <DownloadToExcel 
+            data={allData} 
+            fileName="vehicleMaster" 
+            selectedFields={selectedFields} 
+          />
+        </p>
+      ) : downloadToggle === "DownloadToPDF" ? (
+        <p>
+          <DownloadToPDF 
+            data={allData} 
+            fileName="vehicleMaster" 
+            selectedFields={selectedFields} 
+          />
+        </p>
+      ) : null}
+    </button>
             {/* <button
               className="p-[5px_15px_10px_15px] text-center rounded-[10px] text-[16px] text-white bg-[#333333] flex gap-1 items-center border-[1px]"
               onClick={() => setAddVehicle(!addVehicle)}

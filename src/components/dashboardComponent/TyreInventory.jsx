@@ -7,7 +7,9 @@ function TyreInventory({ selectedTable, setSelectedTable, tyreInventory = [] , l
 
   const dispatch = useDispatch()
 
-  const setCurrntStatus = async (status)=>{
+  const setCurrntStatus = async (status, category)=>{
+
+    dispatch(setTableFilter({ key:"tyre_depth" , value: category}))
     
     if(status == "Scrap"){
       localStorage.setItem("current_status","Scrap")
@@ -17,6 +19,18 @@ function TyreInventory({ selectedTable, setSelectedTable, tyreInventory = [] , l
     }
   }
 
+  const setBrandTyres = (status , brandId)=>{
+    dispatch(setTableFilter({ key:"brand_id" , value: brandId}))
+    if(status == "Scrap"){
+      localStorage.setItem("current_status","Scrap")
+    }else{
+      localStorage.setItem("current_status", "on-wheel")
+      localStorage.setItem("product_category", status)
+    }
+
+  }
+
+  
   
   // Calculate total sum of tyres safely
   const totalSum = Array.isArray(tyreInventory)
@@ -26,7 +40,7 @@ function TyreInventory({ selectedTable, setSelectedTable, tyreInventory = [] , l
   return (
     <div className="bg-white px-4 py-3 rounded-[15px] border-[1px] w-[453px] min-w-[400px] font-outfit">
       {loading ? (
-        <div className="absolute inset-0 flex items-center justify-center mb-40 ml-[300px]">
+        <div className="absolute inset-0 flex items-center justify-center ">
           <Loader />
         </div>
       ) : (
@@ -65,12 +79,12 @@ function TyreInventory({ selectedTable, setSelectedTable, tyreInventory = [] , l
             <table className="w-[96%] mx-auto max-lg:text-[14px] table-auto text-center border-collapse ">
               <tbody>
                 {tyreInventory.map((row, index) => (
-                  <tr key={index} className="text-center" onClick={()=>dispatch(setTableFilter({ key:"tyre_depth" , value: row.category}))} >    
+                  <tr key={index} className="text-center" >    
                     <td className="px-2 pl-4 py-2 border-b text-left " >{row.category}</td>
-                    <td className="px-1 py-2 border-b cursor-pointer" onClick={()=> setCurrntStatus("fresh")}>{row.New}</td>
-                    <td className="px-4 py-2 border-b cursor-pointer" onClick={()=> setCurrntStatus("rtd")}>{row.Retread}</td>
-                    <td className="px-3 pr-4 py-2 border-b cursor-pointer" onClick={()=> setCurrntStatus("Scrap")}>{row.Scrap}</td>
-                    <td className="px-2 py-2 border-b">{row.Total}</td>
+                    <td className="px-1 py-2 border-b cursor-pointer" onClick={()=> setCurrntStatus("fresh", row.category)}>{row.New}</td>
+                    <td className="px-4 py-2 border-b cursor-pointer" onClick={()=> setCurrntStatus("rtd" , row.category)}>{row.Retread}</td>
+                    <td className="px-3 pr-4 py-2 border-b cursor-pointer" onClick={()=> setCurrntStatus("Scrap" , row.category)}>{row.Scrap}</td>
+                    <td className="px-2 py-2 border-b " onClick={()=> setTotalTyre(row.category)}>{row.Total}</td>
                   </tr>
                 ))}
               </tbody>
@@ -79,11 +93,11 @@ function TyreInventory({ selectedTable, setSelectedTable, tyreInventory = [] , l
             <table className="w-[100%] max-lg:text-[14px] text-[14px] mx-auto table-auto text-center border-collapse ">
               <tbody>
                 {tyreInventory.map((row, index) => (
-                  <tr key={index} className="text-center" onClick={()=>dispatch(setTableFilter({ key:"brand_id" , value: row.id}))}>
+                  <tr key={index} className="text-center" >
                     <td className="px-2 pl-8  py-2 border-b text-left">{row.category}</td>
-                    <td className="px-2 py-2 pr-6 border-b cursor-pointer" onClick={()=> setCurrntStatus("New")}>{row.New}</td>
-                    <td className="px-4 py-2 pr-2 border-b cursor-pointer" onClick={()=> setCurrntStatus("Retreaded")}>{row.Retread}</td>
-                    <td className="px-3 pl-6 py-2 border-b cursor-pointer" onClick={()=> setCurrntStatus("Scrap")}>{row.Scrap}</td>
+                    <td className="px-2 py-2 pr-6 border-b cursor-pointer" onClick={()=> setBrandTyres("New", row.id)}>{row.New}</td>
+                    <td className="px-4 py-2 pr-2 border-b cursor-pointer" onClick={()=> setBrandTyres("Retreaded" , row.id)}>{row.Retread}</td>
+                    <td className="px-3 pl-6 py-2 border-b cursor-pointer" onClick={()=> setBrandTyres("Scrap" , row.id)}>{row.Scrap}</td>
                     <td className="px-2 py-2 pr-6 border-b ">{row.Total}</td>
                   </tr>
                 ))}

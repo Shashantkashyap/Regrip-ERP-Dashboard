@@ -24,7 +24,7 @@ function Alerts({ alertItems, loading }) {
               // Dispatch the action to set the filter
               dispatch(setTableFilter({ key: item.key, value: item.value2 }));
               
-              
+             
             }}  
           >
             <div className="flex items-center gap-3">

@@ -182,7 +182,7 @@ const filterTab = useSelector((state) => state.dashboardTableFilter.tableFilter)
     { label: "Pending Inspection", value: alert?.[3]?.value ?? 0, color: "bg-[#DA4040]" , key :"PendingI", value2: "" },
     { label: "Pending Alignment", value: alert?.[4]?.value ?? 0, color: "bg-[#DA4040]" , key :"PendingA", value2: "" },
     { label: "Pending Rotations", value: alert?.[5]?.value ?? 0, color: "bg-[#DA4040]" , key :"PendingR", value2: "" },
-    { label: "Tyre Defects", value: alert?.[6]?.value ?? 0, color: "bg-[#DA4040]", key :"TyreW", value2: ""  },
+    { label: "Mechanical Defects", value: alert?.[6]?.value ?? 0, color: "bg-[#DA4040]", key :"TyreW", value2: ""  },
   ];
 
   summary && Array.isArray(summary) && summary.length > 0 && (
@@ -237,7 +237,7 @@ const filterTab = useSelector((state) => state.dashboardTableFilter.tableFilter)
   <>
     <div className="fixed inset-0 bg-[rgba(0,0,0,0.8)] z-30"></div>
     <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-40 min-w-[600px] overflow-x-auto">
-      <div className="bg-white w-[80%] max-w-[1145px] h-auto rounded-[28px] shadow-lg min-w-[700px] overflow-x-auto">
+      <div className="bg-white w-[80%] max-w-[1145px] max-h-[800px] rounded-[28px] shadow-lg min-w-[700px] overflow-x-auto">
         <PopupComponent close={closeFilterTab}/>
       </div>
     </div>

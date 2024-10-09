@@ -62,7 +62,7 @@ function PopupComponent({ close }) {
 
         if(localStorage.getItem("current_status") == "Scrap"){
           formData.append("current_status", localStorage.getItem("current_status"))
-        }else{
+        }else if(localStorage.getItem("current_status") == "on-wheel"){
           formData.append("current_status", "on-wheel")
           formData.append("product_category", localStorage.getItem("product_category"))
         }
@@ -142,7 +142,7 @@ function PopupComponent({ close }) {
   };
 
   return (
-    <div className="bg-white min-w-[69%] overflow-x-auto h-[700px] flex flex-col rounded-[20px] pt-5 relative" style={{ boxShadow: "2px 2px 15px 0px rgba(0, 0, 0, 0.09)" }}>
+    <div className="bg-white min-w-[69%] overflow-x-auto h-[600px] flex flex-col rounded-[20px] pt-5 relative" style={{ boxShadow: "2px 2px 15px 0px rgba(0, 0, 0, 0.09)" }}>
       <MdCancel
         fontSize={24}
         onClick={close}

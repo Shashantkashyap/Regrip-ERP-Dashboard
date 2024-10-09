@@ -13,6 +13,8 @@ import Loader from "../components/common/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { resetFormData } from "../redux/Slices/masterFilterSlice";
 import "../components/scrollBar.css";
+import DownloadToExcel from "../components/common/DownloadToExcel";
+import DownloadToPDF from "../components/common/DownloadToPdf";
 
 function MasterScreen() {
   const formData = useSelector((state) => state.filter.formData);
@@ -126,6 +128,8 @@ function MasterScreen() {
     setSearchText(e.target.value);
   };
 
+  const selectedFields = ["sr_no", "vehicle_no", "wheels_count", "manufacturer_name","model_name", "manufacturer_year","date","city"]
+
   
   return (
     <div className="p-6 bg-[#F7F7F7] rounded-[50px] overflow-x-auto relative">
@@ -175,7 +179,9 @@ function MasterScreen() {
               <span>
                 <PiExportBold />
               </span>
-              <p>Download</p>
+              
+              <p><DownloadToExcel data = {vehicles} fileName="vehicleMaster" selectedFields={selectedFields}/></p>
+              {/* <p><DownloadToPDF data = {vehicles} fileName="vehicleMaster" selectedFields={selectedFields}/></p> */}
             </button>
             {/* <button
               className="p-[5px_15px_10px_15px] text-center rounded-[10px] text-[16px] text-white bg-[#333333] flex gap-1 items-center border-[1px]"

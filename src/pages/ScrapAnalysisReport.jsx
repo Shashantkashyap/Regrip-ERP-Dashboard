@@ -44,8 +44,6 @@ ChartJS.register(
 
 function ScrapAnalysisReport() {
   const [dateRange, setDateRange] = useState({ startDate: addMonths(new Date(), -3), endDate: new Date() });
-  const [data, setData] = useState([]);
-  const [selectVal, setSelectVal] = useState("total_count");
   const [tyreListFilter, setTyreListFilter] = useState({brand_name: "", vehicle_no: "", reason: "", page_no: 1, limit: 10});
   const [showStartCalendar, setShowStartCalendar] = useState(false);
   const [showEndCalendar, setShowEndCalendar] = useState(false);
@@ -54,6 +52,7 @@ function ScrapAnalysisReport() {
     startDate: null,
     endDate: null,
   });
+  const selectVal = [];
   const {countData, brandData, reasonData, vehicleData, doughnutData, nsdData, tyreList, currentPage, setCurrentPage, itemsPerPage, realBrandData, realReasonData, realVehicleData, realDoughnutData, realTyreListDataCount, realNsdData, loading, error} = useScrapData(selectVal, customDateRange, tyreListFilter);
 
   const handleStartDateChange = (date) => {
@@ -311,54 +310,62 @@ function ScrapAnalysisReport() {
               {/* Second Row */}
               <div className="grid lg:grid-cols-2 gap-6">
                 {/* Second row: ScrapCountCard and ChartComponent */}
-                <ScrapCountCard
-                  tyreListFilter={tyreListFilter}
-                  setTyreListFilter={setTyreListFilter}
-                  title="Brand Wise"
-                  realCount={realBrandData}
-                  count={countData?.current_scrap_count >= 0 ? countData?.current_scrap_count : countData?.total_scrap_count}
-                  tableHeaders={headersArray}
-                  tableData={brandData?.sort((a, b) => a.scrap_percentage - b.scrap_percentage)}
-                  className="w-full"
-                />
-                <div className="pl-2 bg-white h-[350px] flex flex-col px-5 justify-center items-center gap-3 rounded-xl border border-gray-200 ">
-                  <div className="flex justify-between items-center w-full px-1">
-                    <p className="font-semibold text-lg text-gray-800">NSD Wise</p>
-                    <p className="text-green-600 text-xl font-semibold">{realNsdData} / {countData?.current_scrap_count >= 0 ? countData?.current_scrap_count : countData?.total_scrap_count}</p>
-                  </div>
-                  <Bar
-                    data={{
-                      labels: ["0-4", "4-8", "8-12", "12-16", "16 and above"],
-                      datasets: [
-                        {
-                          label: "Count",
-                          data: nsdData,
-                          backgroundColor: [
-                            "#65A143", // solid green for first bar
-                            "#65A143", // lighter green for second bar
-                            "#65A143", // solid green for third bar
-                            "#65A143", // solid green for fourth bar
-                          ],
-                          borderRadius: 10,
-                          borderWidth: 1,
-                          borderColor: "#65A143",
-                          barThickness: 50,
-                          maxBarThickness: 50,
-                        },
-                      ],
-                    }}
-                    options={{
-                      scales: {
-                        y: {
-                          ticks: {
-                            stepSize: 100, // Set y-axis interval to 100
-                          },
-                          beginAtZero: true, // Ensures the y-axis starts at zero
-                        },
-                      },
-                    }}
-                  />
-                </div>
+                {
+                  brandData && realBrandData && (
+                    <ScrapCountCard
+                      tyreListFilter={tyreListFilter}
+                      setTyreListFilter={setTyreListFilter}
+                      title="Brand Wise"
+                      realCount={realBrandData}
+                      count={countData?.current_scrap_count >= 0 ? countData?.current_scrap_count : countData?.total_scrap_count}
+                      tableHeaders={headersArray}
+                      tableData={brandData?.sort((a, b) => a.scrap_percentage - b.scrap_percentage)}
+                      className="w-full"
+                    />
+                  )
+                }
+                {
+                  nsdData && realNsdData && (
+                    <div className="pl-2 bg-white h-[350px] flex flex-col px-5 justify-center items-center gap-3 rounded-xl border border-gray-200 ">
+                      <div className="flex justify-between items-center w-full px-1">
+                        <p className="font-semibold text-lg text-gray-800">NSD Wise</p>
+                        <p className="text-green-600 text-xl font-semibold">{realNsdData} / {countData?.current_scrap_count >= 0 ? countData?.current_scrap_count : countData?.total_scrap_count}</p>
+                            </div>
+                        <Bar
+                          data={{
+                            labels: ["0-4", "4-8", "8-12", "12-16", "16 and above"],
+                            datasets: [
+                              {
+                                label: "Count",
+                                data: nsdData,
+                                backgroundColor: [
+                                  "#65A143", // solid green for first bar
+                                  "#65A143", // lighter green for second bar
+                                  "#65A143", // solid green for third bar
+                                  "#65A143", // solid green for fourth bar
+                                ],
+                                borderRadius: 10,
+                                borderWidth: 1,
+                                borderColor: "#65A143",
+                                barThickness: 50,
+                                maxBarThickness: 50,
+                              },
+                            ],
+                          }}
+                          options={{
+                            scales: {
+                              y: {
+                                ticks: {
+                                  stepSize: 100, // Set y-axis interval to 100
+                                },
+                                beginAtZero: true, // Ensures the y-axis starts at zero
+                              },
+                            },
+                          }}
+                        />
+                      </div>
+                  )
+                }
               </div>
 
               {/* Third Row */}
@@ -382,16 +389,20 @@ function ScrapAnalysisReport() {
 
                 {/* Second chart container */}
                 <div className="-translate-y-12 md:-translate-y-0">
-                  <ScrapCountCard
-                    setTyreListFilter={setTyreListFilter}
-                    tyreListFilter={tyreListFilter}
-                    title="Vehicle"
-                    realCount={realVehicleData}
-                    count={countData?.current_scrap_count >= 0 ? countData?.current_scrap_count : countData?.total_scrap_count}
-                    tableHeaders={["Vehicle", "Count", "%"]}
-                    tableData={vehicleData?.sort((a, b) => a.percentage - b.percentage)}
-                    className="w-full h-[300px]"
+                  {
+                    vehicleData && realVehicleData && (
+                      <ScrapCountCard
+                        setTyreListFilter={setTyreListFilter}
+                        tyreListFilter={tyreListFilter}
+                        title="Vehicle"
+                        realCount={realVehicleData}
+                        count={countData?.current_scrap_count >= 0 ? countData?.current_scrap_count : countData?.total_scrap_count}
+                        tableHeaders={["Vehicle", "Count", "%"]}
+                        tableData={vehicleData?.sort((a, b) => a.percentage - b.percentage)}
+                        className="w-full h-[300px]"
                   />
+                    )
+                  }
                 </div>
               </div>
 
@@ -440,16 +451,20 @@ function ScrapAnalysisReport() {
                    : <h1>No Data Available</h1>
                   }
                 </div>
-                <ScrapCountCard
-                  setTyreListFilter={setTyreListFilter}
-                  tyreListFilter={tyreListFilter}
-                  title="Reasons"
-                  realCount={realReasonData}
-                  count={countData?.current_scrap_count >= 0 ? countData?.current_scrap_count : countData?.total_scrap_count}
-                  tableHeaders={headersArray1}
-                  tableData={reasonData}
-                  className="w-full"
+                {
+                  reasonData && realReasonData && (
+                    <ScrapCountCard
+                      setTyreListFilter={setTyreListFilter}
+                      tyreListFilter={tyreListFilter}
+                      title="Reasons"
+                      realCount={realReasonData}
+                      count={countData?.current_scrap_count >= 0 ? countData?.current_scrap_count : countData?.total_scrap_count}
+                      tableHeaders={headersArray1}
+                      tableData={reasonData}
+                      className="w-full"
                 />
+                  )
+                }
               </div>
               
               {/* fifth Row */}
